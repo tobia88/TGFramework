@@ -16,8 +16,12 @@ public class TGBaseScene : MonoBehaviour
 {
     protected float m_timeLeft;
     protected float m_gameOverTimeRemaining;
+    protected float m_startTime;
+    protected float m_timePassed;
     protected int m_score;
+    protected int m_difficultyLv;
     protected GameStates m_gameState;
+    protected int m_stageLevel = -1;
 
     public bool isActive = false;
     public AutoGameOverPanel gameOverPanel;
@@ -26,6 +30,14 @@ public class TGBaseScene : MonoBehaviour
     public TimeBar TimeBar;
     public GetPointTextUI getScorePrefab;
     public GetPointTextUI lossScorePrefab;
+
+    public int DifficultyLv
+
+    {
+        get { return m_difficultyLv; }
+        set { OnDifficultyChanged(value); }
+    }
+
 
     public float TimeLeft
     {
@@ -36,11 +48,40 @@ public class TGBaseScene : MonoBehaviour
             TimeBar.SetValue(m_timeLeft / Duration);
         }
     }
+
+    public float TimePassed
+    {
+        get { return m_timePassed; }
+        set
+        {
+            float delta = value - m_timePassed;
+
+            m_timePassed = value;
+
+            TimeLeft -= delta;
+
+            StageLevel = Mathf.FloorToInt(m_timePassed / 60);
+        }
+    }
+
+    public int StageLevel
+    {
+        get { return m_stageLevel; }
+        set
+        {
+            if (m_stageLevel != value)
+            {
+                OnStageLevelChanged(value);
+            }
+        }
+    }
+
     public int Score
     {
         get { return m_score; }
         set
         {
+
             m_score = Mathf.Max(value, 0);
             scoreTxt.text = m_score.ToString();
         }
@@ -79,14 +120,18 @@ public class TGBaseScene : MonoBehaviour
         var config = controller.gameConfig.configInfo;
 
         Duration = config.trainingTime * 60;
+        DifficultyLv = config.difficultyLv - 1;
     }
 
     public virtual void OnStart()
     {
         isActive = true;
 
+        m_startTime = Time.time;
+
         Score = 0;
         TimeLeft = Duration;
+        TimePassed = 0;
 
         GameState = GameStates.Start;
     }
@@ -111,15 +156,20 @@ public class TGBaseScene : MonoBehaviour
         score.SetText(_score.ToString());
     }
 
+    protected virtual void OnDifficultyChanged(int _difficulty)
+    {
+        m_difficultyLv = _difficulty;
+    }
+
     public virtual void OnUpdate()
     {
+        TimePassed += Time.deltaTime;
+
         if (m_gameState == GameStates.Playing)
             OnUpdateGamePlaying();
 
-
         if (m_gameState == GameStates.GameOver)
             OnUpdateGameOver();
-
     }
 
     public virtual void ExitScene()
@@ -159,8 +209,6 @@ public class TGBaseScene : MonoBehaviour
     {
         ConsoleProDebug.Watch("Time Left", TimeLeft.ToString());
 
-        TimeLeft -= Time.deltaTime;
-
         if (TimeLeft <= 0f)
         {
             GameState = GameStates.GameOver;
@@ -172,11 +220,19 @@ public class TGBaseScene : MonoBehaviour
 
         gameOverPanel.SetCountdownTxt(Mathf.FloorToInt(m_gameOverTimeRemaining));
 
-        if (Time.time - m_gameOverTimeRemaining >= 5f)
+        if (m_gameOverTimeRemaining <= 0f)
         {
             GameState = GameStates.End;
         }
     }
+
+    protected virtual void OnStageLevelChanged(int _level)
+    {
+        m_stageLevel = _level;
+
+        Debug.Log("Level Chaged: " + m_stageLevel);
+    }
+
     protected virtual void OnEnterGameEnd()
     {
         controller.gameConfig.configInfo.currentScore = Score;
