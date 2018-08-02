@@ -30,7 +30,7 @@ public class TGController : MonoBehaviour
         AudioMng.Init();
 
 #if UNITY_EDITOR
-        RootPath = Application.dataPath + "/";
+        RootPath = Application.dataPath + "/TGFramework/";
 #else
         RootPath = Application.dataPath.Replace(Application.productName + "_Data", string.Empty);
 #endif
@@ -51,7 +51,7 @@ public class TGController : MonoBehaviour
     public void ErrorQuit(string _error)
     {
         // Write down error
-        Debug.LogWarning(_error);
+        Debug.LogError(_error);
         Quit();
     }
 

@@ -182,8 +182,6 @@ public class INIParser
                 // *** String Reader ***
                 sr = new StringReader(m_iniString);
 
-                Debug.Log("INIParser: " + m_iniString);
-
                 // *** Read up the file content ***
                 Dictionary<string, string> CurrentSection = null;
                 string s;
