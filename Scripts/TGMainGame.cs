@@ -32,6 +32,8 @@ public class TGMainGame : TGBaseBehaviour
             
         yield return SceneManager.UnloadSceneAsync(sceneName);
 
+        AudioMng.Instance.StopAll();
+
         Debug.Log("Main Game: Finished");
     }
 }

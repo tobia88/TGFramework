@@ -164,6 +164,12 @@ public class TGBaseScene : MonoBehaviour
 
     public virtual void OnUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        { 
+            ExitScene();
+            return;
+        }
+
         TimePassed += Time.deltaTime;
 
         if (m_gameState == GameStates.Playing)

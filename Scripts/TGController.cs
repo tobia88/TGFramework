@@ -6,8 +6,6 @@ using System.Text;
 
 public class TGController : MonoBehaviour
 {
-    private Coroutine m_routine;
-
     public static TGController Instance;
 
     public TGGameConfig gameConfig;
@@ -34,11 +32,12 @@ public class TGController : MonoBehaviour
 #else
         RootPath = Application.dataPath.Replace(Application.productName + "_Data", string.Empty);
 #endif
+        fileWriter.Init(RootPath);
     }
 
     private void Start()
     {
-        m_routine = StartCoroutine(ProcessRoutine());
+        StartCoroutine(ProcessRoutine());
     }
 
     public void Quit()
