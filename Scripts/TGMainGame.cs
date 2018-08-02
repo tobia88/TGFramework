@@ -5,15 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class TGMainGame : TGBaseBehaviour
 {
-    public SceneField sceneField;
+    public string sceneName;
     public bool isSceneFinished;
 
     public override IEnumerator StartRoutine(TGController _controller)
     {
-        if (!sceneField.IsLoaded)
-            yield return SceneManager.LoadSceneAsync(sceneField, LoadSceneMode.Additive);
+        if (!SceneManager.GetSceneByName(sceneName).isLoaded)
+            yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
-        var scn = SceneManager.GetSceneByName(sceneField);
+        var scn = SceneManager.GetSceneByName(sceneName);
+
+        SceneManager.SetActiveScene(scn);
+        
         var baseScn = scn.GetComponent<TGBaseScene>();
 
         if (baseScn != null)
@@ -27,7 +30,7 @@ public class TGMainGame : TGBaseBehaviour
             yield return 1;
         }
             
-        yield return SceneManager.UnloadSceneAsync(sceneField);
+        yield return SceneManager.UnloadSceneAsync(sceneName);
 
         Debug.Log("Main Game: Finished");
     }

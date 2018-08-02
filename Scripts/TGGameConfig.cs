@@ -45,17 +45,26 @@ public class TGGameConfig : TGBaseBehaviour
             yield return 1;
         }
 
-        Debug.Log("Game Config: Finished");
+        Debug.Log("Game Config: Finished = " +  configInfo.ToString());
 
         yield return 1;
     }
 
     private void OnLoadConfig()
     {
-        INIParser ini = new INIParser();
-        string path = Application.dataPath + fileName;
+        string path = TGController.Instance.RootPath + fileName;
 
-        ini.Open(Application.dataPath + "/" + fileName);
+        INIParser ini = new INIParser();
+
+        ini.Open(path);
+
+        if (string.IsNullOrEmpty(ini.iniString))
+        {
+            TGController.Instance.ErrorQuit("Config is NULL! Path = " + path);
+            return;
+        }
+
+        Debug.Log("PZConf 训练部位：" + ini.ReadValue("PZConf", "训练部位", string.Empty));
 
         configInfo.trainingPart = ini.ReadValue("PZConf", "训练部位", string.Empty);
         configInfo.deviceName = ini.ReadValue("PZConf", "设备名称", string.Empty);

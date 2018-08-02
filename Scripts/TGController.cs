@@ -16,6 +16,11 @@ public class TGController : MonoBehaviour
     public TGResultMng resultMng;
 
     public LMFileWriter fileWriter;
+    public string RootPath
+    {
+        get; private set;
+    }
+
 
     public string errorTxt;
 
@@ -23,6 +28,12 @@ public class TGController : MonoBehaviour
     {
         Instance = this;
         AudioMng.Init();
+
+#if UNITY_EDITOR
+        RootPath = Application.dataPath + "/";
+#else
+        RootPath = Application.dataPath.Replace(Application.productName + "_Data", string.Empty);
+#endif
     }
 
     private void Start()
@@ -33,7 +44,7 @@ public class TGController : MonoBehaviour
     public void Quit()
     {
         Debug.Log("Application Quit");
-        StopCoroutine(m_routine);
+        StopAllCoroutines();
         Application.Quit();
     }
 
