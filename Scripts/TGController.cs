@@ -22,6 +22,7 @@ public class TGController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        AudioMng.Init();
     }
 
     private void Start()

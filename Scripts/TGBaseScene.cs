@@ -207,8 +207,6 @@ public class TGBaseScene : MonoBehaviour
 
     protected virtual void OnUpdateGamePlaying()
     {
-        ConsoleProDebug.Watch("Time Left", TimeLeft.ToString());
-
         if (TimeLeft <= 0f)
         {
             GameState = GameStates.GameOver;
