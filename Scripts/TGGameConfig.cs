@@ -81,8 +81,8 @@ public class TGGameConfig : TGBaseBehaviour
         configInfo.intervalMethod = ini.ReadValue("PZConf", "间隔时长", string.Empty);
         configInfo.patientName = ini.ReadValue("PZConf", "姓名", string.Empty);
         configInfo.gender = ini.ReadValue("PZConf", "性别", string.Empty);
-        configInfo.maxRotateDegForward = ini.ReadValue("PZConf", "旋前最大角度", -1);
-        configInfo.maxRotateDegBackward = ini.ReadValue("PZConf", "旋后最大角度", -1);
+        configInfo.maxRotateDegForward = ini.ReadValue("PZConf", "旋前最大距离", -1);
+        configInfo.maxRotateDegBackward = ini.ReadValue("PZConf", "旋后最大距离", -1);
 
         ini.Close();
 
