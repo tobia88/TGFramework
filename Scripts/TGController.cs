@@ -60,6 +60,8 @@ public class TGController : MonoBehaviour
         yield return StartCoroutine(inputSetting.StartRoutine(this));
         yield return StartCoroutine(mainGame.StartRoutine(this));
         yield return StartCoroutine(resultMng.StartRoutine(this));
+        Debug.Log("Game Finsihed");
+        Quit();
         yield return 1;
     }
 }
