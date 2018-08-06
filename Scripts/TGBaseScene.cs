@@ -24,6 +24,7 @@ public class TGBaseScene : MonoBehaviour
     protected int m_stageLevel = -1;
 
     public bool isActive = false;
+    public Sound bgm;
     public TGUIRoot uiRoot;
 
     public int DifficultyLv
@@ -154,6 +155,12 @@ public class TGBaseScene : MonoBehaviour
 
     public virtual void OnUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        { 
+            ExitScene();
+            return;
+        }
+
         TimePassed += Time.deltaTime;
 
         if (m_gameState == GameStates.Playing)
@@ -173,6 +180,8 @@ public class TGBaseScene : MonoBehaviour
         switch (_gameState)
         {
             case GameStates.Start:
+                if (bgm.clip != null)
+                    AudioMng.Instance.Play(bgm);
                 GameState = GameStates.Playing;
                 break;
 
@@ -198,8 +207,6 @@ public class TGBaseScene : MonoBehaviour
 
     protected virtual void OnUpdateGamePlaying()
     {
-        ConsoleProDebug.Watch("Time Left", TimeLeft.ToString());
-
         if (TimeLeft <= 0f)
         {
             GameState = GameStates.GameOver;
@@ -207,6 +214,9 @@ public class TGBaseScene : MonoBehaviour
     }
     protected virtual void OnUpdateGameOver()
     {
+        if (bgm.clip != null)
+            AudioMng.Instance.Fade(bgm, 0f, 1f);
+
         m_gameOverTimeRemaining -= Time.deltaTime;
 
         uiRoot.gameOverPanel.SetCountdownTxt(Mathf.FloorToInt(m_gameOverTimeRemaining));

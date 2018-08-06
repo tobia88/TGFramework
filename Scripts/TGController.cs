@@ -6,8 +6,6 @@ using System.Text;
 
 public class TGController : MonoBehaviour
 {
-    private Coroutine m_routine;
-
     public static TGController Instance;
 
     public TGGameConfig gameConfig;
@@ -16,30 +14,43 @@ public class TGController : MonoBehaviour
     public TGResultMng resultMng;
 
     public LMFileWriter fileWriter;
+    public string RootPath
+    {
+        get; private set;
+    }
+
 
     public string errorTxt;
 
     private void Awake()
     {
         Instance = this;
+        AudioMng.Init();
+
+#if UNITY_EDITOR
+        RootPath = Application.dataPath + "/TGFramework/";
+#else
+        RootPath = Application.dataPath.Replace(Application.productName + "_Data", string.Empty);
+#endif
+        fileWriter.Init(RootPath);
     }
 
     private void Start()
     {
-        m_routine = StartCoroutine(ProcessRoutine());
+        StartCoroutine(ProcessRoutine());
     }
 
     public void Quit()
     {
         Debug.Log("Application Quit");
-        StopCoroutine(m_routine);
+        StopAllCoroutines();
         Application.Quit();
     }
 
     public void ErrorQuit(string _error)
     {
         // Write down error
-        Debug.LogWarning(_error);
+        Debug.LogError(_error);
         Quit();
     }
 
@@ -49,6 +60,8 @@ public class TGController : MonoBehaviour
         yield return StartCoroutine(inputSetting.StartRoutine(this));
         yield return StartCoroutine(mainGame.StartRoutine(this));
         yield return StartCoroutine(resultMng.StartRoutine(this));
+        Debug.Log("Game Finsihed");
+        Quit();
         yield return 1;
     }
 }

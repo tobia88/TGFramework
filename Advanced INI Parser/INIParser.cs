@@ -63,7 +63,7 @@ public class INIParser
 
         if (File.Exists(m_FileName))
         {
-            m_iniString = File.ReadAllText(m_FileName, Encoding.Default);
+            m_iniString = File.ReadAllText(m_FileName, Encoding.GetEncoding("GBK"));
         }
         else
         {
@@ -181,7 +181,6 @@ public class INIParser
 
                 // *** String Reader ***
                 sr = new StringReader(m_iniString);
-
 
                 // *** Read up the file content ***
                 Dictionary<string, string> CurrentSection = null;
