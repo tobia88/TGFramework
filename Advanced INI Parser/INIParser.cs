@@ -42,6 +42,8 @@ public class INIParser
         }
     }
 
+    private Encoding m_encoding;
+
     // *** Automatic flushing flag ***
     private bool m_AutoFlush = false;
 
@@ -57,13 +59,14 @@ public class INIParser
     #region "Methods"
 
     // *** Open ini file by path ***
-    public void Open(string path)
+    public void Open(string path, string encoding = "GBK")
     {
         m_FileName = path;
+        m_encoding = Encoding.GetEncoding(encoding);
 
         if (File.Exists(m_FileName))
         {
-            m_iniString = File.ReadAllText(m_FileName, Encoding.GetEncoding("GBK"));
+            m_iniString = File.ReadAllText(m_FileName, m_encoding);
         }
         else
         {
@@ -420,7 +423,7 @@ public class INIParser
             // ** Write iniString to file ***
             if (m_FileName != null)
             {
-                File.WriteAllText(m_FileName, m_iniString);
+                File.WriteAllText(m_FileName, m_iniString, m_encoding);
             }
         }
         finally

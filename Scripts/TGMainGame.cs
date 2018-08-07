@@ -30,6 +30,8 @@ public class TGMainGame : TGBaseBehaviour
             yield return 1;
         }
             
+        TGController.Instance.gameConfig.configInfo.currentScore = baseScn.Score;
+        
         yield return SceneManager.UnloadSceneAsync(sceneName);
 
         AudioMng.Instance.StopAll();
