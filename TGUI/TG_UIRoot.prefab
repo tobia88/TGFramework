@@ -207,6 +207,7 @@ GameObject:
   - component: {fileID: 223374674254832410}
   - component: {fileID: 114542484423909586}
   - component: {fileID: 114179272585490996}
+  - component: {fileID: 114484135878171902}
   m_Layer: 5
   m_Name: TG_UIRoot
   m_TagString: Untagged
@@ -814,6 +815,25 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &114484135878171902
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1752748506686584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34739608b345fd446a4bd39f98dc4904, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameOverPanel: {fileID: 114304370474968714}
+  gameplayPanel: {fileID: 224478698963647488}
+  scoreTxt: {fileID: 114069309445123126}
+  timeBar: {fileID: 114261891878065796}
+  getScorePrefab: {fileID: 114266387585136844, guid: 703788fb0621aa34ab68fba80c1c54ff,
+    type: 2}
+  lossScorePrefab: {fileID: 114288490614423208, guid: 66a2c697b1c2afc4c9e43ee764d33976,
+    type: 2}
 --- !u!114 &114519013059719516
 MonoBehaviour:
   m_ObjectHideFlags: 1

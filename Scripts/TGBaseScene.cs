@@ -24,13 +24,8 @@ public class TGBaseScene : MonoBehaviour
     protected int m_stageLevel = -1;
 
     public bool isActive = false;
-    public AutoGameOverPanel gameOverPanel;
-    public Transform gameplayPanel;
-    public TMPro.TextMeshProUGUI scoreTxt;
-    public TimeBar TimeBar;
-    public GetPointTextUI getScorePrefab;
-    public GetPointTextUI lossScorePrefab;
     public Sound bgm;
+    public TGUIRoot uiRoot;
 
     public int DifficultyLv
 
@@ -46,7 +41,7 @@ public class TGBaseScene : MonoBehaviour
         set
         {
             m_timeLeft = Mathf.Clamp(value, 0, Duration);
-            TimeBar.SetValue(m_timeLeft / Duration);
+            uiRoot.timeBar.SetValue(m_timeLeft / Duration);
         }
     }
 
@@ -84,7 +79,7 @@ public class TGBaseScene : MonoBehaviour
         {
 
             m_score = Mathf.Max(value, 0);
-            scoreTxt.text = m_score.ToString();
+            uiRoot.scoreTxt.text = m_score.ToString();
         }
     }
 
@@ -117,6 +112,8 @@ public class TGBaseScene : MonoBehaviour
 
     public virtual void Init(TGController _controller)
     {
+        uiRoot = FindObjectOfType<TGUIRoot>();
+
         controller = _controller;
         var config = controller.gameConfig.configInfo;
 
@@ -137,24 +134,18 @@ public class TGBaseScene : MonoBehaviour
         GameState = GameStates.Start;
     }
 
-    public virtual void AddScoreAndCreatePrefab(int _score, Vector3 _position)
+    public virtual void GetOrLossScore(int _score, Vector3 _position)
     {
         Score += _score;
 
-        var score = Instantiate(getScorePrefab);
-        score.transform.SetParent(gameplayPanel, false);
-        score.transform.position = Camera.main.WorldToScreenPoint(_position);
-        score.SetText("+" + _score);
     }
 
     public virtual void LossScoreAndCreatePrefab(int _score, Vector3 _position)
     {
         Score += _score;
 
-        var score = Instantiate(lossScorePrefab);
-        score.transform.SetParent(gameplayPanel, false);
-        score.transform.position = Camera.main.WorldToScreenPoint(_position);
-        score.SetText(_score.ToString());
+        var scnPos = Camera.main.WorldToScreenPoint(_position);
+        uiRoot.CreateScorePrefab(_score, scnPos);
     }
 
     protected virtual void OnDifficultyChanged(int _difficulty)
@@ -228,7 +219,7 @@ public class TGBaseScene : MonoBehaviour
 
         m_gameOverTimeRemaining -= Time.deltaTime;
 
-        gameOverPanel.SetCountdownTxt(Mathf.FloorToInt(m_gameOverTimeRemaining));
+        uiRoot.gameOverPanel.SetCountdownTxt(Mathf.FloorToInt(m_gameOverTimeRemaining));
 
         if (m_gameOverTimeRemaining <= 0f)
         {
@@ -253,7 +244,7 @@ public class TGBaseScene : MonoBehaviour
 
     public virtual void GameOver()
     {
-        gameOverPanel.Show(Score);
+        uiRoot.gameOverPanel.Show(Score);
         m_gameOverTimeRemaining = 5f;
     }
 }
