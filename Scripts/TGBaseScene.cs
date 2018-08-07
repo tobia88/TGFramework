@@ -138,14 +138,9 @@ public class TGBaseScene : MonoBehaviour
     {
         Score += _score;
 
-    }
-
-    public virtual void LossScoreAndCreatePrefab(int _score, Vector3 _position)
-    {
-        Score += _score;
-
         var scnPos = Camera.main.WorldToScreenPoint(_position);
         uiRoot.CreateScorePrefab(_score, scnPos);
+
     }
 
     protected virtual void OnDifficultyChanged(int _difficulty)
