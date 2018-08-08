@@ -8,6 +8,7 @@ public enum GameStates
     Null,
     Start,
     Playing,
+    FreezeToExitGame,
     GameOver,
     End
 }
@@ -98,12 +99,6 @@ public class TGBaseScene : MonoBehaviour
         }
     }
 
-    public string SceneName
-    {
-        get { return SceneManager.GetActiveScene().name; }
-    }
-
-
     public TGController controller { get; private set; }
     public float Duration
     {
@@ -113,6 +108,11 @@ public class TGBaseScene : MonoBehaviour
     public virtual void Init(TGController _controller)
     {
         uiRoot = FindObjectOfType<TGUIRoot>();
+        uiRoot.exitBtn.onClick.AddListener(() => GameState = GameStates.FreezeToExitGame);
+
+        uiRoot.exitGamePanel.confirmBtn.onClick.AddListener(ExitScene);
+        uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
+        uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 
         controller = _controller;
         var config = controller.gameConfig.configInfo;
@@ -192,12 +192,33 @@ public class TGBaseScene : MonoBehaviour
                 OnEnterGameEnd();
                 break;
 
+            case GameStates.FreezeToExitGame:
+                OnFreezeToExitGame();
+                break;
+
         }
     }
 
     public virtual void Restart()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void DelayCall(System.Action _func, float _delay)
+    {
+        StartCoroutine(DelayCallRoutine(_func, _delay));
+    }
+
+    IEnumerator DelayCallRoutine(System.Action _func, float _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+        _func();
+    }
+
+    protected virtual void OnFreezeToExitGame()
+    {
+        Time.timeScale = 0f;
+        uiRoot.exitGamePanel.Show();
     }
 
     protected virtual void OnUpdateGamePlaying()
@@ -207,6 +228,7 @@ public class TGBaseScene : MonoBehaviour
             GameState = GameStates.GameOver;
         }
     }
+    
     protected virtual void OnUpdateGameOver()
     {
         if (bgm.clip != null)
@@ -235,7 +257,10 @@ public class TGBaseScene : MonoBehaviour
         ExitScene();
     }
 
-    protected virtual void OnStartPlaying() { }
+    protected virtual void OnStartPlaying() 
+    {
+        Time.timeScale = 1f;
+    }
 
     public virtual void GameOver()
     {

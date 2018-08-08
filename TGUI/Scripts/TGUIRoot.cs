@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TGUIRoot : MonoBehaviour
 {
 	public AutoGameOverPanel gameOverPanel;
+	public ExitGamePanel exitGamePanel;
 	public Transform gameplayPanel;
 	public TMPro.TextMeshProUGUI scoreTxt;
 	public TimeBar timeBar;
 	public GetPointTextUI getScorePrefab;
 	public GetPointTextUI lossScorePrefab;
+	public Button exitBtn;
 
 	public void CreateScorePrefab(int _score, Vector3 _pos)
 	{
