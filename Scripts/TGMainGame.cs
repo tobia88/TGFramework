@@ -20,22 +20,25 @@ public class TGMainGame : TGBaseBehaviour
         var baseScn = scn.GetComponent<TGBaseScene>();
 
         if (baseScn != null)
-            baseScn.Init(_controller);
-
-        baseScn.OnStart();
-
-        while (baseScn.isActive)
         {
-            baseScn.OnUpdate();
-            yield return 1;
+            baseScn.Init(_controller);
+            yield return _controller.StartCoroutine(GameRoutine(baseScn));
         }
-            
-        TGController.Instance.gameConfig.configInfo.currentScore = baseScn.Score;
 
         yield return SceneManager.UnloadSceneAsync(sceneName);
 
-        AudioMng.Instance.StopAll();
-
         Debug.Log("Main Game: Finished");
+    }
+
+    private IEnumerator GameRoutine(TGBaseScene _scene)
+    {
+            _scene.OnStart();
+
+            while (_scene.isActive)
+            {
+                _scene.OnUpdate();
+                yield return 1;
+            }
+
     }
 }

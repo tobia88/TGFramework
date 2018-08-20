@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class DebugCentre : MonoBehaviour
 {
-    protected TGBaseScene m_baseScene;
+    protected TGGameScene m_baseScene;
 
     void Start()
     {
-        m_baseScene = GetComponent<TGBaseScene>();
+        m_baseScene = GetComponent<TGGameScene>();
     }
 
     void Update()

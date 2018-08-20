@@ -15,36 +15,10 @@ public enum GameStates
 
 public class TGBaseScene : MonoBehaviour
 {
-    protected float m_timeLeft;
-    protected float m_gameOverTimeRemaining;
     protected float m_startTime;
     protected float m_timePassed;
-    protected int m_score;
-    protected int m_difficultyLv;
-    protected GameStates m_gameState;
-    protected int m_stageLevel = -1;
 
-    public bool isActive = false;
-    public Sound bgm;
-    public TGUIRoot uiRoot;
-
-    public int DifficultyLv
-
-    {
-        get { return m_difficultyLv; }
-        set { OnDifficultyChanged(value); }
-    }
-
-
-    public float TimeLeft
-    {
-        get { return m_timeLeft; }
-        set
-        {
-            m_timeLeft = Mathf.Clamp(value, 0, Duration);
-            uiRoot.timeBar.SetValue(m_timeLeft / Duration);
-        }
-    }
+    public TGController controller { get; private set; }
 
     public float TimePassed
     {
@@ -52,73 +26,15 @@ public class TGBaseScene : MonoBehaviour
         set
         {
             float delta = value - m_timePassed;
-
-            m_timePassed = value;
-
-            TimeLeft -= delta;
-
-            StageLevel = Mathf.FloorToInt(m_timePassed / 60);
+            OnTimePassed(value);
         }
     }
 
-    public int StageLevel
+    public bool isActive = false;
+
+    public virtual void Init(TGController _controller) 
     {
-        get { return m_stageLevel; }
-        set
-        {
-            if (m_stageLevel != value)
-            {
-                OnStageLevelChanged(value);
-            }
-        }
-    }
-
-    public int Score
-    {
-        get { return m_score; }
-        set
-        {
-
-            m_score = Mathf.Max(value, 0);
-            uiRoot.scoreTxt.text = m_score.ToString();
-        }
-    }
-
-    public GameStates GameState
-    {
-        get { return m_gameState; }
-        set
-        {
-
-            if (m_gameState != value)
-            {
-                m_gameState = value;
-                ConsoleProDebug.Watch("Game State", m_gameState.ToString());
-                OnEnterGameState(m_gameState);
-            }
-        }
-    }
-
-    public TGController controller { get; private set; }
-    public float Duration
-    {
-        get; private set;
-    }
-
-    public virtual void Init(TGController _controller)
-    {
-        uiRoot = FindObjectOfType<TGUIRoot>();
-        uiRoot.exitBtn.onClick.AddListener(() => GameState = GameStates.FreezeToExitGame);
-
-        uiRoot.exitGamePanel.confirmBtn.onClick.AddListener(ExitScene);
-        uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
-        uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
-
         controller = _controller;
-        var config = controller.gameConfig.configInfo;
-
-        Duration = config.trainingTime * 60;
-        DifficultyLv = config.difficultyLv - 1;
     }
 
     public virtual void OnStart()
@@ -127,25 +43,7 @@ public class TGBaseScene : MonoBehaviour
 
         m_startTime = Time.time;
 
-        Score = 0;
-        TimeLeft = Duration;
         TimePassed = 0;
-
-        GameState = GameStates.Start;
-    }
-
-    public virtual void GetOrLossScore(int _score, Vector3 _position)
-    {
-        Score += _score;
-
-        var scnPos = Camera.main.WorldToScreenPoint(_position);
-        uiRoot.CreateScorePrefab(_score, scnPos);
-
-    }
-
-    protected virtual void OnDifficultyChanged(int _difficulty)
-    {
-        m_difficultyLv = _difficulty;
     }
 
     public virtual void OnUpdate()
@@ -157,12 +55,6 @@ public class TGBaseScene : MonoBehaviour
         }
 
         TimePassed += Time.deltaTime;
-
-        if (m_gameState == GameStates.Playing)
-            OnUpdateGamePlaying();
-
-        if (m_gameState == GameStates.GameOver)
-            OnUpdateGameOver();
     }
 
     public virtual void ExitScene()
@@ -170,101 +62,19 @@ public class TGBaseScene : MonoBehaviour
         isActive = false;
     }
 
-    public virtual void OnEnterGameState(GameStates _gameState)
-    {
-        switch (_gameState)
-        {
-            case GameStates.Start:
-                if (bgm.clip != null)
-                    AudioMng.Instance.Play(bgm);
-                GameState = GameStates.Playing;
-                break;
-
-            case GameStates.Playing:
-                OnStartPlaying();
-                break;
-
-            case GameStates.GameOver:
-                GameOver();
-                break;
-
-            case GameStates.End:
-                OnEnterGameEnd();
-                break;
-
-            case GameStates.FreezeToExitGame:
-                OnFreezeToExitGame();
-                break;
-
-        }
-    }
-
-    public virtual void Restart()
-    {
-        SceneManager.LoadScene(0);
-    }
-
     public void DelayCall(System.Action _func, float _delay)
     {
         StartCoroutine(DelayCallRoutine(_func, _delay));
+    }
+
+    protected virtual void OnTimePassed(float _value)
+    {
+        m_timePassed = _value;
     }
 
     IEnumerator DelayCallRoutine(System.Action _func, float _delay)
     {
         yield return new WaitForSeconds(_delay);
         _func();
-    }
-
-    protected virtual void OnFreezeToExitGame()
-    {
-        Time.timeScale = 0f;
-        uiRoot.exitGamePanel.Show();
-    }
-
-    protected virtual void OnUpdateGamePlaying()
-    {
-        if (TimeLeft <= 0f)
-        {
-            GameState = GameStates.GameOver;
-        }
-    }
-    
-    protected virtual void OnUpdateGameOver()
-    {
-        if (bgm.clip != null)
-            AudioMng.Instance.Fade(bgm, 0f, 1f);
-
-        m_gameOverTimeRemaining -= Time.deltaTime;
-
-        uiRoot.gameOverPanel.SetCountdownTxt(Mathf.FloorToInt(m_gameOverTimeRemaining));
-
-        if (m_gameOverTimeRemaining <= 0f)
-        {
-            GameState = GameStates.End;
-        }
-    }
-
-    protected virtual void OnStageLevelChanged(int _level)
-    {
-        m_stageLevel = _level;
-
-        Debug.Log("Level Chaged: " + m_stageLevel);
-    }
-
-    protected virtual void OnEnterGameEnd()
-    {
-        controller.gameConfig.configInfo.currentScore = Score;
-        ExitScene();
-    }
-
-    protected virtual void OnStartPlaying() 
-    {
-        Time.timeScale = 1f;
-    }
-
-    public virtual void GameOver()
-    {
-        uiRoot.gameOverPanel.Show(Score);
-        m_gameOverTimeRemaining = 5f;
     }
 }

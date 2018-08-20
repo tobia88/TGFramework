@@ -70,18 +70,20 @@ public class TGGameConfig : TGBaseBehaviour
             return;
         }
 
-        configInfo.trainingPart = ini.ReadValue("PZConf", "训练部位", string.Empty);
-        configInfo.deviceName = ini.ReadValue("PZConf", "设备名称", string.Empty);
-        configInfo.evaluatedValue = ini.ReadValue("PZConf", "体侧", string.Empty);
-        configInfo.trainingDevice = ini.ReadValue("PZConf", "训练器材", string.Empty);
-        configInfo.damping = ini.ReadValue("PZConf", "阻尼设置", 0);
-        configInfo.difficultyLv = ini.ReadValue("PZConf", "难度等级", 0);
-        configInfo.trainingTime = ini.ReadValue("PZConf", "训练时长", 0);
-        configInfo.waitingTime = ini.ReadValue("PZConf", "等待时长", 0);
-        configInfo.intervalMethod = ini.ReadValue("PZConf", "间隔时长", string.Empty);
-        configInfo.patientName = ini.ReadValue("PZConf", "姓名", string.Empty);
-        configInfo.gender = ini.ReadValue("PZConf", "性别", string.Empty);
-        configInfo.maxRotateDegForward = ini.ReadValue("PZConf", "旋前最大距离", -1);
+        Debug.Log(ini.iniString);
+
+        configInfo.trainingPart         = ini.ReadValue("PZConf", "训练部位", string.Empty);
+        configInfo.deviceName           = ini.ReadValue("PZConf", "设备名称", string.Empty);
+        configInfo.evaluatedValue       = ini.ReadValue("PZConf", "体侧", string.Empty);
+        configInfo.trainingDevice       = ini.ReadValue("PZConf", "训练器材", string.Empty);
+        configInfo.damping              = ini.ReadValue("PZConf", "阻尼设置", 0);
+        configInfo.difficultyLv         = ini.ReadValue("PZConf", "难度等级", 0);
+        configInfo.trainingTime         = ini.ReadValue("PZConf", "训练时长", 0);
+        configInfo.waitingTime          = ini.ReadValue("PZConf", "等待时长", 0);
+        configInfo.intervalMethod       = ini.ReadValue("PZConf", "间隔时长", string.Empty);
+        configInfo.patientName          = ini.ReadValue("PZConf", "姓名", string.Empty);
+        configInfo.gender               = ini.ReadValue("PZConf", "性别", string.Empty);
+        configInfo.maxRotateDegForward  = ini.ReadValue("PZConf", "旋前最大距离", -1);
         configInfo.maxRotateDegBackward = ini.ReadValue("PZConf", "旋后最大距离", -1);
 
         ini.Close();
