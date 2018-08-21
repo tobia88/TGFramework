@@ -86,6 +86,8 @@ public class TGGameConfig : TGBaseBehaviour
         configInfo.maxRotateDegForward  = ini.ReadValue("PZConf", "旋前最大距离", -1);
         configInfo.maxRotateDegBackward = ini.ReadValue("PZConf", "旋后最大距离", -1);
 
+        Debug.Log(configInfo.trainingTime);
+
         ini.Close();
 
         finishLoaded = true;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TGInputSetting : TGBaseBehaviour
 {
-    public LMBasePortUtility basePortUtility;
+    public LMBasePortInput portInput;
     public bool forceUsePort;
 
     public override IEnumerator StartRoutine(TGController _controller)
@@ -14,16 +14,16 @@ public class TGInputSetting : TGBaseBehaviour
         basePortUtility.portInfo.comName = "COM3";
         #endif
 
-        if (!basePortUtility.OnStart())
+        if (!portInput.OnStart())
         {
             if (forceUsePort)
             {
-                _controller.ErrorQuit(basePortUtility.ErrorTxt);
+                _controller.ErrorQuit(portInput.ErrorTxt);
                 yield break;
             }
             else
             {
-                Debug.LogWarning(basePortUtility.ErrorTxt);
+                Debug.LogWarning(portInput.ErrorTxt);
             }
         }
         Debug.Log("Input Setup Success");

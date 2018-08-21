@@ -229,6 +229,7 @@ public class TGGameScene : TGBaseScene
         uiRoot.gameOverPanel.Show(Score);
         m_gameOverTimeRemaining = 5f;
     }
+
 }
 
 
