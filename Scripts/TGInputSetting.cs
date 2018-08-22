@@ -11,7 +11,7 @@ public class TGInputSetting : TGBaseBehaviour
     {
         #if !UNITY_EDITOR
         // forceUsePort = true;
-        basePortUtility.portInfo.comName = "COM3";
+        portInput.portInfo.comName = "COM3";
         #endif
 
         if (!portInput.OnStart())

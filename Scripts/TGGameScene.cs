@@ -13,7 +13,7 @@ public class TGGameScene : TGBaseScene
     protected int m_stageLevel = -1;
 
     public Sound bgm;
-    public TGUIRoot uiRoot;
+    public TGUIRoot uiRoot {get; private set;}
 
     public int DifficultyLv
 

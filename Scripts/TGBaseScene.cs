@@ -25,7 +25,6 @@ public class TGBaseScene : MonoBehaviour
         get { return m_timePassed; }
         set
         {
-            float delta = value - m_timePassed;
             OnTimePassed(value);
         }
     }
