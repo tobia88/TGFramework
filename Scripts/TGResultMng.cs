@@ -29,6 +29,12 @@ public class TGResultMng : TGBaseBehaviour
         ini.WriteValue("ret", "结束时间", TGUtility.ParseDateTimeToString(TGController.Instance.endTime));
         ini.WriteValue("ret", "分数", TGController.Instance.gameConfig.configInfo.currentScore);
 
+        Dictionary<string, string> keys = TGController.Instance.mainGame.additionDataToSave;
+        foreach (string k in keys.Keys)
+        {
+            ini.WriteValue("ret", k, keys[k]);
+        }
+
         ini.Close();
 
 

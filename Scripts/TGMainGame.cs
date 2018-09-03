@@ -7,6 +7,7 @@ public class TGMainGame : TGBaseBehaviour
 {
     public string sceneName;
     public bool isSceneFinished;
+    public Dictionary<string, string> additionDataToSave;
 
     public override IEnumerator StartRoutine(TGController _controller)
     {
@@ -24,6 +25,8 @@ public class TGMainGame : TGBaseBehaviour
             baseScn.Init(_controller);
             yield return _controller.StartCoroutine(GameRoutine(baseScn));
         }
+
+        additionDataToSave = baseScn.additionDataToSave;
 
         yield return SceneManager.UnloadSceneAsync(sceneName);
 

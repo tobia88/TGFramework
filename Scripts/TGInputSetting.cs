@@ -9,10 +9,8 @@ public class TGInputSetting : TGBaseBehaviour
 
     public override IEnumerator StartRoutine(TGController _controller)
     {
-        #if !UNITY_EDITOR
-        // forceUsePort = true;
-        portInput.portInfo.comName = "COM3";
-        #endif
+        portInput = GetComponentInChildren<LMBasePortInput>();
+        
 
         if (!portInput.OnStart())
         {

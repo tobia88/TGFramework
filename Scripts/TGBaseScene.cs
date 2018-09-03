@@ -17,6 +17,7 @@ public class TGBaseScene : MonoBehaviour
 {
     protected float m_startTime;
     protected float m_timePassed;
+    public Dictionary<string, string> additionDataToSave;
 
     public TGController controller { get; private set; }
 
