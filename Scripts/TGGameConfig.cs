@@ -6,6 +6,7 @@ using System.Text;
 
 public struct GameConfigInfo
 {
+    public int com;
     public string trainingPart;
     public string deviceName;
     public string evaluatedValue;
@@ -25,6 +26,7 @@ public struct GameConfigInfo
     public override string ToString()
     {
         StringBuilder sb = new StringBuilder();
+        sb.Append("端口: " + com);
         sb.AppendLine(trainingPart);
         sb.AppendLine(deviceName);
         sb.AppendLine(evaluatedValue);
@@ -72,6 +74,7 @@ public class TGGameConfig : TGBaseBehaviour
 
         Debug.Log(ini.iniString);
 
+        configInfo.com                  = ini.ReadValue("PZConf", "端口", -1);
         configInfo.trainingPart         = ini.ReadValue("PZConf", "训练部位", string.Empty);
         configInfo.deviceName           = ini.ReadValue("PZConf", "设备名称", string.Empty);
         configInfo.evaluatedValue       = ini.ReadValue("PZConf", "体侧", string.Empty);
@@ -97,14 +100,14 @@ public class TGGameConfig : TGBaseBehaviour
         {
             Debug.Log(obj.ToListString());
 
-            configInfo.trainingPart = obj[0];
-            configInfo.deviceName = obj[1];
+            configInfo.trainingPart   = obj[0];
+            configInfo.deviceName     = obj[1];
             configInfo.evaluatedValue = obj[2];
             configInfo.trainingDevice = obj[3];
-            configInfo.damping = int.Parse(obj[4]);
-            configInfo.difficultyLv = int.Parse(obj[5]);
-            configInfo.trainingTime = int.Parse(obj[6]);
-            configInfo.waitingTime = int.Parse(obj[7]);
+            configInfo.damping        = int.Parse(obj[4]);
+            configInfo.difficultyLv   = int.Parse(obj[5]);
+            configInfo.trainingTime   = int.Parse(obj[6]);
+            configInfo.waitingTime    = int.Parse(obj[7]);
             configInfo.intervalMethod = obj[8];
         }
         catch (Exception _e)

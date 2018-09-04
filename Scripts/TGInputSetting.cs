@@ -10,7 +10,7 @@ public class TGInputSetting : TGBaseBehaviour
     public override IEnumerator StartRoutine(TGController _controller)
     {
         portInput = GetComponentInChildren<LMBasePortInput>();
-        
+        portInput.portInfo.comName = "COM" + _controller.gameConfig.configInfo.com;
 
         if (!portInput.OnStart())
         {
