@@ -87,15 +87,16 @@ public class TGGameScene : TGBaseScene
 
         uiRoot = FindObjectOfType<TGUIRoot>();
         uiRoot.exitBtn.onClick.AddListener(() => GameState = GameStates.FreezeToExitGame);
+        uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
 
         uiRoot.exitGamePanel.confirmBtn.onClick.AddListener(ExitScene);
         uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
         uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 
-        var config = controller.gameConfig.configInfo;
+        var config = controller.gameConfig;
 
-        Duration = config.trainingTime * 60;
-        DifficultyLv = config.difficultyLv - 1;
+        Duration = config.GetValue("训练时长", -1) * 60;
+        DifficultyLv = config.GetValue("难度等级", -1);
     }
 
     public override void OnStart()
@@ -117,7 +118,6 @@ public class TGGameScene : TGBaseScene
 
         var scnPos = Camera.main.WorldToScreenPoint(_position);
         uiRoot.CreateScorePrefab(_score, scnPos);
-
     }
 
     protected virtual void OnDifficultyChanged(int _difficulty)
@@ -208,14 +208,14 @@ public class TGGameScene : TGBaseScene
 
     protected virtual void OnEnterGameEnd()
     {
-        controller.gameConfig.configInfo.currentScore = Score;
         ExitScene();
     }
 
 	public override void ExitScene()
 	{
-		controller.gameConfig.configInfo.currentScore = Score;
 		AudioMng.Instance.StopAll();
+
+        additionDataToSave.Add("分数", Score.ToString());
 		base.ExitScene();
 	}
 

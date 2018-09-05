@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.IO;
 
 public static class TGUtility
 {
@@ -9,4 +10,26 @@ public static class TGUtility
 	{
 		return _dateTime.ToString("yyyy/M/d HH:mm:ss");
 	}
+
+    public static float PreventValueSkipping(float cx, float lv, float nv)
+    {
+        float d = nv - lv;
+        float rv = cx;
+
+        if (d < -180)
+        {
+            rv += nv + (360 - lv);
+        }
+        else if (d > 180)
+        {
+            rv -= nv - (360 - lv);
+        }
+        else
+        {
+            rv += d;
+        }
+
+        return rv;
+    }
+
 }

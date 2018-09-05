@@ -1,27 +1,49 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
+[System.Serializable]
+public class PortInputSwitchData
+{
+    public string key;
+    public LMBasePortInput portInput;
+}
 
 public class TGInputSetting : TGBaseBehaviour
 {
-    public LMBasePortInput portInput;
+    public PortInputSwitchData[] switchDatas;
+    public LMBasePortInput CurrentPortInput {get; private set;}
     public bool forceUsePort;
 
     public override IEnumerator StartRoutine(TGController _controller)
     {
-        portInput = GetComponentInChildren<LMBasePortInput>();
-        portInput.portInfo.comName = "COM" + _controller.gameConfig.configInfo.com;
+        string key = string.Empty;
+        key = _controller.gameConfig.GetValue("设备类型", key);
+        var portData = switchDatas.FirstOrDefault(p => p.key == key);
 
-        if (!portInput.OnStart())
+        if (portData == null)
         {
-            if (forceUsePort)
+            Debug.Log("Failed to match device by key " + key);
+        }
+        else
+        {
+            CurrentPortInput = portData.portInput;
+
+            CurrentPortInput = GetComponentInChildren<LMBasePortInput>();
+            CurrentPortInput.portInfo.comName = "COM" + _controller.gameConfig.GetValue("端口", -1);
+
+            if (!CurrentPortInput.OnStart())
             {
-                _controller.ErrorQuit(portInput.ErrorTxt);
-                yield break;
-            }
-            else
-            {
-                Debug.LogWarning(portInput.ErrorTxt);
+                if (forceUsePort)
+                {
+                    _controller.ErrorQuit(CurrentPortInput.ErrorTxt);
+                    yield break;
+                }
+                else
+                {
+                    Debug.LogWarning(CurrentPortInput.ErrorTxt);
+                }
             }
         }
         Debug.Log("Input Setup Success");

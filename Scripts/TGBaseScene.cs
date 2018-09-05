@@ -81,6 +81,8 @@ public class TGBaseScene : MonoBehaviour
         onCaptureScreen = callback;
     }
 
+    public virtual void Recalibration() { }
+
     private void LateUpdate()
     {
         if (m_captureScreen) 

@@ -13,6 +13,7 @@ public class TGUIRoot : MonoBehaviour
 	public GetPointTextUI getScorePrefab;
 	public GetPointTextUI lossScorePrefab;
 	public Button exitBtn;
+	public Button recalibrationBtn;
 
 	public void CreateScorePrefab(int _score, Vector3 _pos)
 	{

@@ -1,0 +1,19 @@
+{
+    "value": [
+        {
+            "key": "x",
+            "equation": "AF"
+        }
+    ],
+
+    "input": [
+        {
+            "key": "AF",
+            "min": 0,
+            "max": 60,
+            "length": 4,
+            "isDegree": 1,
+            "equation": "AF/10"
+        }
+    ]
+}
