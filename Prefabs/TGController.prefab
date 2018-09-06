@@ -483,19 +483,15 @@ MonoBehaviour:
   debugPath: port.txt
   portInfo:
     comName: COM4
-    baudRate: 9600
+    baudRate: 115200
     parity: 0
     dataBits: 8
     stopBits: 1
   isPortActive: 0
-  getPortInfos:
-  - id: AF
-    value: 
-    numLength: 4
-    minValue: 0
-    maxValue: 360
-    remapMin: -1
-    remapMax: 1
+  keyPortData:
+    value: []
+    input: []
+  configFileName: keyInputConfig.json
 --- !u!114 &114295297888918672
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -522,16 +518,19 @@ MonoBehaviour:
   debugPath: port.txt
   portInfo:
     comName: COM4
-    baudRate: 9600
+    baudRate: 115200
     parity: 0
     dataBits: 8
     stopBits: 1
   isPortActive: 0
   m_lastEuler: {x: 0, y: 0, z: 0}
   m_outputEuler: {x: 0, y: 0, z: 0}
-  values: 
+  m_defaultEuler: {x: 0, y: 0, z: 0}
+  m_inputData:
+    value: 
+  values: 0000000000000000000000000000000000000000000000000000000000000000
   euler: {x: 0, y: 0, z: 0}
-  offset: {x: 0, y: 0, z: 0}
+  configFileName: witInputConfig.json
 --- !u!114 &114690888727584352
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -557,7 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 125d9c79133648043bb6d15c5303a690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: 
+  sceneName: 1_MainGame
   isSceneFinished: 0
 --- !u!114 &114753798490562544
 MonoBehaviour:
