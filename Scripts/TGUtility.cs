@@ -32,4 +32,10 @@ public static class TGUtility
         return rv;
     }
 
+    public static float RemapDegree(float deg, float remapMin, float remapMax, float min, float max)
+    {
+        float frac = min + max;
+        float ratio = (frac == 0) ? 0f : deg / (min + max);
+        return remapMin + ratio * (remapMax - remapMin);
+    }
 }

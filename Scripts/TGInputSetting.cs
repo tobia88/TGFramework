@@ -22,6 +22,8 @@ public class TGInputSetting : TGBaseBehaviour
         key = _controller.gameConfig.GetValue("设备类型", key);
         var portData = switchDatas.FirstOrDefault(p => p.key == key);
 
+        Debug.Log(portData.key);
+
         if (portData == null)
         {
             Debug.Log("Failed to match device by key " + key);
@@ -29,8 +31,6 @@ public class TGInputSetting : TGBaseBehaviour
         else
         {
             CurrentPortInput = portData.portInput;
-
-            CurrentPortInput = GetComponentInChildren<LMBasePortInput>();
             CurrentPortInput.portInfo.comName = "COM" + _controller.gameConfig.GetValue("端口", -1);
 
             if (!CurrentPortInput.OnStart())

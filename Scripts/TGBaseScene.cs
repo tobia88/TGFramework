@@ -75,17 +75,20 @@ public class TGBaseScene : MonoBehaviour
 
     private bool m_captureScreen;
 
-    public void CaptureScreen(System.Action<string> callback)
+    public void CaptureScreen(System.Action<string> callback = null)
     {
         m_captureScreen = true;
         onCaptureScreen = callback;
     }
 
-    public virtual void Recalibration() { }
+    public virtual void Recalibration()
+    {
+        controller.inputSetting.CurrentPortInput.Recalibration();
+    }
 
     private void LateUpdate()
     {
-        if (m_captureScreen) 
+        if (m_captureScreen)
         {
             var fileName = System.DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
             StartCoroutine(RecordFrame(fileName));
@@ -108,7 +111,7 @@ public class TGBaseScene : MonoBehaviour
         string fileName = _dateString + ".png";
 
         controller.fileWriter.Write(fileName, bytes);
-        
+
         SaveScreenshotKey(fileName);
 
         if (onCaptureScreen != null)

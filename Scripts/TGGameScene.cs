@@ -81,6 +81,7 @@ public class TGGameScene : TGBaseScene
             }
         }
     }
+
     public override void Init(TGController _controller)
     {
         base.Init(_controller);
@@ -143,6 +144,7 @@ public class TGGameScene : TGBaseScene
             case GameStates.Start:
                 if (bgm.clip != null)
                     AudioMng.Instance.Play(bgm);
+
                 GameState = GameStates.Playing;
                 break;
 
@@ -228,6 +230,13 @@ public class TGGameScene : TGBaseScene
     {
         uiRoot.gameOverPanel.Show(Score);
         m_gameOverTimeRemaining = 5f;
+        StartCoroutine(CaptureDelay());
+    }
+
+    IEnumerator CaptureDelay()
+    {
+        yield return new WaitForSeconds(1f);
+        CaptureScreen();
     }
 
 }
