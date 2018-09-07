@@ -22,11 +22,9 @@ public class TGInputSetting : TGBaseBehaviour
         key = _controller.gameConfig.GetValue("设备类型", key);
         var portData = switchDatas.FirstOrDefault(p => p.key == key);
 
-        Debug.Log(portData.key);
-
         if (portData == null)
         {
-            Debug.Log("Failed to match device by key " + key);
+            Debug.LogWarning("Failed to match device by key " + key);
         }
         else
         {

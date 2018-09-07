@@ -32,10 +32,9 @@ public static class TGUtility
         return rv;
     }
 
-    public static float RemapDegree(float deg, float remapMin, float remapMax, float min, float max)
+    public static float FloatRemap(float value, float remapMin, float remapMax, float min, float max)
     {
-        float frac = min + max;
-        float ratio = (frac == 0) ? 0f : deg / (min + max);
+        float ratio = (value - min) / Mathf.Abs(max - min);
         return remapMin + ratio * (remapMax - remapMin);
     }
 }

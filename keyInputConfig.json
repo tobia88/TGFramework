@@ -2,7 +2,7 @@
     "value": [
         {
             "key": "x",
-            "equation": "AF/10",
+            "equation": "-AF/10",
             "isDegree": true
         }
     ],
