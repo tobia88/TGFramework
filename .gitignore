@@ -36,8 +36,5 @@ sysinfo.txt
 *.unitypackage
 
 # TGFramwork generated files
-game.txt
-game.txt.meta
-
 ret.txt
 ret.txt.meta
