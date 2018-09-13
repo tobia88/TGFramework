@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af39c41165838384c97203803abe3eb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameNameCn: 
+  gameNameCn: "\u6D77\u4E0A\u593A\u5B9D"
   gameConfig: {fileID: 114141293912262460}
   inputSetting: {fileID: 114975440256637252}
   mainGame: {fileID: 114730753214534034}
@@ -488,10 +488,7 @@ MonoBehaviour:
     dataBits: 8
     stopBits: 1
   isPortActive: 0
-  keyPortData:
-    value: []
-    input: []
-  configFileName: keyInputConfig.json
+  keyPortData: []
 --- !u!114 &114295297888918672
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -530,7 +527,7 @@ MonoBehaviour:
     value: 
   values: 0000000000000000000000000000000000000000000000000000000000000000
   euler: {x: 0, y: 0, z: 0}
-  configFileName: witInputConfig.json
+  isInit: 0
 --- !u!114 &114690888727584352
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -556,7 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 125d9c79133648043bb6d15c5303a690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: 1_MainGame
+  sceneName: 1_MainScene
   isSceneFinished: 0
 --- !u!114 &114753798490562544
 MonoBehaviour:
@@ -593,6 +590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1869efd419a8d4d85934888060a69f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  configFileName: keyInputConfig.jsoon
   switchDatas:
   - key: Key
     portInput: {fileID: 114224465455840892}
@@ -600,4 +598,8 @@ MonoBehaviour:
     portInput: {fileID: 114134891743857340}
   - key: Wit
     portInput: {fileID: 114384035963383374}
+  keyInputConfig:
+    keys: []
+    wit:
+      value: 
   forceUsePort: 0
