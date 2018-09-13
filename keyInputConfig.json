@@ -1,7 +1,7 @@
 {
     "keys": [
         {
-            "name": "test0",
+            "name": "捏力",
             "value": [
                 {
                     "key": "x",
@@ -18,7 +18,7 @@
             ]
         },
         {
-            "name": "test1",
+            "name": "阻尼器",
             "value": [
                 {
                     "key": "x",

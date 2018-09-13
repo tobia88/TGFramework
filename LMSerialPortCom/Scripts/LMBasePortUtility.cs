@@ -16,7 +16,7 @@ public class LMBasePortUtility : LMBasePortInput
     {
         if (base.OnStart())
         {
-            string keyName = TGController.Instance.gameConfig.GetValue("设备名称", string.Empty);
+            string keyName = TGController.Instance.gameConfig.GetValue("训练器材", string.Empty);
             Debug.Assert(!string.IsNullOrEmpty(keyName), "Key name doesn't exist " + keyName);
             currentPortData = TGController.Instance.inputSetting.GetKeyPortFromName(keyName);
             return keyPortData != null;
