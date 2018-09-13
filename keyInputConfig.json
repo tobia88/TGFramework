@@ -1,16 +1,43 @@
 {
-    "value": [
+    "keys": [
         {
-            "key": "x",
-            "equation": "-AF/10",
-            "isDegree": true
+            "name": "test0",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "AC",
+                    "origin": 0,
+                    "isDegree": false
+                }
+            ],
+            "input": [
+                {
+                    "key": "AC",
+                    "length": 4
+                }
+            ]
+        },
+        {
+            "name": "test1",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "-AF/10",
+                    "origin": 0.5,
+                    "isDegree": true
+                }
+            ],
+            "input": [
+                {
+                    "key": "AF",
+                    "length": 4
+                }
+            ]
         }
     ],
 
-    "input": [
-        {
-            "key": "AF",
-            "length": 4
-        }
-    ]
+    "wit": 
+    {
+        "order": "xyz"
+    }
 }

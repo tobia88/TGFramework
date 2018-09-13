@@ -10,14 +10,25 @@ public class PortInputSwitchData
     public LMBasePortInput portInput;
 }
 
+[System.Serializable]
+public class KeyInputConfig
+{
+    public KeyPortData[] keys;
+    public WitInputData wit;
+}
+
 public class TGInputSetting : TGBaseBehaviour
 {
+    public string configFileName;
     public PortInputSwitchData[] switchDatas;
+    public KeyInputConfig keyInputConfig;
     public LMBasePortInput CurrentPortInput {get; private set;}
     public bool forceUsePort;
 
     public override IEnumerator StartRoutine(TGController _controller)
     {
+        keyInputConfig = _controller.fileWriter.ReadJSON<KeyInputConfig>(configFileName);
+
         string key = string.Empty;
         key = _controller.gameConfig.GetValue("设备类型", key);
         var portData = switchDatas.FirstOrDefault(p => p.key == key);
@@ -48,5 +59,20 @@ public class TGInputSetting : TGBaseBehaviour
 
 
         yield return 1;
+    }
+
+    public KeyPortData GetKeyPortFromName(string keyName)
+    {
+        KeyPortData retval = keyInputConfig.keys.FirstOrDefault(c => c.name == keyName);
+
+        if (retval == null)
+            throw new System.NullReferenceException("Key: " + keyName + " doesnt exist in config");
+        
+        return retval;
+    }
+
+    public WitInputData GetWitInputData()
+    {
+        return keyInputConfig.wit;
     }
 }
