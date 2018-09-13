@@ -590,7 +590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1869efd419a8d4d85934888060a69f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  configFileName: keyInputConfig.jsoon
+  configFileName: keyInputConfig.json
   switchDatas:
   - key: Key
     portInput: {fileID: 114224465455840892}
