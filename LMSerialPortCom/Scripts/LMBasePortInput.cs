@@ -70,6 +70,7 @@ public abstract class LMBasePortInput : MonoBehaviour, IPortReceiver
     }
 
     public virtual float GetValue(string key, float min, float max, float remapMin, float remapMax) {return -1f;}
+    public virtual float GetValue(string key) {return -1f;}
 
     public virtual void Recalibration(){}
     

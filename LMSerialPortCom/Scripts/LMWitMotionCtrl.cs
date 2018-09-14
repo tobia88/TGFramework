@@ -44,6 +44,26 @@ public class LMWitMotionCtrl : LMBasePortInput
         throw new System.ArgumentException("Key is only accept x, y or z");
     }
 
+    public override float GetValue(string key)
+    {
+        Vector3 retval = m_outputEuler;
+        
+        if (m_inputData != null)
+            retval = m_inputData.GetValue(retval);
+
+        if (key == "x")
+            return retval.x;
+
+        else if (key == "y")
+            return retval.y;
+            
+        else if (key == "z")
+            return retval.z;
+
+        throw new System.ArgumentException("Key is only accept x, y or z");
+
+    }
+
     public override void SetDefaultValue(string key, object val)
     {
         float v = (float)val;
