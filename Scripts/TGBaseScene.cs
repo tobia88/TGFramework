@@ -13,6 +13,21 @@ public enum GameStates
     End
 }
 
+[System.Serializable]
+public struct ScreenshotCropInfo
+{
+    public int xPos, yPos;
+    public int width, height;
+
+    public ScreenshotCropInfo(int xPos, int yPos, int width, int height)
+    {
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.width = width;
+        this.height = height;
+    }
+}
+
 public class TGBaseScene : MonoBehaviour
 {
     protected float m_startTime;
@@ -20,6 +35,7 @@ public class TGBaseScene : MonoBehaviour
     public Dictionary<string, string> additionDataToSave = new Dictionary<string, string>();
 
     public TGController controller { get; private set; }
+    public ScreenshotCropInfo screenshotCropInfo = new ScreenshotCropInfo(0, 0, 1920, 1080);
 
     public System.Action<string> onCaptureScreen;
 
@@ -102,7 +118,15 @@ public class TGBaseScene : MonoBehaviour
         int width = 700;
         int height = Mathf.RoundToInt((float)width / ratio);
 
-        var tex = ScreenCapture.CaptureScreenshotAsTexture();
+        var raw = ScreenCapture.CaptureScreenshotAsTexture();
+        Color[] c = raw.GetPixels(screenshotCropInfo.xPos,
+                                  screenshotCropInfo.yPos,
+                                  screenshotCropInfo.width,
+                                  screenshotCropInfo.height);
+        var tex = new Texture2D(screenshotCropInfo.width, screenshotCropInfo.height);
+        tex.SetPixels(c);
+        tex.Apply(false);
+
         tex = TextureScaler.ResizeTexture(tex, TextureScaler.ImageFilterMode.Bilinear, width, height);
 
         byte[] bytes = tex.EncodeToPNG();
