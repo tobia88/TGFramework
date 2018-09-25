@@ -113,7 +113,7 @@ public class TGGameScene : TGBaseScene
         GameState = GameStates.Start;
     }
 
-    public virtual void GetOrLossScore(int _score, Vector3 _position, bool _isScreenPos)
+    public virtual void GetOrLossScore(int _score, Vector3 _position, bool _isScreenPos = true)
     {
         Score += _score;
 
