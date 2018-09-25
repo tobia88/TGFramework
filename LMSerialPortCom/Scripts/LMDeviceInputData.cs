@@ -4,11 +4,11 @@ using System.Linq;
 [System.Serializable]
 public class WitInputData
 {
-    public string value;
+    public string order;
 
     public Vector3 GetValue(Vector3 output)
     {
-        switch(value)
+        switch(order)
         {
             case "yzx": return new Vector3(output.y, output.z, output.x);
             case "yxz": return new Vector3(output.y, output.x, output.z);

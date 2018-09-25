@@ -113,11 +113,11 @@ public class TGGameScene : TGBaseScene
         GameState = GameStates.Start;
     }
 
-    public virtual void GetOrLossScore(int _score, Vector3 _position)
+    public virtual void GetOrLossScore(int _score, Vector3 _position, bool _isScreenPos)
     {
         Score += _score;
 
-        var scnPos = Camera.main.WorldToScreenPoint(_position);
+        var scnPos = (_isScreenPos) ? _position : Camera.main.WorldToScreenPoint(_position);
         uiRoot.CreateScorePrefab(_score, scnPos);
     }
 

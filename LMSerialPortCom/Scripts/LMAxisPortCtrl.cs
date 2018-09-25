@@ -40,11 +40,6 @@ public class LMAxisPortCtrl : LMBasePortInput
     private string[] m_split;
     private float m_defaultValue;
 
-    public override void SetDefaultValue(string key, object val)
-    {
-        m_defaultValue = (float)val;
-    } 
-
     protected override void ReceiveActivePortData(SerialPort _port)
     {
         m_getString = _port.ReadLine();
@@ -73,7 +68,7 @@ public class LMAxisPortCtrl : LMBasePortInput
         }
     }
 
-    public virtual float GetValue(string key, float min, float max, float remapMin, float remapMax) 
+    public override float GetValue(string key, float min, float max, float remapMin, float remapMax) 
     {
         foreach (var av in axisValues)
         {

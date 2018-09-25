@@ -5,6 +5,7 @@ using System.IO.Ports;
 
 public class LMWitMotionCtrl : LMBasePortInput
 {
+    private Vector3[] m_values;
     [SerializeField]
     private Vector3 m_lastEuler, m_outputEuler, m_defaultEuler;
     [SerializeField]
@@ -66,7 +67,7 @@ public class LMWitMotionCtrl : LMBasePortInput
 
     public override void SetDefaultValue(string key, object val)
     {
-        float v = (float)val;
+        float v = ((float[])val)[2];
         switch(key)
         {
             case "x": m_defaultEuler.x = v; break;

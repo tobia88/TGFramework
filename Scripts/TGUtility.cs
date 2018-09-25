@@ -34,6 +34,11 @@ public static class TGUtility
 
     public static float FloatRemap(float value, float remapMin, float remapMax, float min, float max)
     {
+        ConsoleProDebug.Watch("value", value.ToString());
+        ConsoleProDebug.Watch("remap min", remapMin.ToString());
+        ConsoleProDebug.Watch("remap max", remapMax.ToString());
+        ConsoleProDebug.Watch("min", min.ToString());
+        ConsoleProDebug.Watch("max", max.ToString());
         float ratio = (value - min) / Mathf.Abs(max - min);
         return remapMin + ratio * (remapMax - remapMin);
     }
