@@ -47,7 +47,10 @@ public class KeyPortValue
     public float GetValue(KeyPortData data)
     {
         float newVal= data.ResolveEquation(equation);
-        
+
+        if (float.IsNaN(newVal))
+            newVal = 0f;
+
         if (!m_isInit)
         {
             m_rawLastValue = m_rawValue = newVal;
@@ -142,18 +145,19 @@ public class KeyPortData
                 resolved = resolved.Replace(i.key, v);
             }
         }
-
         return (float)solver.EvaluateExpression(resolved);
     }
 
 
     public float GetValue(string key)
     {
+        KeyPortValue tmpVal = GetValueByKey(key);
+        float retval = tmpVal.GetValue(this);
+
         if (!Threshold)
             return 0f;
-        
-        KeyPortValue tmpVal = GetValueByKey(key);
-        return tmpVal.GetValue(this);
+
+        return retval;
     }
 
     public void SetDefaultValue(string key, float minRange, float maxRange, float defaultVal)
