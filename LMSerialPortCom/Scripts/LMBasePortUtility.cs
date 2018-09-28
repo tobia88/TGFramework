@@ -28,7 +28,7 @@ public class LMBasePortUtility : LMBasePortInput
     public override void SetDefaultValue(string key, object val)
     {
         float[] arr = (float[]) val;
-        currentPortData.SetDefaultValue(key, arr[0], arr[1]);
+        currentPortData.SetDefaultValue(key, arr[0], arr[1], arr[2]);
     }
 
     private KeyPortData GetPortDataFromKey(string deviceName)

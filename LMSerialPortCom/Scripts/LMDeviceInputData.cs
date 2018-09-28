@@ -27,7 +27,6 @@ public class KeyPortValue
     public string equation;
     
     public float value;
-    public float origin;
     public bool isDegree;
     [SerializeField]
     private float m_default;
@@ -35,9 +34,9 @@ public class KeyPortValue
     private float m_rawValue;
     private bool m_isInit;
     
-    public void SetDefaultValue(float minRange, float maxRange)
+    public void SetDefaultValue(float minRange, float maxRange, float defaultVal)
     {
-        m_default = minRange + (maxRange - minRange) * origin;
+        m_default = defaultVal;
     }
 
     public void Recalibration()
@@ -45,16 +44,10 @@ public class KeyPortValue
         value = m_default;
     }
 
-    public float GetValue(KeyPortInput[] input)
+    public float GetValue(KeyPortData data)
     {
-        string resolved = ResolveEquation(input);
-
-        AK.ExpressionSolver solver = new AK.ExpressionSolver();
-
-        float newVal= (float)solver.EvaluateExpression(resolved);
+        float newVal= data.ResolveEquation(equation);
         
-        ConsoleProDebug.Watch("Val", newVal.ToString());
-
         if (!m_isInit)
         {
             m_rawLastValue = m_rawValue = newVal;
@@ -79,25 +72,6 @@ public class KeyPortValue
         return value;
     }
 
-    private string ResolveEquation(KeyPortInput[] input)
-    {
-        string retval = equation;
-
-        foreach (var i in input)
-        {
-            if (retval.IndexOf(i.key) >= 0)
-            {
-                string v = i.GetValue();
-
-                if (string.IsNullOrEmpty(v))
-                    v = "0000";
-
-                retval = retval.Replace(i.key, v);
-            }
-        }
-
-        return retval;
-    }
 }
 
 [System.Serializable]
@@ -124,21 +98,77 @@ public class KeyPortData
     public string name;
     public KeyPortValue[] value;
     public KeyPortInput[] input;
+    public string thresholdEquation;
+
+    public bool m_threshold;
+    private AK.ExpressionSolver m_solver;
+
+    public AK.ExpressionSolver solver
+    {
+        get {
+            if (m_solver == null)
+            {
+                m_solver = new AK.ExpressionSolver();
+            }
+            return m_solver;
+        }
+    }
+    
+    public bool Threshold
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(thresholdEquation))
+                return true;
+
+            m_threshold = ResolveEquation(thresholdEquation) > 0;
+            return m_threshold;
+        }
+    }
+
+    public float ResolveEquation(string equation)
+    {
+        string resolved = equation;
+
+        foreach (var i in input)
+        {
+            if (resolved.IndexOf(i.key) >= 0)
+            {
+                string v = i.GetValue();
+
+                if (string.IsNullOrEmpty(v))
+                    v = "0000";
+
+                resolved = resolved.Replace(i.key, v);
+            }
+        }
+
+        return (float)solver.EvaluateExpression(resolved);
+    }
+
 
     public float GetValue(string key)
     {
+        if (!Threshold)
+            return 0f;
+        
         KeyPortValue tmpVal = GetValueByKey(key);
-        return tmpVal.GetValue(input);
+        return tmpVal.GetValue(this);
     }
 
-    public void SetDefaultValue(string key, float minRange, float maxRange)
+    public void SetDefaultValue(string key, float minRange, float maxRange, float defaultVal)
     {
         KeyPortValue tmpVal = GetValueByKey(key);
-        tmpVal.SetDefaultValue(minRange, maxRange);
+        tmpVal.SetDefaultValue(minRange, maxRange, defaultVal);
     }
 
     public KeyPortValue GetValueByKey(string key)
     {
-        return value.FirstOrDefault(v => v.key == key);
+        KeyPortValue retval = value.FirstOrDefault(v => v.key == key);
+
+        if (retval != default(KeyPortValue))
+            return retval;
+
+        throw new System.ArgumentNullException("Invalid Key: " + key);
     }
 }
