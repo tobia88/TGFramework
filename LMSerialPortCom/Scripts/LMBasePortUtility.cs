@@ -111,4 +111,9 @@ public class LMBasePortUtility : LMBasePortInput
         float v = currentPortData.GetValue(_id);
         return TGUtility.FloatRemap(v, remapMin, remapMax, min, max);
     }
+
+    public override float GetValue(string _id)
+    {
+        return currentPortData.GetValue(_id);
+    }
 }
