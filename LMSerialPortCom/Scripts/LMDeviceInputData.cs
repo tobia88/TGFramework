@@ -83,21 +83,16 @@ public class KeyPortInput
     public string key;
     public int length;
     public float bias;
-    public string value;
+    public float value;
 
     public void SetValue(string newVal)
     {
-        value = newVal;
+        value = float.Parse(newVal);
     }
 
-    public string GetValue()
+    public float GetValue()
     {
         return bias + value;
-    }
-
-    public float GetFloatValue()
-    {
-        return float.Parse(GetValue());
     }
 }
 
@@ -125,7 +120,7 @@ public class KeyPortData
 
     public float GetInputTotal
     {
-        get { return input.Sum(i => i.GetFloatValue());}
+        get { return input.Sum(i => i.GetValue());}
     }
     
     public bool Threshold
@@ -148,10 +143,10 @@ public class KeyPortData
         {
             if (resolved.IndexOf(i.key) >= 0)
             {
-                string v = i.GetValue();
+                string v = i.GetValue().ToString();
 
                 if (string.IsNullOrEmpty(v))
-                    v = "0000";
+                    v = "0";
 
                 resolved = resolved.Replace(i.key, v);
             }
