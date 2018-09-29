@@ -82,6 +82,7 @@ public class KeyPortInput
 {
     public string key;
     public int length;
+    public float bias;
     public string value;
 
     public void SetValue(string newVal)
@@ -91,7 +92,7 @@ public class KeyPortInput
 
     public string GetValue()
     {
-        return value;
+        return bias + value;
     }
 }
 
@@ -146,6 +147,27 @@ public class KeyPortData
             }
         }
         return (float)solver.EvaluateExpression(resolved);
+    }
+
+    public void SetBiases(string bias)
+    {
+        Debug.Log(bias);
+        string[] split = bias.Split(';');
+
+        for (int i = 0; i < split.Length; i++)
+        {
+            string[] resolved = split[i].Split(':');
+
+            for (int j = 0; j < input.Length; j++)
+            {
+                if (input[j].key == resolved[0])
+                {
+                    input[j].bias += float.Parse(resolved[1]);
+                    continue;
+                }
+            }
+        }
+
     }
 
 
