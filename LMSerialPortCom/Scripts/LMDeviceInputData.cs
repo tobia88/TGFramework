@@ -94,6 +94,11 @@ public class KeyPortInput
     {
         return bias + value;
     }
+
+    public float GetFloatValue()
+    {
+        return float.Parse(GetValue());
+    }
 }
 
 [System.Serializable]
@@ -116,6 +121,11 @@ public class KeyPortData
             }
             return m_solver;
         }
+    }
+
+    public float GetInputTotal
+    {
+        get { return input.Sum(i => i.GetFloatValue());}
     }
     
     public bool Threshold
@@ -151,7 +161,6 @@ public class KeyPortData
 
     public void SetBiases(string bias)
     {
-        Debug.Log(bias);
         string[] split = bias.Split(';');
 
         for (int i = 0; i < split.Length; i++)
@@ -167,7 +176,6 @@ public class KeyPortData
                 }
             }
         }
-
     }
 
 

@@ -115,6 +115,7 @@ public class LMBasePortUtility : LMBasePortInput
 
     public override float GetValue(string _id)
     {
-        return currentPortData.GetValue(_id);
+        Debug.Log("Value: " + currentPortData.GetValue(_id) + ", input total: " + currentPortData.GetInputTotal);
+        return currentPortData.GetValue(_id) / currentPortData.GetInputTotal;
     }
 }
