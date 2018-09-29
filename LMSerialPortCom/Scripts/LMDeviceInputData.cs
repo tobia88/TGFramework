@@ -93,6 +93,7 @@ public class KeyPortInput
 
     public float GetValue()
     {
+        ConsoleProDebug.Watch(key, (bias+value).ToString());
         return bias + value;
     }
 }

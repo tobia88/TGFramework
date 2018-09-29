@@ -21,7 +21,10 @@ public class LMBasePortUtility : LMBasePortInput
             currentPortData = TGController.Instance.inputSetting.GetKeyPortFromName(keyName);
 
             if (currentPortData != null)
+            {
                 currentPortData.SetBiases(TGController.Instance.gameConfig.GetValue("校准", string.Empty));
+
+            }
 
             return currentPortData != null;
         }
@@ -31,8 +34,17 @@ public class LMBasePortUtility : LMBasePortInput
 
     public override void SetDefaultValue(string key, object val)
     {
-        float[] arr = (float[]) val;
-        currentPortData.SetDefaultValue(key, arr[0], arr[1], arr[2]);
+        try
+        {
+            float[] arr = (float[]) val;
+
+            if (currentPortData != null)
+                currentPortData.SetDefaultValue(key, arr[0], arr[1], arr[2]);
+        }
+        catch(Exception e)
+        {
+            Debug.LogError(e.ToString());
+        }
     }
 
     private KeyPortData GetPortDataFromKey(string deviceName)
@@ -124,5 +136,6 @@ public class LMBasePortUtility : LMBasePortInput
             return 0f;
 
         return currentPortData.GetValue(_id)/currentPortData.GetInputTotal;
+        // return currentPortData.GetValue(_id);
     }
 }
