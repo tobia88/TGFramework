@@ -37,12 +37,12 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "((AI+AJ)-(AG+AH))/(AI+AJ+AG+AH)",
+                    "equation": "(AI+AJ)-(AG+AH)",
                     "isDegree": false
                 },
                 {
                     "key": "y",
-                    "equation": "((AG+AI)-(AH+AJ))/(AI+AJ+AG+AH)",
+                    "equation": "(AG+AI)-(AH+AJ)",
                     "isDegree": false
                 }
             ],
