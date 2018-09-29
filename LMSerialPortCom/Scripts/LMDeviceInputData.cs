@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
+using TG;
 
 [System.Serializable]
 public class WitInputData
@@ -105,14 +106,15 @@ public class KeyPortData
     public string thresholdEquation;
 
     public bool m_threshold;
-    private AK.ExpressionSolver m_solver;
 
-    public AK.ExpressionSolver solver
+    private TGExpressionParser m_solver;
+
+    public TGExpressionParser solver
     {
         get {
             if (m_solver == null)
             {
-                m_solver = new AK.ExpressionSolver();
+                m_solver = new TGExpressionParser();
             }
             return m_solver;
         }
@@ -151,7 +153,7 @@ public class KeyPortData
                 resolved = resolved.Replace(i.key, v);
             }
         }
-        return (float)solver.EvaluateExpression(resolved);
+        return (float)solver.EvaluateExpression(resolved).Value;
     }
 
     public void SetBiases(string bias)
