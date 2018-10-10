@@ -6,7 +6,6 @@
                 {
                     "key": "x",
                     "equation": "AC",
-                    "origin": 0,
                     "isDegree": false
                 }
             ],
@@ -23,7 +22,6 @@
                 {
                     "key": "x",
                     "equation": "-AF/10",
-                    "origin": 0.5,
                     "isDegree": true
                 }
             ],
@@ -51,9 +49,46 @@
 					"key": "BB",
 					"length": 4
 				}
-			]
+            ]
+        },
+        {
+            "name": "平衡器",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "(AI+AJ)-(AG+AH)",
+                    "isDegree": false
+                },
+                {
+                    "key": "y",
+                    "equation": "(AG+AI)-(AH+AJ)",
+                    "isDegree": false
+                }
+            ],
+
+            "thresholdEquation": "(AI+AJ+AG+AH)-300",
+
+            "input": [
+                {
+                    "key": "AI",
+                    "length": 4
+                },
+                {
+                    "key": "AJ",
+                    "length": 4
+                },
+                {
+                    "key": "AG",
+                    "length": 4
+                },
+                {
+                    "key": "AH",
+                    "length": 4
+                }
+            ]
         }
     ],
+
     "wit": {
         "order": "yzx"
     }

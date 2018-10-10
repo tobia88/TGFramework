@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
+using TG;
 
 [System.Serializable]
 public class WitInputData
@@ -27,10 +28,10 @@ public class KeyPortValue
     public string equation;
     
     public float value;
-    public float origin;
     public bool isDegree;
     public string min;
     public string max;
+    public float origin;
     [SerializeField]
     private float m_default;
     private float m_rawLastValue;
@@ -54,15 +55,12 @@ public class KeyPortValue
         value = m_default;
     }
 
-    public float GetValue(KeyPortInput[] input)
+    public float GetValue(KeyPortData data)
     {
-        string resolved = ResolveEquation(input);
+        float newVal= data.ResolveEquation(equation);
 
-        AK.ExpressionSolver solver = new AK.ExpressionSolver();
-
-        float newVal= (float)solver.EvaluateExpression(resolved);
-        
-        ConsoleProDebug.Watch("Val", newVal.ToString());
+        if (float.IsNaN(newVal))
+            newVal = 0f;
 
         if (!m_isInit)
         {
@@ -92,25 +90,6 @@ public class KeyPortValue
         return value;
     }
 
-    private string ResolveEquation(KeyPortInput[] input)
-    {
-        string retval = equation;
-
-        foreach (var i in input)
-        {
-            if (retval.IndexOf(i.key) >= 0)
-            {
-                string v = i.GetValue();
-
-                if (string.IsNullOrEmpty(v))
-                    v = "0000";
-
-                retval = retval.Replace(i.key, v);
-            }
-        }
-
-        return retval;
-    }
 }
 
 [System.Serializable]
@@ -118,16 +97,18 @@ public class KeyPortInput
 {
     public string key;
     public int length;
-    public string value;
+    public float bias;
+    public float value;
 
     public void SetValue(string newVal)
     {
-        value = newVal;
+        value = float.Parse(newVal);
     }
 
-    public string GetValue()
+    public float GetValue()
     {
-        return value;
+        ConsoleProDebug.Watch(key, (bias+value).ToString());
+        return bias + value;
     }
 }
 
@@ -137,11 +118,88 @@ public class KeyPortData
     public string name;
     public KeyPortValue[] value;
     public KeyPortInput[] input;
+    public string thresholdEquation;
+
+    public bool m_threshold;
+
+    private TGExpressionParser m_solver;
+
+    public TGExpressionParser solver
+    {
+        get {
+            if (m_solver == null)
+            {
+                m_solver = new TGExpressionParser();
+            }
+            return m_solver;
+        }
+    }
+
+    public float GetInputTotal
+    {
+        get { return input.Sum(i => i.GetValue());}
+    }
+    
+    public bool Threshold
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(thresholdEquation))
+                return true;
+
+            m_threshold = ResolveEquation(thresholdEquation) > 0;
+            return m_threshold;
+        }
+    }
+
+    public float ResolveEquation(string equation)
+    {
+        string resolved = equation;
+
+        foreach (var i in input)
+        {
+            if (resolved.IndexOf(i.key) >= 0)
+            {
+                string v = i.GetValue().ToString();
+
+                if (string.IsNullOrEmpty(v))
+                    v = "0";
+
+                resolved = resolved.Replace(i.key, v);
+            }
+        }
+        return (float)solver.EvaluateExpression(resolved).Value;
+    }
+
+    public void SetBiases(string bias)
+    {
+        string[] split = bias.Split(';');
+
+        for (int i = 0; i < split.Length; i++)
+        {
+            string[] resolved = split[i].Split(':');
+
+            for (int j = 0; j < input.Length; j++)
+            {
+                if (input[j].key == resolved[0])
+                {
+                    input[j].bias += float.Parse(resolved[1]);
+                    continue;
+                }
+            }
+        }
+    }
+
 
     public float GetValue(string key)
     {
         KeyPortValue tmpVal = GetValueByKey(key);
-        return tmpVal.GetValue(input);
+        float retval = tmpVal.GetValue(this);
+
+        if (!Threshold)
+            return 0f;
+
+        return retval;
     }
 
     public void Init()
@@ -154,6 +212,11 @@ public class KeyPortData
 
     public KeyPortValue GetValueByKey(string key)
     {
-        return value.FirstOrDefault(v => v.key == key);
+        KeyPortValue retval = value.FirstOrDefault(v => v.key == key);
+
+        if (retval != default(KeyPortValue))
+            return retval;
+
+        throw new System.ArgumentNullException("Invalid Key: " + key);
     }
 }

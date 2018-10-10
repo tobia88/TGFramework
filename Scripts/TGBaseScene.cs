@@ -62,6 +62,8 @@ public class TGBaseScene : MonoBehaviour
         m_startTime = Time.time;
 
         TimePassed = 0;
+
+        Recalibration();
     }
 
     public virtual void OnUpdate()
