@@ -19,17 +19,18 @@ public class LMBasePortUtility : LMBasePortInput
             string keyName = TGController.Instance.gameConfig.GetValue("训练器材", string.Empty);
             Debug.Assert(!string.IsNullOrEmpty(keyName), "Key name doesn't exist " + keyName);
             currentPortData = TGController.Instance.inputSetting.GetKeyPortFromName(keyName);
+            currentPortData.Init();
             return keyPortData != null;
         }
 
         return false;
     }
 
-    public override void SetDefaultValue(string key, object val)
-    {
-        float[] arr = (float[]) val;
-        currentPortData.SetDefaultValue(key, arr[0], arr[1]);
-    }
+    // public override void SetDefaultValue(string key, object val)
+    // {
+    //     float[] arr = (float[]) val;
+    //     currentPortData.SetDefaultValue(key, arr[0], arr[1]);
+    // }
 
     private KeyPortData GetPortDataFromKey(string deviceName)
     {
@@ -104,6 +105,11 @@ public class LMBasePortUtility : LMBasePortInput
     {
         foreach (var v in currentPortData.value)
             v.Recalibration();
+    }
+
+    public override float GetValue(string key)
+    {
+        return currentPortData.GetValue(key);
     }
 
     public override float GetValue(string _id, float min, float max, float remapMin, float remapMax)

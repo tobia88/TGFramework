@@ -11,6 +11,26 @@ public static class TGUtility
 		return _dateTime.ToString("yyyy/M/d HH:mm:ss");
 	}
 
+    public static float GetValueFromINI(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            return 0f;
+        }
+        else
+        {
+            float retval = 0f;
+            if (float.TryParse(key, out retval))
+            {
+                return retval;
+            }
+            else
+            {
+                return TGController.Instance.gameConfig.GetValue(key, 0);
+            }
+        }
+    }
+
     public static float PreventValueSkipping(float cx, float lv, float nv)
     {
         float d = nv - lv;
@@ -34,11 +54,6 @@ public static class TGUtility
 
     public static float FloatRemap(float value, float remapMin, float remapMax, float min, float max)
     {
-        ConsoleProDebug.Watch("value", value.ToString());
-        ConsoleProDebug.Watch("remap min", remapMin.ToString());
-        ConsoleProDebug.Watch("remap max", remapMax.ToString());
-        ConsoleProDebug.Watch("min", min.ToString());
-        ConsoleProDebug.Watch("max", max.ToString());
         float ratio = (value - min) / Mathf.Abs(max - min);
         return remapMin + ratio * (remapMax - remapMin);
     }

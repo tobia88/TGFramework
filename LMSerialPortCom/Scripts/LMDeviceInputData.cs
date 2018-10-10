@@ -29,17 +29,26 @@ public class KeyPortValue
     public float value;
     public float origin;
     public bool isDegree;
+    public string min;
+    public string max;
     [SerializeField]
     private float m_default;
     private float m_rawLastValue;
     private float m_rawValue;
     private bool m_isInit;
-    
-    public void SetDefaultValue(float minRange, float maxRange)
-    {
-        m_default = minRange + (maxRange - minRange) * origin;
-    }
+    [SerializeField]
+    private float m_min;
+    [SerializeField]
+    private float m_max;
 
+    public void Init()
+    {
+        m_min = TGUtility.GetValueFromINI(min);
+        m_max = TGUtility.GetValueFromINI(max);
+
+        m_default = m_min + (m_max - m_min) * origin;
+    }
+    
     public void Recalibration()
     {
         value = m_default;
@@ -75,6 +84,10 @@ public class KeyPortValue
             value += (m_rawValue - m_rawLastValue);
         }
 
+        if (m_min != m_max)
+        {
+            return (value - m_min) / (m_max - m_min);
+        }
 
         return value;
     }
@@ -131,10 +144,12 @@ public class KeyPortData
         return tmpVal.GetValue(input);
     }
 
-    public void SetDefaultValue(string key, float minRange, float maxRange)
+    public void Init()
     {
-        KeyPortValue tmpVal = GetValueByKey(key);
-        tmpVal.SetDefaultValue(minRange, maxRange);
+        foreach(KeyPortValue v in value)
+        {
+            v.Init();
+        }
     }
 
     public KeyPortValue GetValueByKey(string key)
