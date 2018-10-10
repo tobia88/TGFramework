@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af39c41165838384c97203803abe3eb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameNameCn: "\u6D77\u4E0A\u593A\u5B9D"
+  gameNameCn: "\u6CE1\u6CE1\u874C\u86AA"
   gameConfig: {fileID: 114141293912262460}
   inputSetting: {fileID: 114975440256637252}
   mainGame: {fileID: 114730753214534034}
@@ -389,7 +389,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aed9a355d99967e4391c01b6660c4896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugPath: port.txt
   portInfo:
     comName: COM4
     baudRate: 115200
@@ -427,37 +426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fileName: game.txt
   finishLoaded: 0
-  configInfo:
-  - key: "\u7AEF\u53E3"
-    sectionName: PZConf
-  - key: "\u8BAD\u7EC3\u90E8\u4F4D"
-    sectionName: PZConf
-  - key: "\u8BBE\u5907\u7C7B\u578B"
-    sectionName: PZConf
-  - key: "\u8BBE\u5907\u540D\u79F0"
-    sectionName: PZConf
-  - key: "\u4F53\u4FA7"
-    sectionName: PZConf
-  - key: "\u8BAD\u7EC3\u5668\u6750"
-    sectionName: PZConf
-  - key: "\u963B\u5C3C\u8BBE\u7F6E"
-    sectionName: PZConf
-  - key: "\u96BE\u5EA6\u7B49\u7EA7"
-    sectionName: PZConf
-  - key: "\u8BAD\u7EC3\u65F6\u957F"
-    sectionName: PZConf
-  - key: "\u7B49\u5F85\u65F6\u957F"
-    sectionName: PZConf
-  - key: "\u95F4\u9694\u65F6\u957F"
-    sectionName: PZConf
-  - key: "\u59D3\u540D"
-    sectionName: PZConf
-  - key: "\u6027\u522B"
-    sectionName: PZConf
-  - key: "\u65CB\u524D\u6700\u5927\u8DDD\u79BB"
-    sectionName: PZConf
-  - key: "\u65CB\u540E\u6700\u5927\u8DDD\u79BB"
-    sectionName: PZConf
+  sectionName: PZConf
 --- !u!114 &114184845917947452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -480,7 +449,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8ed4c11dd7ec46498cd23e9edd5a3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugPath: port.txt
   portInfo:
     comName: COM4
     baudRate: 115200
@@ -488,7 +456,6 @@ MonoBehaviour:
     dataBits: 8
     stopBits: 1
   isPortActive: 0
-  keyPortData: []
 --- !u!114 &114295297888918672
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -512,7 +479,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e877b9009e0db64468a79bc11e73ba79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugPath: port.txt
   portInfo:
     comName: COM4
     baudRate: 115200
@@ -524,7 +490,7 @@ MonoBehaviour:
   m_outputEuler: {x: 0, y: 0, z: 0}
   m_defaultEuler: {x: 0, y: 0, z: 0}
   m_inputData:
-    value: 
+    order: 
   values: 0000000000000000000000000000000000000000000000000000000000000000
   euler: {x: 0, y: 0, z: 0}
   isInit: 0
@@ -553,7 +519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 125d9c79133648043bb6d15c5303a690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: 1_MainScene
+  sceneName: 1_MainGame
   isSceneFinished: 0
 --- !u!114 &114753798490562544
 MonoBehaviour:
@@ -601,5 +567,5 @@ MonoBehaviour:
   keyInputConfig:
     keys: []
     wit:
-      value: 
+      order: 
   forceUsePort: 0

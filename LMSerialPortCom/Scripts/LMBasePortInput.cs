@@ -12,7 +12,6 @@ public abstract class LMBasePortInput : MonoBehaviour, IPortReceiver
     protected LMFileWriter m_fileWriter;
     protected byte[] m_bytes;
     protected string m_getString;
-    public string debugPath = "port.txt";
     public TGController controller {get; private set;}
 
     public string ErrorTxt

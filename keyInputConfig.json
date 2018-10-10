@@ -52,6 +52,196 @@
             ]
         },
         {
+            "name": "前臂旋前旋后",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": "旋前最大距离",
+                    "max": "旋后最大距离"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
+            "name": "手腕屈伸",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": "腕屈最大距离",
+                    "max": "腕伸最大距离"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
+            "name": "拇指活动度",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": 0,
+                    "max": "活动范围最大值"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
+            "name": "柱状抓握",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": 0,
+                    "max": "活动范围最大值"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
+            "name": "提拉",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": 0,
+                    "max": "活动范围最大值"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
+            "name": "平拉",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": 0,
+                    "max": "活动范围最大值"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
+            "name": "手指伸展",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": 0,
+                    "max": "活动范围最大值"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
+            "name": "球状抓握",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": 0,
+                    "max": "活动范围最大值"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
+            "name": "侧捏协调",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": 0,
+                    "max": "活动范围最大值"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
+            "name": "全指抓捏",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "BB/10",
+                    "origin": 0,
+                    "isDegree": false,
+                    "min": 0,
+                    "max": "活动范围最大值"
+                }
+            ],
+			"input": [
+				{
+					"key": "BB",
+					"length": 4
+				}
+            ]
+        },
+        {
             "name": "平衡器",
             "value": [
                 {

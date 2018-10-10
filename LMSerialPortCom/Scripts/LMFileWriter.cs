@@ -8,8 +8,6 @@ using System;
 public class LMFileWriter : MonoBehaviour
 {
 
-    public string productName;
-
     public string RootPath
     {
         get; private set;

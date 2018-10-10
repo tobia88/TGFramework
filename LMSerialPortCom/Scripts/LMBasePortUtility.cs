@@ -9,7 +9,6 @@ using System.IO;
 
 public class LMBasePortUtility : LMBasePortInput
 {
-    public KeyPortData[] keyPortData;
     public KeyPortData currentPortData { get; private set; }
 
     public override bool OnStart()
@@ -19,24 +18,14 @@ public class LMBasePortUtility : LMBasePortInput
             string keyName = TGController.Instance.gameConfig.GetValue("训练器材", string.Empty);
             Debug.Assert(!string.IsNullOrEmpty(keyName), "Key name doesn't exist " + keyName);
             currentPortData = TGController.Instance.inputSetting.GetKeyPortFromName(keyName);
-            currentPortData.Init();
-            return keyPortData != null;
+
+            if (currentPortData != null)
+                currentPortData.Init();
+
+            return currentPortData != null;
         }
 
         return false;
-    }
-
-    // public override void SetDefaultValue(string key, object val)
-    // {
-    //     float[] arr = (float[]) val;
-    //     currentPortData.SetDefaultValue(key, arr[0], arr[1]);
-    // }
-
-    private KeyPortData GetPortDataFromKey(string deviceName)
-    {
-        KeyPortData retval = keyPortData.FirstOrDefault(pd => pd.name == deviceName);
-
-        return retval;
     }
 
     protected override void ReceiveBytes(byte[] _bytes)
@@ -45,9 +34,6 @@ public class LMBasePortUtility : LMBasePortInput
             return;
 
         m_bytes = LMUtility.RemoveSpacing(m_bytes);
-
-        // Print Debug Log
-        m_fileWriter.Write(debugPath, m_bytes);
 
         FilterIds();
     }
