@@ -60,6 +60,7 @@ public class TGController : MonoBehaviour
         // Write down error
         Debug.LogWarning(_error);
         StopAllCoroutines();
+        dxCentre.DebugText(_error);
         // Quit();
         
         EnableDiagnosis();

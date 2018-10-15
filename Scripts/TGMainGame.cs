@@ -13,12 +13,6 @@ public class TGMainGame : TGBaseBehaviour
     {
         var scene = SceneManager.GetSceneByName(sceneName);
 
-        if (scene.buildIndex < 0)
-        {
-            _controller.ErrorQuit("Find no scene: " + sceneName);
-            yield break;
-        }
-
         _controller.systemCam.gameObject.SetActive(false);
 
         if (!SceneManager.GetSceneByName(sceneName).isLoaded)
