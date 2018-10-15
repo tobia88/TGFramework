@@ -17,7 +17,7 @@ public class TGController : MonoBehaviour
     public TGInputSetting inputSetting;
     public TGMainGame mainGame;
     public TGResultMng resultMng;
-    public TGDiagnosisMng diagnosisMng;
+    public TGDXCentre dxCentre;
 
     public LMFileWriter fileWriter;
     public string RootPath
@@ -39,7 +39,7 @@ public class TGController : MonoBehaviour
         RootPath = Application.dataPath.Replace(Application.productName + "_Data", string.Empty);
 #endif
         fileWriter.Init(RootPath);
-        diagnosisMng.OnInit(this);
+        dxCentre.OnInit(this);
     }
 
     private void Start()
@@ -67,19 +67,19 @@ public class TGController : MonoBehaviour
 
     public void EnableDiagnosis()
     {
-        diagnosisMng.gameObject.SetActive(true);
-        diagnosisMng.SetActive(true);
+        dxCentre.gameObject.SetActive(true);
+        dxCentre.SetActive(true);
     }
 
     private void Update()
     {
         if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.BackQuote))
         {
-            diagnosisMng.SetActive(!diagnosisMng.isActive);
+            dxCentre.SetActive(!dxCentre.isActive);
         }
 
-        if (diagnosisMng.isActive)
-            diagnosisMng.OnUpdate();
+        if (dxCentre.isActive)
+            dxCentre.OnUpdate();
     }
 
     IEnumerator ProcessRoutine()

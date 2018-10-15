@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class TGDiagnosisMng : MonoBehaviour
+public class TGDXCentre : MonoBehaviour
 {
 	public bool isActive;
-	public TGInputDataColumn inputDataColumnPrefab;
-	public TGInputDataColumn[] inputDataColumns;
+	public TGDXInputDataColumn inputDataColumnPrefab;
+	public TGDXInputDataColumn[] inputDataColumns;
 
 	private TGController m_controller;
 
@@ -45,12 +45,12 @@ public class TGDiagnosisMng : MonoBehaviour
 
 	private void SetupPortKeyTypesGraph(LMBasePortUtility _portUtility)
 	{
-		inputDataColumns = new TGInputDataColumn[1];
+		inputDataColumns = new TGDXInputDataColumn[1];
 		var currentPortData = _portUtility.currentPortData;
 
 		if (currentPortData != null)
 		{
-			var column = Instantiate<TGInputDataColumn>(inputDataColumnPrefab, transform);
+			var column = Instantiate<TGDXInputDataColumn>(inputDataColumnPrefab, transform);
 			column.Init(currentPortData);
 
 			inputDataColumns[0] = column;
@@ -83,7 +83,7 @@ public class TGDiagnosisMng : MonoBehaviour
 		if (!isActive || inputDataColumns == null)
 			return;
 		
-		foreach (TGInputDataColumn c in inputDataColumns)
+		foreach (TGDXInputDataColumn c in inputDataColumns)
 		{
 			c.OnUpdate();
 		}

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TGInputDataColumn : MonoBehaviour {
+public class TGDXInputDataColumn : MonoBehaviour {
 
-	public TGKeyTestBar testBarPrefab;
-	public TGKeyTestBar[] testBars;
+	public TGDXKeyTestBar testBarPrefab;
+	public TGDXKeyTestBar[] testBars;
 	public Transform keyValueContainer;
 	public Text titleTxt;
 	public Text inputTxt;
@@ -25,7 +25,7 @@ public class TGInputDataColumn : MonoBehaviour {
 	private void SetupTestBars()
 	{
 		int length = m_keyportData.value.Length;
-		testBars = new TGKeyTestBar[length];
+		testBars = new TGDXKeyTestBar[length];
 
 		for (int i = 0; i < length; i++)
 		{
@@ -37,9 +37,9 @@ public class TGInputDataColumn : MonoBehaviour {
 		}
 	}
 
-	private TGKeyTestBar CreateBar(KeyPortValue value)
+	private TGDXKeyTestBar CreateBar(KeyPortValue value)
 	{
-		var bar = Instantiate<TGKeyTestBar>(testBarPrefab, keyValueContainer);
+		var bar = Instantiate<TGDXKeyTestBar>(testBarPrefab, keyValueContainer);
 		return bar;
 	}
 

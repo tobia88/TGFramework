@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TGKeyTestBar : MonoBehaviour
+public class TGDXKeyTestBar : MonoBehaviour
 {
 	public Text nameTxt;
 	public Text minTxt;
