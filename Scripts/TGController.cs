@@ -31,6 +31,9 @@ public class TGController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        systemCam.gameObject.SetActive(false);
+
         AudioMng.Init();
 
 #if UNITY_EDITOR
@@ -54,12 +57,12 @@ public class TGController : MonoBehaviour
         StopAllCoroutines();
         Application.Quit();
     }
-
-    public void ErrorQuit(string _error)
+    public void ErrorQuit(string _error) 
     {
-        // Write down error
+            // Write down error
         Debug.LogWarning(_error);
         StopAllCoroutines();
+        systemCam.gameObject.SetActive(true);
         dxCentre.DebugText(_error);
         // Quit();
         

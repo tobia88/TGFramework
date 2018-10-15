@@ -13,8 +13,6 @@ public class TGMainGame : TGBaseBehaviour
     {
         var scene = SceneManager.GetSceneByName(sceneName);
 
-        _controller.systemCam.gameObject.SetActive(false);
-
         if (!SceneManager.GetSceneByName(sceneName).isLoaded)
             yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
