@@ -40,8 +40,8 @@
                     "equation": "BB/10",
                     "origin": 0,
                     "isDegree": false,
-                    "min": "尺偏最大距离",
-                    "max": "桡偏最大距离"
+                    "min": "0",
+                    "max": "min(尺偏最大距离,桡偏最大距离)"
                 }
             ],
 			"input": [
@@ -59,8 +59,8 @@
                     "equation": "BB/10",
                     "origin": 0,
                     "isDegree": false,
-                    "min": "旋前最大距离",
-                    "max": "旋后最大距离"
+                    "min": "0",
+                    "max": "min(旋前最大距离,旋后最大距离)"
                 }
             ],
 			"input": [
@@ -78,8 +78,8 @@
                     "equation": "BB/10",
                     "origin": 0,
                     "isDegree": false,
-                    "min": "腕屈最大距离",
-                    "max": "腕伸最大距离"
+                    "min": "",
+                    "max": "min(腕屈最大距离,腕伸最大距离)"
                 }
             ],
 			"input": [

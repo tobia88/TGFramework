@@ -32,22 +32,20 @@ public class KeyPortValue
     public string min;
     public string max;
     public float origin;
-    [SerializeField]
     private float m_default;
     private float m_rawLastValue;
     private float m_rawValue;
     private bool m_isInit;
-    [SerializeField]
-    private float m_min;
-    [SerializeField]
-    private float m_max;
+    public float Min {get; private set;}
+    public float Max {get; private set;}
 
     public void Init()
     {
-        m_min = TGUtility.GetValueFromINI(min);
-        m_max = TGUtility.GetValueFromINI(max);
+        Min = TGUtility.GetValueFromINI(min);
+        Max = TGUtility.GetValueFromINI(max);
 
-        m_default = m_min + (m_max - m_min) * origin;
+        m_default = Min + (Max - Min) * origin;
+        value = m_default;
     }
     
     public void Recalibration()
@@ -55,7 +53,7 @@ public class KeyPortValue
         value = m_default;
     }
 
-    public float GetValue(KeyPortData data)
+    public void Update(KeyPortData data)
     {
         float newVal= data.ResolveEquation(equation);
 
@@ -81,10 +79,13 @@ public class KeyPortValue
         {
             value += (m_rawValue - m_rawLastValue);
         }
+    }
 
-        if (m_min != m_max)
+    public float GetValue()
+    {
+        if (Min != Max)
         {
-            return (value - m_min) / (m_max - m_min);
+            return (value - Min) / (Max - Min);
         }
 
         return value;
@@ -107,8 +108,12 @@ public class KeyPortInput
 
     public float GetValue()
     {
-        ConsoleProDebug.Watch(key, (bias+value).ToString());
         return bias + value;
+    }
+
+    public override string ToString()
+    {
+        return key + ": " + value.ToString();
     }
 }
 
@@ -190,11 +195,18 @@ public class KeyPortData
         }
     }
 
+    public void Update()
+    {
+        foreach (var val in value)
+        {
+            val.Update(this);
+        }
+    }
 
     public float GetValue(string key)
     {
         KeyPortValue tmpVal = GetValueByKey(key);
-        float retval = tmpVal.GetValue(this);
+        float retval = tmpVal.GetValue();
 
         if (!Threshold)
             return 0f;

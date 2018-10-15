@@ -36,6 +36,9 @@ public class LMBasePortUtility : LMBasePortInput
         m_bytes = LMUtility.RemoveSpacing(m_bytes);
 
         FilterIds();
+
+        if (currentPortData != null)
+            currentPortData.Update();
     }
 
 

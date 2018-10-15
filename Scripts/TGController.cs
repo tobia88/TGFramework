@@ -10,12 +10,14 @@ public class TGController : MonoBehaviour
     public static TGController Instance;
     public DateTime startTime;
     public DateTime endTime;
+    public Camera systemCam;
 
     public string gameNameCn;
     public TGGameConfig gameConfig;
     public TGInputSetting inputSetting;
     public TGMainGame mainGame;
     public TGResultMng resultMng;
+    public TGDiagnosisMng diagnosisMng;
 
     public LMFileWriter fileWriter;
     public string RootPath
@@ -37,6 +39,7 @@ public class TGController : MonoBehaviour
         RootPath = Application.dataPath.Replace(Application.productName + "_Data", string.Empty);
 #endif
         fileWriter.Init(RootPath);
+        diagnosisMng.OnInit(this);
     }
 
     private void Start()
@@ -55,8 +58,28 @@ public class TGController : MonoBehaviour
     public void ErrorQuit(string _error)
     {
         // Write down error
-        Debug.LogError(_error);
-        Quit();
+        Debug.LogWarning(_error);
+        StopAllCoroutines();
+        // Quit();
+        
+        EnableDiagnosis();
+    }
+
+    public void EnableDiagnosis()
+    {
+        diagnosisMng.gameObject.SetActive(true);
+        diagnosisMng.SetActive(true);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.BackQuote))
+        {
+            diagnosisMng.SetActive(!diagnosisMng.isActive);
+        }
+
+        if (diagnosisMng.isActive)
+            diagnosisMng.OnUpdate();
     }
 
     IEnumerator ProcessRoutine()
