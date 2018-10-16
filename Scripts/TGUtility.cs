@@ -57,6 +57,11 @@ public static class TGUtility
         }
     }
 
+    public static KeyInputConfig ParseConfigFile(string _configFileName)
+    {
+        return TGController.Instance.fileWriter.ReadJSON<KeyInputConfig>(_configFileName);
+    }
+
     public static float PreventValueSkipping(float cx, float lv, float nv)
     {
         float d = nv - lv;

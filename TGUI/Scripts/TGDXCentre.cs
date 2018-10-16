@@ -41,7 +41,7 @@ public class TGDXCentre : MonoBehaviour
 
 	private void SetupColumns()
 	{
-		var currentPort = m_controller.inputSetting.CurrentPortInput;
+		var currentPort = m_controller.inputSetting.portInput;
 
 		if (currentPort != null && currentPort.isPortActive)
 		{
@@ -69,11 +69,6 @@ public class TGDXCentre : MonoBehaviour
 	public void Quit()
 	{
 		TGController.Instance.Quit();
-	}
-
-	public void Recalibration()
-	{
-		TGController.Instance.inputSetting.CurrentPortInput.Recalibration();
 	}
 
 	private void ClearColumns()

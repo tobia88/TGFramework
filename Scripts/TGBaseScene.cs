@@ -101,7 +101,7 @@ public class TGBaseScene : MonoBehaviour
 
     public virtual void Recalibration()
     {
-        controller.inputSetting.CurrentPortInput.Recalibration();
+        controller.inputSetting.Recalibration();
     }
 
     private void LateUpdate()

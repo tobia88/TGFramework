@@ -1,39 +1,51 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.IO.Ports;
+using System.Linq;
+using UnityEngine;
 
 public interface IPortReceiver
 {
     void OnReceivePort(SerialPort port);
 }
-public abstract class LMBasePortInput : MonoBehaviour, IPortReceiver
+
+[System.Serializable]
+public class KeyInputConfig
+{
+    public KeyPortData[] keys;
+}
+
+public class LMBasePortInput : MonoBehaviour, IPortReceiver
 {
     protected LMSerialPortCtrl m_serialPortCtrl;
     protected LMFileWriter m_fileWriter;
     protected byte[] m_bytes;
     protected string m_getString;
-    public TGController controller {get; private set;}
+    public LMBasePortResolver CurrentResolver { get; private set; }
+    public KeyPortData CurrentKeyPortData { get; private set; }
 
     public string ErrorTxt
     {
-        get; protected set;
+        get;
+        protected set;
     }
 
     public PortInfo portInfo;
     public bool isPortActive = false;
 
-    public virtual void SetDefaultValue(string key, object val) { }
-
-    public virtual bool OnStart()
+    public virtual bool OnStart(KeyPortData portData)
     {
-        m_serialPortCtrl = FindObjectOfType<LMSerialPortCtrl>();
-        controller = TGController.Instance;
-        m_fileWriter = controller.fileWriter;
+        m_serialPortCtrl = GetComponent<LMSerialPortCtrl>();
 
         if (!m_serialPortCtrl.CheckPortAvailable(portInfo.comName))
         {
-            ErrorTxt = portInfo.comName + " Doesn't Exist!";
+            ErrorTxt = "端口" + portInfo.comName + "不存在！";
             return false;
+        }
+
+        CurrentResolver = GetProperResolver(portData);
+
+        if (CurrentResolver == null)
+        {
         }
 
         isPortActive = true;
@@ -48,17 +60,15 @@ public abstract class LMBasePortInput : MonoBehaviour, IPortReceiver
         {
             if (_port.IsOpen)
             {
-				ReceiveActivePortData(_port);
-
                 int byteLength = _port.BytesToRead;
-                
+
                 if (byteLength <= 0)
                     return;
 
                 m_bytes = new byte[byteLength];
                 _port.Read(m_bytes, 0, byteLength);
 
-                ReceiveBytes(m_bytes);
+                CurrentResolver.ResolveBytes(m_bytes);
             }
         }
         catch (Exception _ex)
@@ -68,12 +78,30 @@ public abstract class LMBasePortInput : MonoBehaviour, IPortReceiver
         }
     }
 
-    public virtual float GetValue(string key, float min, float max, float remapMin, float remapMax) {return -1f;}
-    public virtual float GetValue(string key) {return -1f;}
+    public virtual float GetValue(string key) 
+    {
+        return CurrentResolver.GetValue(key);
+    }
 
-    public virtual void Recalibration(){}
-    
-    protected virtual void ReceiveActivePortData(SerialPort _port) { }
+    public virtual void Recalibration()
+    {
+        CurrentResolver.Recalibration();
+    }
 
-    protected virtual void ReceiveBytes(byte[] _bytes) { }
+    private LMBasePortResolver GetProperResolver(KeyPortData portData)
+    {
+        LMBasePortResolver retval = null;
+
+        if (portData.type == "wit") 
+        {
+            retval = new LMWitResolver();
+        }
+        else
+        {
+            retval = new LMKeyResolver();
+        }
+
+        retval.Init(portData);
+        return retval;
+    }
 }

@@ -21,24 +21,9 @@ GameObject:
   - component: {fileID: 4250881078908126}
   - component: {fileID: 114184845917947452}
   - component: {fileID: 114975440256637252}
+  - component: {fileID: 114802736331824420}
   m_Layer: 0
   m_Name: InputSetting
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1051179155984586
-GameObject:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4388548283991616}
-  - component: {fileID: 114224465455840892}
-  m_Layer: 0
-  m_Name: KeyPortCrl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -71,22 +56,6 @@ GameObject:
   - component: {fileID: 114141293912262460}
   m_Layer: 0
   m_Name: GameConfig
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1108523957033332
-GameObject:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4688276051115962}
-  - component: {fileID: 114384035963383374}
-  m_Layer: 0
-  m_Name: WitMotionCtrl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -227,22 +196,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1692217399084852
-GameObject:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4249240626165302}
-  - component: {fileID: 114134891743857340}
-  m_Layer: 0
-  m_Name: AxisPortCtrl
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &1889222159271100
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,19 +251,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4249240626165302
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1692217399084852}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4250881078908126}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4250881078908126
 Transform:
   m_ObjectHideFlags: 1
@@ -320,10 +260,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 4388548283991616}
-  - {fileID: 4249240626165302}
-  - {fileID: 4688276051115962}
+  m_Children: []
   m_Father: {fileID: 4155802261083498}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -352,19 +289,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4155802261083498}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4388548283991616
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1051179155984586}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4250881078908126}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4406076057533652
 Transform:
@@ -404,19 +328,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4155802261083498}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4688276051115962
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1108523957033332}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4250881078908126}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4741240556025094
 Transform:
@@ -469,10 +380,10 @@ Camera:
   field of view: 60
   orthographic: 1
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: 1.68
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 32
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -503,7 +414,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   systemCam: {fileID: 20360474029733652}
-  gameNameCn: "\u6D4B\u8BD5"
+  gameNameCn: "\u6D77\u4E0A\u5BFB\u5B9D"
   gameConfig: {fileID: 114141293912262460}
   inputSetting: {fileID: 114975440256637252}
   mainGame: {fileID: 114730753214534034}
@@ -546,41 +457,6 @@ MonoBehaviour:
     type: 2}
   inputDataColumns: []
   debugGroup: {fileID: 1623631656697178}
---- !u!114 &114134891743857340
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1692217399084852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aed9a355d99967e4391c01b6660c4896, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  portInfo:
-    comName: COM4
-    baudRate: 115200
-    parity: 0
-    dataBits: 8
-    stopBits: 1
-  isPortActive: 0
-  axisValues:
-  - key: x
-    minRange: -10
-    maxRange: 10
-    value: 0
-    valueRemap: 0
-    ratio: 0
-    remapMin: -1
-    remapMax: 1
-  - key: y
-    minRange: -10
-    maxRange: 10
-    value: 0
-    valueRemap: 0
-    ratio: 0
-    remapMin: -1
-    remapMax: 1
 --- !u!114 &114141293912262460
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -606,24 +482,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 189709965030271478cb3597215cfff5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114224465455840892
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1051179155984586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ed4c11dd7ec46498cd23e9edd5a3bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  portInfo:
-    comName: COM4
-    baudRate: 115200
-    parity: 0
-    dataBits: 8
-    stopBits: 1
-  isPortActive: 0
 --- !u!114 &114295297888918672
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -668,32 +526,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: New Text
---- !u!114 &114384035963383374
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1108523957033332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e877b9009e0db64468a79bc11e73ba79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  portInfo:
-    comName: COM4
-    baudRate: 115200
-    parity: 0
-    dataBits: 8
-    stopBits: 1
-  isPortActive: 0
-  m_lastEuler: {x: 0, y: 0, z: 0}
-  m_outputEuler: {x: 0, y: 0, z: 0}
-  m_defaultEuler: {x: 0, y: 0, z: 0}
-  m_inputData:
-    order: 
-  values: 0000000000000000000000000000000000000000000000000000000000000000
-  euler: {x: 0, y: 0, z: 0}
-  isInit: 0
 --- !u!114 &114461757937275144
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -823,6 +655,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72d19eec056dfbf4480c116cf518a81a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114802736331824420
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1035770562520792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ed4c11dd7ec46498cd23e9edd5a3bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portInfo:
+    comName: COM4
+    baudRate: 115200
+    parity: 0
+    dataBits: 8
+    stopBits: 1
+  isPortActive: 0
 --- !u!114 &114856060729506674
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -848,18 +698,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   configFileName: keyInputConfig.json
-  switchDatas:
-  - key: Key
-    portInput: {fileID: 114224465455840892}
-  - key: Axis
-    portInput: {fileID: 114134891743857340}
-  - key: Wit
-    portInput: {fileID: 114384035963383374}
+  portInput: {fileID: 114802736331824420}
+  forceUsePort: 0
+  touchCtrl: {fileID: 0}
   keyInputConfig:
     keys: []
-    wit:
-      order: 
-  forceUsePort: 0
 --- !u!222 &222114108943857010
 CanvasRenderer:
   m_ObjectHideFlags: 1
