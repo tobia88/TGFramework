@@ -12,6 +12,17 @@ public class TGInputSetting : TGBaseBehaviour
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive { get; private set; }
 
+    public string DeviceType
+    {
+        get
+        {
+            if (portInput.CurrentResolver != null)
+                return portInput.CurrentResolver.deviceType;
+
+            return string.Empty;
+        }
+    }
+
     public override IEnumerator StartRoutine(TGController _controller)
     {
 

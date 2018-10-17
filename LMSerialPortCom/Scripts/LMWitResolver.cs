@@ -36,16 +36,16 @@ public class LMWitResolver : LMBasePortResolver
 
     }
 
-    // public override void SetDefaultValue(string key, object val)
-    // {
-    //     float v = ((float[])val)[2];
-    //     switch(key)
-    //     {
-    //         case "x": m_defaultEuler.x = v; break;
-    //         case "y": m_defaultEuler.y = v; break;
-    //         case "z": m_defaultEuler.z = v; break;
-    //     }
-    // }
+    public void SetDefaultValue(string key, object val)
+    {
+        float v = ((float[])val)[2];
+        switch(key)
+        {
+            case "x": m_defaultEuler.x = v; break;
+            case "y": m_defaultEuler.y = v; break;
+            case "z": m_defaultEuler.z = v; break;
+        }
+    }
 
     public override void Recalibration()
     {

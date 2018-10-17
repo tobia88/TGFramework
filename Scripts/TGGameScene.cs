@@ -82,9 +82,9 @@ public class TGGameScene : TGBaseScene
         }
     }
 
-    public override void Init(TGController _controller)
+    public override void Init()
     {
-        base.Init(_controller);
+        base.Init();
 
         uiRoot = FindObjectOfType<TGUIRoot>();
         uiRoot.exitBtn.onClick.AddListener(() => GameState = GameStates.FreezeToExitGame);

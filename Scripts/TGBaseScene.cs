@@ -50,9 +50,9 @@ public class TGBaseScene : MonoBehaviour
 
     public bool isActive = false;
 
-    public virtual void Init(TGController _controller) 
+    public virtual void Init() 
     {
-        controller = _controller;
+        controller = TGController.Instance;
     }
 
     public virtual void OnStart()
