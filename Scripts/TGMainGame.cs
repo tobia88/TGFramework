@@ -13,7 +13,7 @@ public class TGMainGame : TGBaseBehaviour
     {
         var scene = SceneManager.GetSceneByName(sceneName);
 
-        if (!SceneManager.GetSceneByName(sceneName).isLoaded)
+        if (!scene.isLoaded)
             yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
         var scn = SceneManager.GetSceneByName(sceneName);

@@ -11,25 +11,25 @@ public class TGDXInputDataColumn : MonoBehaviour {
 	public Text titleTxt;
 	public Text inputTxt;
 
-	private KeyPortData m_keyportData;
+	private LMKeyResolver m_keyResolver;
 
-	public void Init(KeyPortData _keyportData)
+	public void Init(LMKeyResolver keyResolver)
 	{
-		m_keyportData = _keyportData;
+		m_keyResolver = keyResolver;
 
-		titleTxt.text = _keyportData.name;
+		titleTxt.text = m_keyResolver.deviceName;
 
 		SetupTestBars();
 	}
 
 	private void SetupTestBars()
 	{
-		int length = m_keyportData.value.Length;
+		int length = m_keyResolver.values.Length;
 		testBars = new TGDXKeyTestBar[length];
 
 		for (int i = 0; i < length; i++)
 		{
-			var keyportValue = m_keyportData.value[i];
+			var keyportValue = m_keyResolver.values[i];
 
 			var bar = CreateBar(keyportValue);
 
@@ -37,7 +37,7 @@ public class TGDXInputDataColumn : MonoBehaviour {
 		}
 	}
 
-	private TGDXKeyTestBar CreateBar(KeyPortValue value)
+	private TGDXKeyTestBar CreateBar(KeyResolveValue value)
 	{
 		var bar = Instantiate<TGDXKeyTestBar>(testBarPrefab, keyValueContainer);
 		return bar;
@@ -52,13 +52,13 @@ public class TGDXInputDataColumn : MonoBehaviour {
 
 		for (int i = 0; i < testBars.Length; i++)
 		{
-			testBars[i].UpdateData(m_keyportData.value[i]);
+			testBars[i].UpdateData(m_keyResolver.values[i]);
 		}
 	}
 
 	private string GetInputText()
 	{
-		KeyPortInput[] input = m_keyportData.input;
+		KeyResolveInput[] input = m_keyResolver.inputs;
 
 		var retval = string.Empty;
 

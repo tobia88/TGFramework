@@ -25,7 +25,6 @@ public class TGController : MonoBehaviour
         get; private set;
     }
 
-
     public string errorTxt;
 
     private void Awake()
@@ -59,7 +58,7 @@ public class TGController : MonoBehaviour
     }
     public void ErrorQuit(string _error) 
     {
-            // Write down error
+        // Write down error
         Debug.LogWarning(_error);
         StopAllCoroutines();
         systemCam.gameObject.SetActive(true);

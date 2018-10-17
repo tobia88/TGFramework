@@ -21,7 +21,6 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
     protected byte[] m_bytes;
     protected string m_getString;
     public LMBasePortResolver CurrentResolver { get; private set; }
-    public KeyPortData CurrentKeyPortData { get; private set; }
 
     public string ErrorTxt
     {
@@ -43,10 +42,6 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         }
 
         CurrentResolver = GetProperResolver(portData);
-
-        if (CurrentResolver == null)
-        {
-        }
 
         isPortActive = true;
         m_serialPortCtrl.Open(portInfo, this, true);

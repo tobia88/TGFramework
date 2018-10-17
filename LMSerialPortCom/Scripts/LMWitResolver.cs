@@ -10,7 +10,6 @@ public class LMWitResolver : LMBasePortResolver
     private Vector3 m_lastEuler, m_outputEuler, m_defaultEuler;
     [SerializeField]
     private WitInputData m_inputData;
-    private byte[] m_bytes;
     private string m_getString;
 
     public int[] values;
@@ -55,7 +54,7 @@ public class LMWitResolver : LMBasePortResolver
 
     public override void ResolveBytes(byte[] _bytes)
     {
-        if (_bytes.Length == 0)
+        if (m_bytes.Length == 0)
             return;
 
         for (int i = 0; i < m_bytes.Length; i++)

@@ -12,16 +12,16 @@ public class TGDXKeyTestBar : MonoBehaviour
 	public Text equationTxt;
 	public Slider progress;
 
-	public void UpdateData(KeyPortValue value)
+	public void UpdateData(KeyResolveValue value)
 	{
 		nameTxt.text = value.key + ":";
-		minTxt.text = value.Min.ToString();
-		maxTxt.text = value.Max.ToString();
+		minTxt.text = value.min.ToString();
+		maxTxt.text = value.max.ToString();
 		equationTxt.text = value.equation;
 		valueTxt.text = value.value.ToString();
 
-		progress.minValue = value.Min;
-		progress.maxValue = value.Max;	
+		progress.minValue = value.min;
+		progress.maxValue = value.max;	
 		progress.value = value.value;
 	}
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class TGDXCentre : MonoBehaviour
 {
 	public bool isActive;
@@ -45,25 +44,21 @@ public class TGDXCentre : MonoBehaviour
 
 		if (currentPort != null && currentPort.isPortActive)
 		{
-			if (currentPort is LMBasePortUtility)
+			if (currentPort.CurrentResolver is LMKeyResolver)
 			{
-				SetupPortKeyTypesGraph(currentPort as LMBasePortUtility);
+				SetupPortKeyTypesGraph(currentPort.CurrentResolver as LMKeyResolver);
 			}
 		}
 	}
 
-	private void SetupPortKeyTypesGraph(LMBasePortUtility _portUtility)
+	private void SetupPortKeyTypesGraph(LMKeyResolver _keyResolver)
 	{
 		inputDataColumns = new TGDXInputDataColumn[1];
-		var currentPortData = _portUtility.currentPortData;
 
-		if (currentPortData != null)
-		{
-			var column = Instantiate<TGDXInputDataColumn>(inputDataColumnPrefab, transform);
-			column.Init(currentPortData);
+		var column = Instantiate<TGDXInputDataColumn>(inputDataColumnPrefab, transform);
+		column.Init(_keyResolver);
 
-			inputDataColumns[0] = column;
-		}
+		inputDataColumns[0] = column;
 	}
 
 	public void Quit()
@@ -86,7 +81,7 @@ public class TGDXCentre : MonoBehaviour
 	{
 		if (!isActive || inputDataColumns == null)
 			return;
-		
+
 		foreach (TGDXInputDataColumn c in inputDataColumns)
 		{
 			c.OnUpdate();
