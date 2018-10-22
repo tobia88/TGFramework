@@ -21,7 +21,8 @@ GameObject:
   - component: {fileID: 4250881078908126}
   - component: {fileID: 114184845917947452}
   - component: {fileID: 114975440256637252}
-  - component: {fileID: 114802736331824420}
+  - component: {fileID: 114169427993539042}
+  - component: {fileID: 114225353049054600}
   m_Layer: 0
   m_Name: InputSetting
   m_TagString: Untagged
@@ -139,14 +140,13 @@ GameObject:
   m_Component:
   - component: {fileID: 4607097981792784}
   - component: {fileID: 20360474029733652}
-  - component: {fileID: 81667137968827770}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1623631656697178
 GameObject:
   m_ObjectHideFlags: 1
@@ -322,8 +322,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1450833090363612}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1213.4302, y: 894.9309, z: 12}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4155802261083498}
@@ -395,13 +395,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &81667137968827770
-AudioListener:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1450833090363612}
-  m_Enabled: 1
 --- !u!114 &114033795608916856
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -471,6 +464,24 @@ MonoBehaviour:
   fileName: game.txt
   finishLoaded: 0
   sectionName: PZConf
+--- !u!114 &114169427993539042
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1035770562520792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1df9ab7e69530844be8e1c474fcb522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portInfo:
+    comName: COM4
+    baudRate: 115200
+    parity: 0
+    dataBits: 8
+    stopBits: 1
+  isPortActive: 0
 --- !u!114 &114184845917947452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -482,6 +493,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 189709965030271478cb3597215cfff5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114225353049054600
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1035770562520792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0113656be4b41ef4f92ab12c6baa6454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_lastInput: {x: 0, y: 0, z: 0}
+  rayMaskForThreeD:
+    serializedVersion: 2
+    m_Bits: 512
+  touchDimension: 1
 --- !u!114 &114295297888918672
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -642,7 +669,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 125d9c79133648043bb6d15c5303a690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: 1_MainScene
+  defaultSceneName: 1DScene
+  sceneMatchers:
+  - deviceType: touch
+    sceneName: 2DScene
   isSceneFinished: 0
 --- !u!114 &114753798490562544
 MonoBehaviour:
@@ -655,24 +685,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72d19eec056dfbf4480c116cf518a81a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114802736331824420
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1035770562520792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ed4c11dd7ec46498cd23e9edd5a3bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  portInfo:
-    comName: COM4
-    baudRate: 115200
-    parity: 0
-    dataBits: 8
-    stopBits: 1
-  isPortActive: 0
 --- !u!114 &114856060729506674
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -698,9 +710,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   configFileName: keyInputConfig.json
-  portInput: {fileID: 114802736331824420}
+  portInput: {fileID: 114169427993539042}
   forceUsePort: 0
-  touchCtrl: {fileID: 0}
+  touchCtrl: {fileID: 114225353049054600}
   keyInputConfig:
     keys: []
 --- !u!222 &222114108943857010
