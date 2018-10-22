@@ -19,7 +19,7 @@ public class TGInputSetting : TGBaseBehaviour
             if (portInput.CurrentResolver != null)
                 return portInput.CurrentResolver.deviceType;
 
-            return string.Empty;
+            return "touch";
         }
     }
 
@@ -60,8 +60,8 @@ public class TGInputSetting : TGBaseBehaviour
     {
         if (IsPortActive)
             return portInput.GetValue(key);
-
-        return touchCtrl.GetValue(key);
+        
+        return 0f;
     }
 
     public void Recalibration()

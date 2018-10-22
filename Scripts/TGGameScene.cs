@@ -13,7 +13,7 @@ public class TGGameScene : TGBaseScene
     protected int m_stageLevel = -1;
 
     public Sound bgm;
-    public TGUIRoot uiRoot {get; private set;}
+    public TGUIRoot uiRoot; 
 
     public int DifficultyLv
 
@@ -86,7 +86,7 @@ public class TGGameScene : TGBaseScene
     {
         base.Init();
 
-        uiRoot = FindObjectOfType<TGUIRoot>();
+        uiRoot.gameObject.SetActive(true);
         uiRoot.exitBtn.onClick.AddListener(() => GameState = GameStates.FreezeToExitGame);
         uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
 

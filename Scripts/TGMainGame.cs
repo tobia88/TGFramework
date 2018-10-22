@@ -13,19 +13,23 @@ public struct SceneMatchData
 
 public class TGMainGame : TGBaseBehaviour
 {
-    public string sceneName;
+    public string defaultSceneName;
+    public string SceneName { get; private set; }
     public SceneMatchData[] sceneMatchers;
     public bool isSceneFinished;
     public Dictionary<string, string> additionDataToSave;
 
     public override IEnumerator StartRoutine(TGController _controller)
     {
-        // var scene = SceneManager.GetSceneByName(sceneName);
-        var scene = GetProperScene(_controller.inputSetting.DeviceType);
+        SceneName = GetProperSceneName(_controller.inputSetting.DeviceType);
+
+        Scene scene = SceneManager.GetSceneByName(SceneName);
 
         if (!scene.isLoaded)
-            yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            yield return SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
 
+
+        scene = SceneManager.GetSceneByName(SceneName);
         SceneManager.SetActiveScene(scene);
 
         var baseScn = scene.GetComponent<TGBaseScene>();
@@ -39,7 +43,7 @@ public class TGMainGame : TGBaseBehaviour
         }
         else
         {
-            _controller.ErrorQuit("TGBaseScene no found in scene " + sceneName);
+            _controller.ErrorQuit("TGBaseScene no found in scene " + this.SceneName);
             yield break;
         }
     }
@@ -60,21 +64,24 @@ public class TGMainGame : TGBaseBehaviour
     {
 
         additionDataToSave = _scene.additionDataToSave;
-        yield return SceneManager.UnloadSceneAsync(sceneName);
+        yield return SceneManager.UnloadSceneAsync(SceneName);
     }
 
-    private Scene GetProperScene(string _deviceType)
+    private string GetProperSceneName(string _deviceType)
     {
-        string scnName = sceneName;
+        string retval = defaultSceneName;
 
         if (sceneMatchers != null)
         {
+            Debug.Log(_deviceType);
+
             SceneMatchData data = sceneMatchers.FirstOrDefault(s => s.deviceType == _deviceType);
 
             if (!string.IsNullOrEmpty(data.sceneName))
-                scnName = data.sceneName;
+                retval = data.sceneName;
         }
 
-        return SceneManager.GetSceneByName(scnName);
+        Debug.Log("Loading Scene: " + retval);
+        return retval;
     }
 }

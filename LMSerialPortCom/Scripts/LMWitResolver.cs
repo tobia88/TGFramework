@@ -23,17 +23,7 @@ public class LMWitResolver : LMBasePortResolver
         if (m_inputData != null)
             retval = m_inputData.GetValue(retval);
 
-        if (key == "x")
-            return retval.x;
-
-        else if (key == "y")
-            return retval.y;
-            
-        else if (key == "z")
-            return retval.z;
-
-        throw new System.ArgumentException("Key is only accept x, y or z");
-
+        return retval.GetPosFromAxis(key);
     }
 
     public void SetDefaultValue(string key, object val)
