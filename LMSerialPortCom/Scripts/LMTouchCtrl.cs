@@ -8,7 +8,7 @@ public class LMTouchCtrl : MonoBehaviour
     [SerializeField]
     private Vector3 m_lastInput;
 
-    public Action<Vector3> onTouch3D;
+    public Action<Vector3> onTouchCallback;
 
     public enum TouchDimension
     {
@@ -35,7 +35,19 @@ public class LMTouchCtrl : MonoBehaviour
     }
 
     private void Get2DTouchValue()
-    { }
+    {
+        Camera cam = Camera.main;
+
+        if (CheckIsPressed())
+        {
+            Vector3 screenPos = GetSingleInputPos();
+
+            if (onTouchCallback != null)
+            {
+                onTouchCallback(cam.ScreenToWorldPoint(screenPos));
+            }
+        }
+    }
 
     private void Get3DTouchValue()
     {
@@ -52,8 +64,8 @@ public class LMTouchCtrl : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, rayMaskForThreeD))
             {
-                if (onTouch3D != null)
-                    onTouch3D(hit.point);
+                if (onTouchCallback != null)
+                    onTouchCallback(hit.point);
             }
         }
     }
