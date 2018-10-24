@@ -11,9 +11,9 @@ public class TGDXInputDataColumn : MonoBehaviour {
 	public Text titleTxt;
 	public Text inputTxt;
 
-	private LMKeyResolver m_keyResolver;
+	private LMBasePortResolver m_keyResolver;
 
-	public void Init(LMKeyResolver keyResolver)
+	public void Init(LMBasePortResolver keyResolver)
 	{
 		m_keyResolver = keyResolver;
 

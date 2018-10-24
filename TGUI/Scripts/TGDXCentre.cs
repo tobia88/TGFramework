@@ -44,14 +44,11 @@ public class TGDXCentre : MonoBehaviour
 
 		if (currentPort != null && currentPort.isPortActive)
 		{
-			if (currentPort.CurrentResolver is LMKeyResolver)
-			{
-				SetupPortKeyTypesGraph(currentPort.CurrentResolver as LMKeyResolver);
-			}
+			SetupPortKeyTypesGraph(currentPort.CurrentResolver);
 		}
 	}
 
-	private void SetupPortKeyTypesGraph(LMKeyResolver _keyResolver)
+	private void SetupPortKeyTypesGraph(LMBasePortResolver _keyResolver)
 	{
 		inputDataColumns = new TGDXInputDataColumn[1];
 

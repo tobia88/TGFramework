@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class LMTouchCtrl : MonoBehaviour
 {
-    private Dictionary<string, float> m_lastPosDict;
     [SerializeField]
     private Vector3 m_lastInput;
 
@@ -19,11 +18,6 @@ public class LMTouchCtrl : MonoBehaviour
     public LayerMask rayMaskForThreeD;
 
     public TouchDimension touchDimension;
-
-    private void OnEnable()
-    {
-        m_lastPosDict = new Dictionary<string, float>();
-    }
 
     private void Update()
     {

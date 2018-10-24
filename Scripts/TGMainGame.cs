@@ -16,7 +16,6 @@ public class TGMainGame : TGBaseBehaviour
     public string defaultSceneName;
     public string SceneName { get; private set; }
     public SceneMatchData[] sceneMatchers;
-    public bool isSceneFinished;
     public Dictionary<string, string> additionDataToSave;
 
     public override IEnumerator StartRoutine(TGController _controller)

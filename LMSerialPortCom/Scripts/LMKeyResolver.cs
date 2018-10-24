@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO.Ports;
-using System.Text;
-using UnityEngine;
-using System.Linq;
 using System.IO;
+using System.IO.Ports;
+using System.Linq;
+using System.Text;
 using TG;
+using UnityEngine;
 
 public class KeyResolveValue
 {
@@ -21,12 +21,21 @@ public class KeyResolveValue
     public float min;
     public float max;
     public bool isDegree;
+    public bool raw;
 
-    public void Init(float _origin = 0f)
+    public KeyResolveValue(KeyPortValueData _data, bool _degree, bool _raw)
     {
-        m_default = min + (max - min) * _origin;
+        key = _data.key;
+        isDegree = _degree;
 
-        value     = m_default;
+        raw = _raw;
+
+        min = TGUtility.GetValueFromINI(_data.min);
+        max = TGUtility.GetValueFromINI(_data.max);
+
+        equation = _data.equation;
+
+        value = m_default = min + (max - min) * _data.origin;
     }
 
     public void Recalibration()
@@ -48,6 +57,12 @@ public class KeyResolveValue
         {
             m_rawLastValue = m_rawValue;
             m_rawValue = newVal;
+        }
+
+        if (raw)
+        {
+            value = newVal;
+            return;
         }
 
         if (isDegree)
@@ -100,8 +115,6 @@ public class LMKeyResolver : LMBasePortResolver
     private string m_getString;
     private TGExpressionParser m_solver;
 
-    public KeyResolveValue[] values;
-    public KeyResolveInput[] inputs;
 
     public bool Threshold
     {
@@ -119,9 +132,6 @@ public class LMKeyResolver : LMBasePortResolver
         base.Init(keyPortData);
 
         m_solver = new TGExpressionParser();
-
-        InitInputs(keyPortData.input);
-        InitValues(keyPortData.value);
     }
 
     public void SetBiases(string bias)
@@ -143,43 +153,6 @@ public class LMKeyResolver : LMBasePortResolver
         }
     }
 
-    private void InitInputs(KeyPortInputData[] datas)
-    {
-        inputs = new KeyResolveInput[datas.Length];
-
-        for (int i = 0; i < datas.Length; i++)
-        {
-            var newInput = new KeyResolveInput();
-
-            newInput.key    = datas[i].key;
-            newInput.length = datas[i].length;
-
-            inputs[i] = newInput;
-        }
-    }
-
-    private void InitValues(KeyPortValueData[] datas)
-    {
-        values = new KeyResolveValue[datas.Length];
-
-        for (int i = 0; i < datas.Length; i++)
-        {
-            var newValue = new KeyResolveValue();
-
-            newValue.key      = datas[i].key;
-            newValue.isDegree = datas[i].isDegree;
-
-
-            newValue.min      = TGUtility.GetValueFromINI(datas[i].min);
-            newValue.max      = TGUtility.GetValueFromINI(datas[i].max);
-
-            newValue.equation = datas[i].equation;
-
-            newValue.Init(datas[i].origin);
-
-            values[i] = newValue;
-        }
-    }
 
     public override void ResolveBytes(byte[] _bytes)
     {
@@ -192,7 +165,6 @@ public class LMKeyResolver : LMBasePortResolver
 
         FilterIds();
     }
-
 
     protected void FilterIds()
     {
