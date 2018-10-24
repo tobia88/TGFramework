@@ -4,20 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 
-[System.Serializable]
-public struct GameConfigInfo
-{
-    public string key;
-    public string sectionName;
-}
 
 public class TGGameConfig : TGBaseBehaviour
 {
     public string fileName;
-    public bool finishLoaded;
     public string sectionName;
     // public GameConfigInfo[] configInfo;
-    public Dictionary<string, string> valueDict = new Dictionary<string, string>();
 
     private INIParser m_iniParser;
 
