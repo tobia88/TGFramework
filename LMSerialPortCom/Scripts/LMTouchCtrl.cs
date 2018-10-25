@@ -34,10 +34,15 @@ public class LMTouchCtrl : MonoBehaviour
                 m_isTouched = value;
 
                 if (m_isTouched)
-                    onTouchDown();
-
+                {
+                    if (onTouchDown != null)
+                        onTouchDown();
+                }
                 else
-                    onTouchUp();
+                {
+                    if (onTouchUp != null)
+                        onTouchUp();
+                }
             }
         }
     }

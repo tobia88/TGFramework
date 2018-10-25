@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   systemCam: {fileID: 20360474029733652}
-  gameNameCn: "\u6D77\u4E0A\u5BFB\u5B9D"
+  gameNameCn: "\u5C0F\u9E1F\u8EB2\u98DE\u5F39"
   gameConfig: {fileID: 114141293912262460}
   inputSetting: {fileID: 114975440256637252}
   mainGame: {fileID: 114730753214534034}
@@ -462,7 +462,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fileName: game.txt
-  finishLoaded: 0
   sectionName: PZConf
 --- !u!114 &114169427993539042
 MonoBehaviour:
@@ -508,7 +507,7 @@ MonoBehaviour:
   rayMaskForThreeD:
     serializedVersion: 2
     m_Bits: 512
-  touchDimension: 1
+  touchDimension: 0
 --- !u!114 &114295297888918672
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -673,7 +672,6 @@ MonoBehaviour:
   sceneMatchers:
   - deviceType: touch
     sceneName: 2DScene
-  isSceneFinished: 0
 --- !u!114 &114753798490562544
 MonoBehaviour:
   m_ObjectHideFlags: 1
