@@ -6,8 +6,41 @@ public class LMTouchCtrl : MonoBehaviour
 {
     [SerializeField]
     private Vector3 m_lastInput;
+    private Vector3 m_currentPosition;
+    private bool m_isTouched;
 
-    public Action<Vector3> onTouchCallback;
+    // public Action<Vector3> onTouchCallback;
+    public Action onTouchDown;
+    public Action onTouchUp;
+
+    public Vector3 LastPosition { get; private set; }
+    public Vector3 CurrentPosition
+    {
+        get { return m_currentPosition; }
+        set
+        {
+            LastPosition = m_currentPosition;
+            m_currentPosition = value;
+        }
+    }
+
+    public bool IsTouched
+    {
+        get { return m_isTouched; }
+        set
+        {
+            if (m_isTouched != value)
+            {
+                m_isTouched = value;
+
+                if (m_isTouched)
+                    onTouchDown();
+
+                else
+                    onTouchUp();
+            }
+        }
+    }
 
     public enum TouchDimension
     {
@@ -21,46 +54,43 @@ public class LMTouchCtrl : MonoBehaviour
 
     private void Update()
     {
-        if (touchDimension == TouchDimension.TwoD)
-            Get2DTouchValue();
+        bool isPressed = CheckIsPressed();
 
-        else
-            Get3DTouchValue();
+        if (isPressed)
+        {
+            if (touchDimension == TouchDimension.TwoD)
+                Get2DTouchValue();
+
+            else
+                Get3DTouchValue();
+        }
+
+        IsTouched = isPressed;
     }
 
     private void Get2DTouchValue()
     {
         Camera cam = Camera.main;
 
-        if (CheckIsPressed())
-        {
-            Vector3 screenPos = GetSingleInputPos();
+        Vector3 screenPos = GetSingleInputPos();
 
-            if (onTouchCallback != null)
-            {
-                onTouchCallback(cam.ScreenToWorldPoint(screenPos));
-            }
-        }
+        CurrentPosition = cam.ScreenToWorldPoint(screenPos);
     }
 
     private void Get3DTouchValue()
     {
         Camera cam = Camera.main;
 
-        if (CheckIsPressed())
+        Vector3 screenPos = GetSingleInputPos();
+        Ray ray = cam.ScreenPointToRay(screenPos);
+
+        RaycastHit hit;
+
+        Debug.DrawRay(ray.origin, ray.direction * 1000f, Color.red);
+
+        if (Physics.Raycast(ray, out hit, rayMaskForThreeD))
         {
-            Vector3 screenPos = GetSingleInputPos();
-            Ray ray = cam.ScreenPointToRay(screenPos);
-
-            RaycastHit hit;
-
-            Debug.DrawRay(ray.origin, ray.direction * 1000f, Color.red);
-
-            if (Physics.Raycast(ray, out hit, rayMaskForThreeD))
-            {
-                if (onTouchCallback != null)
-                    onTouchCallback(hit.point);
-            }
+            CurrentPosition = hit.point;
         }
     }
 
