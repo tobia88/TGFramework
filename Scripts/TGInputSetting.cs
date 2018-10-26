@@ -6,9 +6,9 @@ using UnityEngine;
 public class TGInputSetting : TGBaseBehaviour
 {
     public string configFileName;
-    public LMBasePortInput portInput;
+    public LMBasePortInput portInput { get; private set; }
     public bool forceUsePort;
-    public LMTouchCtrl touchCtrl;
+    public LMTouchCtrl touchCtrl { get; private set; }
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive { get; private set; }
 
@@ -36,6 +36,8 @@ public class TGInputSetting : TGBaseBehaviour
 
     public override IEnumerator StartRoutine(TGController _controller)
     {
+        portInput = GetComponent<LMBasePortInput>();
+        touchCtrl = GetComponent<LMTouchCtrl>();
 
         keyInputConfig = TGUtility.ParseConfigFile(configFileName);
 
