@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class LMTouchCtrl : MonoBehaviour
 {
@@ -59,6 +60,9 @@ public class LMTouchCtrl : MonoBehaviour
 
     private void Update()
     {
+        if (EventSystem.current.currentSelectedGameObject != null)
+            return;
+
         bool isPressed = CheckIsPressed();
 
         if (isPressed)

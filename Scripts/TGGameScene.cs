@@ -3,6 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum GameStates
+{
+    Null,
+    Tutorial,
+    Start,
+    Playing,
+    FreezeToExitGame,
+    GameOver,
+    End
+}
+
 public class TGGameScene : TGBaseScene
 {
     protected float m_timeLeft;
@@ -89,10 +100,14 @@ public class TGGameScene : TGBaseScene
         uiRoot.gameObject.SetActive(true);
         uiRoot.exitBtn.onClick.AddListener(() => GameState = GameStates.FreezeToExitGame);
         uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
+        uiRoot.questionBtn.onClick.AddListener(() => GameState = GameStates.Tutorial);
 
         uiRoot.exitGamePanel.confirmBtn.onClick.AddListener(ExitScene);
         uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
         uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
+
+        uiRoot.tutorialPanel.confirmBtn.onClick.AddListener(uiRoot.tutorialPanel.Exit);
+        uiRoot.tutorialPanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 
         var config = controller.gameConfig;
 
@@ -141,6 +156,10 @@ public class TGGameScene : TGBaseScene
     {
         switch (_gameState)
         {
+            case GameStates.Tutorial:
+                OnStartTutorial();
+                break;
+
             case GameStates.Start:
                 if (bgm.clip != null)
                     AudioMng.Instance.Play(bgm);
@@ -165,6 +184,12 @@ public class TGGameScene : TGBaseScene
                 break;
 
         }
+    }
+
+    protected virtual void OnStartTutorial() 
+    {
+        // uiRoot.tutorialPanel.Show();
+        uiRoot.tutorialPanel.Show();
     }
 
     public void Restart()
@@ -228,7 +253,9 @@ public class TGGameScene : TGBaseScene
 
     public virtual void GameOver()
     {
-        uiRoot.gameOverPanel.Show(Score);
+        uiRoot.gameOverPanel.SetScore(Score);
+        uiRoot.gameOverPanel.Show();
+
         m_gameOverTimeRemaining = 5f;
         StartCoroutine(CaptureDelay());
     }

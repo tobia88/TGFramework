@@ -414,7 +414,6 @@ MonoBehaviour:
   resultMng: {fileID: 114856060729506674}
   dxCentre: {fileID: 114074567967288708}
   fileWriter: {fileID: 114295297888918672}
-  errorTxt: 
 --- !u!114 &114061166884619898
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -3,16 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum GameStates
-{
-    Null,
-    Start,
-    Playing,
-    FreezeToExitGame,
-    GameOver,
-    End
-}
-
 [System.Serializable]
 public struct ScreenshotCropInfo
 {

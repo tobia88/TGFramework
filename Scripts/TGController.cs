@@ -25,8 +25,6 @@ public class TGController : MonoBehaviour
         get; private set;
     }
 
-    public string errorTxt;
-
     private void Awake()
     {
         Instance = this;

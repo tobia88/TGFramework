@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class TGUIRoot : MonoBehaviour
 {
+	public TutorialPanel tutorialPanel;
 	public AutoGameOverPanel gameOverPanel;
 	public ExitGamePanel exitGamePanel;
 	public Transform gameplayPanel;
@@ -14,6 +15,7 @@ public class TGUIRoot : MonoBehaviour
 	public GetPointTextUI lossScorePrefab;
 	public Button exitBtn;
 	public Button recalibrationBtn;
+	public Button questionBtn;
 
 	public void CreateScorePrefab(int _score, Vector3 _pos)
 	{
