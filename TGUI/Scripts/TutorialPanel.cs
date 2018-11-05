@@ -9,6 +9,13 @@ public class TutorialPanel : TGBasePanel
 
 	public System.Action onFinishClosePanel;
 
+	public Image tutorialImg;
+
+	public void SetImage(Sprite _spr)
+	{
+		tutorialImg.sprite = _spr;
+	}
+
 	public void OnFinishExit()
 	{
 		if (onFinishClosePanel != null)
