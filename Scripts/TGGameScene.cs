@@ -189,6 +189,7 @@ public class TGGameScene : TGBaseScene
     protected virtual void OnStartTutorial() 
     {
         // uiRoot.tutorialPanel.Show();
+        Time.timeScale = 0f;
         uiRoot.tutorialPanel.Show();
     }
 
