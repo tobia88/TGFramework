@@ -263,7 +263,7 @@
         {
             "name": "测试",
             "type": "wit",
-            "isDegree": true,
+            "isDegree": false,
             "value": [
                 {
                     "key": "x",
@@ -288,7 +288,7 @@
         {
             "name": "测试2",
             "type": "wit",
-            "isDegree": true,
+            "isDegree": false,
             "value": [
                 {
                     "key": "x"

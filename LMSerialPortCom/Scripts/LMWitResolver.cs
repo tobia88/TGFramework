@@ -27,26 +27,8 @@ public class LMWitResolver : LMBasePortResolver
         euler.y = (values.Length > 1) ? values[1].GetValue() : 0;
         euler.z = (values.Length > 2) ? values[2].GetValue() : 0;
 
-        Vector3 retval = euler;
-        // Remap from [0, 360] to [0, 1]
-        if (!PortData.isDegree)
-            retval /= 360;
-        
-        Debug.Log(retval);
-
-        return retval.GetPosFromAxis(key);
+        return euler.GetPosFromAxis(key);
     }
-
-    // public void SetDefaultValue(string key, object val)
-    // {
-    //     float v = ((float[])val)[2];
-    //     switch(key)
-    //     {
-    //         case "x": m_defaultEuler.x = v; break;
-    //         case "y": m_defaultEuler.y = v; break;
-    //         case "z": m_defaultEuler.z = v; break;
-    //     }
-    // }
 
     public override void Recalibration()
     {
