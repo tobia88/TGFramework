@@ -87,29 +87,9 @@ public class LMWitResolver : LMBasePortResolver
     {
         for (int i = 0; i < values.Length; i++)
         {
-            float v = ((byteValues[i*2+1]<<8)|byteValues[i*2])/32768f * 180f;
+            double v = ((byteValues[i*2+1]<<8)|byteValues[i*2])/32768f * 180f;
             values[i].SetValue(v);
         }
-
-        // // Roll
-        // euler.x = ((values[1]<<8)|values[0])/32768f * 180f;
-
-        // // Pitch
-        // euler.y = ((values[3]<<8)|values[2])/32768f * 180f;
-
-        // // Yaw
-        // euler.z = ((values[5]<<8)|values[4])/32768f * 180f;
-
-        // if (!isInit)
-        // {
-        //     isInit = true;
-        // }
-        // else
-        // {
-        //     ComputeOutputEuler(m_lastEuler, euler, ref m_outputEuler);
-        // }
-
-        // m_lastEuler = euler;
     }
 
     private void HexToNumbers(string[] _split)
