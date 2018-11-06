@@ -263,7 +263,6 @@
         {
             "name": "测试",
             "type": "wit",
-            "order": "yxz",
             "isDegree": true,
             "value": [
                 {
@@ -283,6 +282,22 @@
                     "min": -90,
                     "max": 90,
                     "origin": 0.5
+                }
+            ]
+        },
+        {
+            "name": "测试2",
+            "type": "wit",
+            "isDegree": true,
+            "value": [
+                {
+                    "key": "x"
+                },
+                {
+                    "key": "y"
+                },
+                {
+                    "key": "z"
                 }
             ]
         },

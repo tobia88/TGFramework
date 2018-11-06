@@ -23,12 +23,11 @@ public class LMWitResolver : LMBasePortResolver
     public override float GetValue(string key)
     {
         Vector3 euler = Vector3.zero;
-        euler.x = values[0].GetValue();
-        euler.y = values[1].GetValue();
-        euler.z = values[2].GetValue();
+        euler.x = (values.Length > 0) ? values[0].GetValue() : 0;
+        euler.y = (values.Length > 1) ? values[1].GetValue() : 0;
+        euler.z = (values.Length > 2) ? values[2].GetValue() : 0;
 
-        Vector3 retval = euler.GetReorderPos(PortData.order);
-
+        Vector3 retval = euler;
         // Remap from [0, 360] to [0, 1]
         if (!PortData.isDegree)
             retval /= 360;
@@ -111,13 +110,6 @@ public class LMWitResolver : LMBasePortResolver
         // }
 
         // m_lastEuler = euler;
-    }
-
-    private void ComputeOutputEuler(Vector3 _lastEuler, Vector3 _newEuler, ref Vector3 _output)
-    {
-        _output.x = TGUtility.PreventValueSkipping(_output.x, _lastEuler.x, _newEuler.x);
-        _output.y = TGUtility.PreventValueSkipping(_output.y, _lastEuler.y, _newEuler.y);
-        _output.z = TGUtility.PreventValueSkipping(_output.z, _lastEuler.z, _newEuler.z);
     }
 
     private void HexToNumbers(string[] _split)

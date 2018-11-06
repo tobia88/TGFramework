@@ -11,17 +11,18 @@ using UnityEngine;
 public class KeyResolveValue
 {
     private float m_default;
-    private float m_rawLastValue;
-    private float m_rawValue;
     private bool m_isInit;
 
     public string key;
     public string equation;
-    public float value;
+    public double value;
     public float min;
     public float max;
     public bool isDegree;
     public bool raw;
+
+    public double LastRawValue { get; private set; }
+    public double RawValue { get; private set; }
 
     public KeyResolveValue(KeyPortValueData _data, bool _degree, bool _raw)
     {
@@ -43,35 +44,35 @@ public class KeyResolveValue
         value = m_default;
     }
 
-    public void SetValue(float newVal)
+    public void SetValue(double newVal)
     {
-        if (float.IsNaN(newVal))
+        if (double.IsNaN(newVal))
             newVal = 0f;
 
         if (!m_isInit)
         {
-            m_rawLastValue = m_rawValue = newVal;
+            LastRawValue = RawValue = newVal;
             m_isInit = true;
         }
         else
         {
-            m_rawLastValue = m_rawValue;
-            m_rawValue = newVal;
+            LastRawValue = RawValue;
+            RawValue = newVal;
         }
 
         if (raw)
         {
-            value = newVal;
+            value = (float)newVal;
             return;
         }
 
         if (isDegree)
         {
-            value = TGUtility.PreventValueSkipping(value, m_rawLastValue, m_rawValue);
+            value = TGUtility.PreventValueSkipping(value, LastRawValue, RawValue);
         }
         else
         {
-            value += (m_rawValue - m_rawLastValue);
+            value += (float)(RawValue - LastRawValue);
         }
 
     }
@@ -80,10 +81,10 @@ public class KeyResolveValue
     {
         if (min != max)
         {
-            return (value - min) / (max - min);
+            return (float)((value - min) / (max - min));
         }
 
-        return value;
+        return (float)value;
     }
 }
 
