@@ -261,32 +261,7 @@
             ]
         },
         {
-            "name": "测试",
-            "type": "wit",
-            "isDegree": false,
-            "value": [
-                {
-                    "key": "x",
-                    "min": -90,
-                    "max": 90,
-                    "origin": 0.5
-                },
-                {
-                    "key": "y",
-                    "min": -90,
-                    "max": 90,
-                    "origin": 0.5
-                },
-                {
-                    "key": "z",
-                    "min": -90,
-                    "max": 90,
-                    "origin": 0.5
-                }
-            ]
-        },
-        {
-            "name": "测试2",
+            "name": "3D传感器",
             "type": "wit",
             "isDegree": false,
             "value": [
@@ -302,7 +277,7 @@
             ]
         },
         {
-            "name": "数字OT",
+            "name": "触屏",
             "type": "touch"
         }
     ]
