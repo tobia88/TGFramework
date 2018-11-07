@@ -55,6 +55,8 @@ public class TGInputSetting : TGBaseBehaviour
 
         if (!touchCtrl.enabled)
         {
+            portInput.portInfo.comName = "COM" + _controller.gameConfig.GetValue("端口", -1);
+
             IsPortActive = portInput.OnStart(portData);
 
             if (!IsPortActive)

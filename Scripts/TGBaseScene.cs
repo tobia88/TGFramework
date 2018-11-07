@@ -106,7 +106,7 @@ public class TGBaseScene : MonoBehaviour
     IEnumerator RecordFrame(string _dateString)
     {
         yield return new WaitForEndOfFrame();
-        float ratio = (float)Screen.width / Screen.height;
+        float ratio = (float)screenshotCropInfo.width / screenshotCropInfo.height;
         int width = 700;
         int height = Mathf.RoundToInt((float)width / ratio);
 
