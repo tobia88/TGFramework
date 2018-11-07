@@ -22,6 +22,6 @@ public class TGDXKeyTestBar : MonoBehaviour
 
 		progress.minValue = value.min;
 		progress.maxValue = value.max;	
-		progress.value = (float)value.RawValue;
+		progress.value = (float)value.value;
 	}
 }
