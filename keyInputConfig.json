@@ -262,8 +262,8 @@
         },
         {
             "name": "3D传感器",
-            "type": "witneo",
-            "isDegree": false,
+            "type": "m7b",
+            "isDegree": true,
             "value": [
                 {
                     "key": "x"
@@ -277,7 +277,7 @@
             ]
         },
         {
-            "name": "触屏",
+            "name": "触屏控制",
             "type": "touch"
         }
     ]

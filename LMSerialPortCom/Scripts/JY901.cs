@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.IO.Ports;
 
-public class LMNeoWitResolver : LMBasePortResolver
+public class JY901 : LMBasePortResolver
 {
     private string m_getString;
 
@@ -9,9 +9,9 @@ public class LMNeoWitResolver : LMBasePortResolver
     public Vector3 euler;
     public bool isInit;
 
-    public override void Init(KeyPortData keyPortData)
+    public override void Init(LMBasePortInput _portInput)
     {
-        base.Init(keyPortData);
+        base.Init(_portInput);
         byteValues = new int[8];
     }
 
@@ -44,7 +44,8 @@ public class LMNeoWitResolver : LMBasePortResolver
             m_getString += m_bytes[i].ToString("X").PadLeft(2,'0') + " ";
         }
 
-        int keyIndex = m_getString.IndexOf("55 53");
+
+        int keyIndex = m_getString.IndexOf("55 53 ");
 
         if (keyIndex != -1)
         {

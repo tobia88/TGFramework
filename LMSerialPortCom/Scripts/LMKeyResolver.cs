@@ -128,9 +128,9 @@ public class LMKeyResolver : LMBasePortResolver
         }
     }
 
-    public override void Init(KeyPortData keyPortData)
+    public override void Init(LMBasePortInput _portInput)
     {
-        base.Init(keyPortData);
+        base.Init(_portInput);
 
         m_solver = new TGExpressionParser();
     }

@@ -16,11 +16,11 @@ public class KeyInputConfig
 
 public class LMBasePortInput : MonoBehaviour, IPortReceiver
 {
-    protected LMSerialPortCtrl m_serialPortCtrl;
-    protected LMFileWriter m_fileWriter;
+    protected bool m_isInit;
     protected byte[] m_bytes;
-    protected string m_getString;
+    public SerialPort Port { get; private set; }
     public LMBasePortResolver CurrentResolver { get; private set; }
+    public LMSerialPortCtrl SerialPortCtrl { get; private set; }
 
     public string ErrorTxt
     {
@@ -28,14 +28,18 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         protected set;
     }
 
+
     public PortInfo portInfo;
     public bool isPortActive = false;
+    public KeyPortData KeyportData { get; private set; }
 
     public virtual bool OnStart(KeyPortData portData)
     {
-        m_serialPortCtrl = GetComponent<LMSerialPortCtrl>();
+        SerialPortCtrl = GetComponent<LMSerialPortCtrl>();
 
-        if (!m_serialPortCtrl.CheckPortAvailable(portInfo.comName))
+        KeyportData = portData;
+
+        if (!SerialPortCtrl.CheckPortAvailable(portInfo.comName))
         {
             ErrorTxt = "端口" + portInfo.comName + "不存在！";
             return false;
@@ -44,24 +48,31 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         CurrentResolver = GetProperResolver(portData);
 
         isPortActive = true;
-        m_serialPortCtrl.Open(portInfo, this, true);
+        SerialPortCtrl.Open(portInfo, this, true);
 
         return true;
     }
 
     public void OnReceivePort(SerialPort _port)
     {
+        Port = _port;
         try
         {
-            if (_port.IsOpen)
+            if (Port.IsOpen)
             {
-                int byteLength = _port.BytesToRead;
+                if (!m_isInit)
+                {
+                    CurrentResolver.Init(this);
+                    m_isInit = true;
+                }
+
+                int byteLength = Port.BytesToRead;
 
                 if (byteLength <= 0)
                     return;
 
                 m_bytes = new byte[byteLength];
-                _port.Read(m_bytes, 0, byteLength);
+                Port.Read(m_bytes, 0, byteLength);
 
                 CurrentResolver.ResolveBytes(m_bytes);
             }
@@ -87,16 +98,19 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
     {
         LMBasePortResolver retval = null;
 
-        if (portData.type == "wit") 
+        if (portData.type == "jy901") 
         {
-            retval = new LMWitResolver();
+            retval = new JY901();
+        }
+        else if (portData.type == "m7b")
+        {
+            retval = new Leadiy_M7B();
         }
         else
         {
             retval = new LMKeyResolver();
         }
 
-        retval.Init(portData);
         return retval;
     }
 }
