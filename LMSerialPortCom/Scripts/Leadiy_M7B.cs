@@ -10,11 +10,8 @@ public class Leadiy_M7B : LMBasePortResolver
 
     private int m_checksum;
     private Vector3 m_gyro, m_acc, m_angle;
-    private Vector3 m_iGyro, m_iAcc, m_iAngle;
-    private Vector3 m_accumulateAngle;
 
     private int m_length;
-    private bool m_init;
     public const string FULL_VALUE_CODE = "D66D2020";
 
     public int[] byteValues;
@@ -135,42 +132,25 @@ public class Leadiy_M7B : LMBasePortResolver
 
     private void SetupKeyValues(int[] _byteValues)
     {
-        m_gyro.x = ConvertBitwiseToInt16((_byteValues[1] << 8) | _byteValues[0]);
-        m_gyro.y = ConvertBitwiseToInt16((_byteValues[3] << 8) | _byteValues[2]);
-        m_gyro.z = ConvertBitwiseToInt16((_byteValues[5] << 8) | _byteValues[4]);
+        m_gyro.x = LMUtility.ConvertBitwiseToInt16((_byteValues[1] << 8) | _byteValues[0]);
+        m_gyro.y = LMUtility.ConvertBitwiseToInt16((_byteValues[3] << 8) | _byteValues[2]);
+        m_gyro.z = LMUtility.ConvertBitwiseToInt16((_byteValues[5] << 8) | _byteValues[4]);
 
-        m_acc.x = ConvertBitwiseToInt16((_byteValues[7] << 8) | _byteValues[6]);
-        m_acc.y = ConvertBitwiseToInt16((_byteValues[9] << 8) | _byteValues[8]);
-        m_acc.z = ConvertBitwiseToInt16((_byteValues[11] << 8) | _byteValues[10]);
+        m_acc.x = LMUtility.ConvertBitwiseToInt16((_byteValues[7] << 8) | _byteValues[6]);
+        m_acc.y = LMUtility.ConvertBitwiseToInt16((_byteValues[9] << 8) | _byteValues[8]);
+        m_acc.z = LMUtility.ConvertBitwiseToInt16((_byteValues[11] << 8) | _byteValues[10]);
 
-        m_angle.x = ConvertBitwiseToInt16((_byteValues[13] << 8) | _byteValues[12]);
-        m_angle.y = ConvertBitwiseToInt16((_byteValues[15] << 8) | _byteValues[14]);
-        m_angle.z = ConvertBitwiseToInt16((_byteValues[17] << 8) | _byteValues[16]);
+        m_angle.x = LMUtility.ConvertBitwiseToInt16((_byteValues[13] << 8) | _byteValues[12]);
+        m_angle.y = LMUtility.ConvertBitwiseToInt16((_byteValues[15] << 8) | _byteValues[14]);
+        m_angle.z = LMUtility.ConvertBitwiseToInt16((_byteValues[17] << 8) | _byteValues[16]);
 
         m_angle *= 0.01f;
-
-        if (!m_init)
-        {
-            m_init = true;
-
-            m_iGyro = m_gyro;
-            m_iAcc = m_acc;
-            m_iAngle = m_angle;
-        }
-
-        m_accumulateAngle += m_gyro;
 
         if (values.Length >= 0) values[0].SetValue(m_angle.x);
         if (values.Length >= 1) values[1].SetValue(m_angle.y);
         if (values.Length >= 2) values[2].SetValue(m_angle.z);
-
     }
 
-    private int ConvertBitwiseToInt16(int value)
-    {
-        UInt16 ui = Convert.ToUInt16(value);
-        return (Int16)ui;
-    }
 
     public override string ToString()
     {

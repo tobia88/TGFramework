@@ -33,6 +33,11 @@ public static class LMUtility
         }
     }
      
+    public static int ConvertBitwiseToInt16(int value)
+    {
+        UInt16 ui = Convert.ToUInt16(value);
+        return (Int16)ui;
+    }
 
     public static byte[] RemoveSpacing(byte[] _bytes)
     {

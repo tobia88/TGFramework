@@ -1,19 +1,14 @@
-using UnityEngine;
+using System;
 using System.IO.Ports;
+using System.Linq;
+using UnityEngine;
 
 public class JY901 : LMBasePortResolver
 {
     private string m_getString;
+    private Vector3 m_gyro, m_acc, m_angle;
 
-    public int[] byteValues;
-    public Vector3 euler;
-    public bool isInit;
-
-    public override void Init(LMBasePortInput _portInput)
-    {
-        base.Init(_portInput);
-        byteValues = new int[8];
-    }
+    // public int[] byteValues;
 
     public override float GetValue(string key)
     {
@@ -27,7 +22,7 @@ public class JY901 : LMBasePortResolver
 
     public override void Recalibration()
     {
-        foreach(var v in values)
+        foreach (var v in values)
             v.Recalibration();
         // m_outputEuler = Vector3.zero;
     }
@@ -41,48 +36,121 @@ public class JY901 : LMBasePortResolver
 
         for (int i = 0; i < m_bytes.Length; i++)
         {
-            m_getString += m_bytes[i].ToString("X").PadLeft(2,'0') + " ";
+            m_getString += m_bytes[i].ToString("X").PadLeft(2, '0') + " ";
         }
 
+        int accIndex = m_getString.IndexOf("55 51 ");
+        int gyroIndex = m_getString.IndexOf("55 52 ");
+        int angleIndex = m_getString.IndexOf("55 53 ");
 
-        int keyIndex = m_getString.IndexOf("55 53 ");
+        if (accIndex < 0 || gyroIndex < 0 || angleIndex < 0)
+            return;
 
-        if (keyIndex != -1)
-        {
-            var sub = m_getString.Substring(keyIndex + 6);
-            var split = sub.Split(' ');
+        string[] accSplit = m_getString.Substring(accIndex).Split(' ');
+        string[] gyroSplit = m_getString.Substring(gyroIndex).Split(' ');
+        string[] angleSplit = m_getString.Substring(angleIndex).Split(' ');
 
-            if (split.Length >= 8)
-            {
-                HexToNumbers(split);
-                SetupEuler();
-                m_getString = string.Empty;
-            }
-        }
+        if (accSplit.Length < 11 || gyroSplit.Length < 11 || angleSplit.Length < 11)
+            return;
+
+        int[] accArray = HexToArray(accSplit);
+        int[] gyroArray = HexToArray(gyroSplit);
+        int[] angleArray = HexToArray(angleSplit);
+
+        if (accArray == null || gyroArray == null || angleArray == null)
+            return;
+
+        SetupAcceleration(accSplit);
+        SetupAngularVel(gyroSplit);
+        SetupAngle(angleSplit);
+
+        ConsoleProDebug.Watch("JY901", ToString());
+
+        m_getString = string.Empty;
     }
 
-    private void SetupEuler()
+    private bool SetupAngle(string[] _split)
     {
-        for (int i = 0; i < values.Length; i++)
-        {
-            double v = ((byteValues[i*2+1]<<8)|byteValues[i*2])/32768f * 180f;
-            values[i].SetValue(v);
-        }
+        if (_split.Length < 11)
+            return false;
+
+        int[] array = HexToArray(_split);
+
+        if (array == null)
+            return false;
+
+        Vector3 tmpAngle = Vector3.zero;
+
+        tmpAngle.x = LMUtility.ConvertBitwiseToInt16((array[3] << 8) | array[2]) / 32768f * 180f;
+        tmpAngle.y = LMUtility.ConvertBitwiseToInt16((array[5] << 8) | array[4]) / 32768f * 180f;
+        tmpAngle.z = LMUtility.ConvertBitwiseToInt16((array[7] << 8) | array[6]) / 32768f * 180f;
+
+        m_angle = tmpAngle;
+
+        return true;
     }
 
-    private void HexToNumbers(string[] _split)
+    private void SetupAcceleration(string[] _split)
     {
-        string splitHex = string.Empty;
+        int[] array = HexToArray(_split);
 
-        int length = byteValues.Length;
-        for (int i = 0; i < length; i++)
+        if (array == null)
+            return;
+
+        float g = 9.8f;
+
+        m_acc.x = LMUtility.ConvertBitwiseToInt16((array[3] << 8) | array[2]) / 32768f * 16 * g;
+        m_acc.y = LMUtility.ConvertBitwiseToInt16((array[5] << 8) | array[4]) / 32768f * 16 * g;
+        m_acc.z = LMUtility.ConvertBitwiseToInt16((array[7] << 8) | array[6]) / 32768f * 16 * g;
+    }
+
+    private void SetupAngularVel(string[] _split)
+    {
+        int[] array = HexToArray(_split);
+
+        if (array == null)
+            return;
+
+        m_gyro.x = LMUtility.ConvertBitwiseToInt16(((array[3] << 8) | array[2])) / 32768f * 2000;
+        m_gyro.y = LMUtility.ConvertBitwiseToInt16(((array[5] << 8) | array[4])) / 32768f * 2000;
+        m_gyro.z = LMUtility.ConvertBitwiseToInt16(((array[7] << 8) | array[6])) / 32768f * 2000;
+    }
+
+    private int[] HexToArray(string[] _split)
+    {
+        int[] retval = new int[10];
+
+        for (int i = 0; i < retval.Length; i++)
         {
             if (string.IsNullOrEmpty(_split[i]))
-                continue;
+                return null;
 
-            byteValues[i] = System.Convert.ToInt32(_split[i], 16);
-
-            splitHex += _split[i] + " ";
+            retval[i] = Convert.ToInt32(_split[i], 16);
         }
+
+        if (string.IsNullOrWhiteSpace(_split[10]))
+            return null;
+
+        int checkSumVal = Convert.ToInt32(_split[10], 16);
+
+        if (!CheckSum(retval, checkSumVal))
+            return null;
+
+        return retval;
+
+    }
+
+    private bool CheckSum(int[] testValues, int checkSum)
+    {
+        // Debug.Log("Test Values: " + testValues.ToArrayString() + "," + checkSum);
+        // Debug.Log("Test Sum: " + testValues.Sum() + ", check sum: " + checkSum);
+        return true;
+        // return checkSum == testValues.Sum();
+    }
+
+    public override string ToString()
+    {
+        string format = "Gyro: {0}\nAcc: {1}\nAngle:{2}";
+        return string.Format(format, m_gyro, m_acc, m_angle);
     }
 }
