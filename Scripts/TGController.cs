@@ -18,6 +18,7 @@ public class TGController : MonoBehaviour
     public TGMainGame mainGame;
     public TGResultMng resultMng;
     public TGDXCentre dxCentre;
+    public EvaluationSetupData evaluationSetupData;
 
     public LMFileWriter fileWriter;
     public string RootPath

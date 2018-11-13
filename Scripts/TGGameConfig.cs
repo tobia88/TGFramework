@@ -1,22 +1,42 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 using System.Text;
+using UnityEngine;
 
+public class ConfigData
+{
+    public EvaluationSetupData[] infos;
+}
 
 public class TGGameConfig : TGBaseBehaviour
 {
     public string fileName;
     public string sectionName;
-    // public GameConfigInfo[] configInfo;
+    public string evaluationFileName;
+    public ConfigData configData;
 
     private INIParser m_iniParser;
 
     public override IEnumerator StartRoutine(TGController _controller)
     {
         InitParser();
+        if (!string.IsNullOrEmpty(evaluationFileName))
+        {
+            configData = _controller.fileWriter.ReadJSON<ConfigData>(evaluationFileName);
+
+            if (configData != null)
+            {
+                string cnTitle = GetValue("体侧", string.Empty);
+                _controller.evaluationSetupData = GetConfigDataFromTitle(cnTitle);
+            }
+        }
         yield return 1;
+    }
+    private EvaluationSetupData GetConfigDataFromTitle(string cnTitle)
+    {
+        return configData.infos.FirstOrDefault(d => d.cnTitle == cnTitle);
     }
 
     public string GetValue(string key, string defaultValue)
