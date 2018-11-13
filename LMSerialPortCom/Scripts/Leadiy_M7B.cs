@@ -9,6 +9,7 @@ public class Leadiy_M7B : LMBasePortResolver
     private string m_getString;
 
     private int m_checksum;
+    private Vector3 m_lastGyro, m_lastAcc, m_lastAngle;
     private Vector3 m_gyro, m_acc, m_angle;
 
     private int m_length;
@@ -88,8 +89,6 @@ public class Leadiy_M7B : LMBasePortResolver
 
                 SetupKeyValues(byteValues);
                 m_getString = string.Empty;
-
-                Debug.Log(ToString());
             }
         }
     }

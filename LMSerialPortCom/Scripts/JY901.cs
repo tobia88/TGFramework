@@ -6,6 +6,7 @@ using UnityEngine;
 public class JY901 : LMBasePortResolver
 {
     private string m_getString;
+    // private Vector3 m_lastGyro, m_lastAcc, m_lastAngle;
     private Vector3 m_gyro, m_acc, m_angle;
 
     // public int[] byteValues;
@@ -79,13 +80,11 @@ public class JY901 : LMBasePortResolver
         if (array == null)
             return false;
 
-        Vector3 tmpAngle = Vector3.zero;
+        // m_lastAngle = m_angle;
 
-        tmpAngle.x = LMUtility.ConvertBitwiseToInt16((array[3] << 8) | array[2]) / 32768f * 180f;
-        tmpAngle.y = LMUtility.ConvertBitwiseToInt16((array[5] << 8) | array[4]) / 32768f * 180f;
-        tmpAngle.z = LMUtility.ConvertBitwiseToInt16((array[7] << 8) | array[6]) / 32768f * 180f;
-
-        m_angle = tmpAngle;
+        m_angle.x = LMUtility.ConvertBitwiseToInt16((array[3] << 8) | array[2]) / 32768f * 180f;
+        m_angle.y = LMUtility.ConvertBitwiseToInt16((array[5] << 8) | array[4]) / 32768f * 180f;
+        m_angle.z = LMUtility.ConvertBitwiseToInt16((array[7] << 8) | array[6]) / 32768f * 180f;
 
         return true;
     }
@@ -99,6 +98,8 @@ public class JY901 : LMBasePortResolver
 
         float g = 9.8f;
 
+        // m_lastAcc = m_acc;
+
         m_acc.x = LMUtility.ConvertBitwiseToInt16((array[3] << 8) | array[2]) / 32768f * 16 * g;
         m_acc.y = LMUtility.ConvertBitwiseToInt16((array[5] << 8) | array[4]) / 32768f * 16 * g;
         m_acc.z = LMUtility.ConvertBitwiseToInt16((array[7] << 8) | array[6]) / 32768f * 16 * g;
@@ -111,6 +112,9 @@ public class JY901 : LMBasePortResolver
         if (array == null)
             return;
 
+
+        // m_lastGyro = m_gyro;
+        
         m_gyro.x = LMUtility.ConvertBitwiseToInt16(((array[3] << 8) | array[2])) / 32768f * 2000;
         m_gyro.y = LMUtility.ConvertBitwiseToInt16(((array[5] << 8) | array[4])) / 32768f * 2000;
         m_gyro.z = LMUtility.ConvertBitwiseToInt16(((array[7] << 8) | array[6])) / 32768f * 2000;

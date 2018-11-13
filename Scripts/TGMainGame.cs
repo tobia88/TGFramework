@@ -42,7 +42,7 @@ public class TGMainGame : TGBaseBehaviour
         }
         else
         {
-            _controller.ErrorQuit("TGBaseScene no found in scene " + this.SceneName);
+            _controller.ErrorQuit("TGBaseScene doesn't found in scene " + this.SceneName);
             yield break;
         }
     }
@@ -72,8 +72,6 @@ public class TGMainGame : TGBaseBehaviour
 
         if (sceneMatchers != null)
         {
-            Debug.Log(_deviceType);
-
             SceneMatchData data = sceneMatchers.FirstOrDefault(s => s.deviceType == _deviceType);
 
             if (!string.IsNullOrEmpty(data.sceneName))

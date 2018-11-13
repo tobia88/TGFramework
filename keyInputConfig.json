@@ -262,17 +262,24 @@
         },
         {
             "name": "3D传感器",
-            "type": "jy901",
+            "type": "m7b",
             "isDegree": true,
             "value": [
                 {
-                    "key": "x"
+                    "key": "x",
+                    "max": "最大值",
+                    "min": "最小值",
+                    "origin": 0.5
                 },
                 {
-                    "key": "y"
+                    "key": "y",
+                    "max": "最大值",
+                    "min": "最小值"
                 },
                 {
-                    "key": "z"
+                    "key": "z",
+                    "max": "最大值",
+                    "min": "最小值"
                 }
             ]
         },

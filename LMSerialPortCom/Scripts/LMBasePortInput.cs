@@ -98,6 +98,8 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
     {
         LMBasePortResolver retval = null;
 
+        Debug.Log("Port Data Type: " + portData.type);
+
         if (portData.type == "jy901") 
         {
             retval = new JY901();
