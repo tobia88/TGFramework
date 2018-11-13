@@ -113,7 +113,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1352869999490698
 GameObject:
   m_ObjectHideFlags: 1
@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   systemCam: {fileID: 20360474029733652}
-  gameNameCn: "\u5C0F\u9E1F\u8EB2\u98DE\u5F39"
+  gameNameCn: "\u732B\u7BA1\u989C\u8272\u914D"
   gameConfig: {fileID: 114141293912262460}
   inputSetting: {fileID: 114975440256637252}
   mainGame: {fileID: 114730753214534034}
@@ -670,7 +670,9 @@ MonoBehaviour:
   defaultSceneName: 1DScene
   sceneMatchers:
   - deviceType: touch
-    sceneName: 2DScene
+    sceneName: TouchScene
+  - deviceType: m7b
+    sceneName: m7bScene
 --- !u!114 &114753798490562544
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -707,9 +709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   configFileName: keyInputConfig.json
-  portInput: {fileID: 114169427993539042}
   forceUsePort: 0
-  touchCtrl: {fileID: 114225353049054600}
   keyInputConfig:
     keys: []
 --- !u!222 &222114108943857010
