@@ -30,6 +30,8 @@ public class TGGameConfig : TGBaseBehaviour
             {
                 string cnTitle = GetValue("体侧", string.Empty);
                 _controller.evaluationSetupData = GetConfigDataFromTitle(cnTitle);
+
+                Debug.Log("体侧: " + cnTitle + ", Axis: " + _controller.evaluationSetupData.valueAxis.ToString());
             }
         }
         yield return 1;

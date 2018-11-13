@@ -413,6 +413,11 @@ MonoBehaviour:
   mainGame: {fileID: 114730753214534034}
   resultMng: {fileID: 114856060729506674}
   dxCentre: {fileID: 114074567967288708}
+  evaluationSetupData:
+    cnTitle: 
+    animName: 
+    valueAxis: 0
+    reverse: 0
   fileWriter: {fileID: 114295297888918672}
 --- !u!114 &114061166884619898
 MonoBehaviour:
@@ -462,6 +467,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fileName: game.txt
   sectionName: PZConf
+  evaluationFileName: evaluationSetting.json
 --- !u!114 &114169427993539042
 MonoBehaviour:
   m_ObjectHideFlags: 1
