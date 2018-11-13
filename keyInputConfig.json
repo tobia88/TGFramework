@@ -16,7 +16,112 @@
             ]
         },
         {
+            "name": "握力",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "AD"
+                }
+            ],
+            "input": [
+                {
+                    "key": "AD",
+                    "length": 4
+                }
+            ]
+        },
+        {
             "name": "阻尼器",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "-AF/10"
+                }
+            ],
+            "input": [
+                {
+                    "key": "AF",
+                    "length": 4
+                }
+            ]
+        },
+        {
+            "name": "阻尼器-钥匙型工具",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "-AF/10"
+                }
+            ],
+            "input": [
+                {
+                    "key": "AF",
+                    "length": 4
+                }
+            ]
+        },
+        {
+            "name": "阻尼器-圆柱型工具",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "-AF/10"
+                }
+            ],
+            "input": [
+                {
+                    "key": "AF",
+                    "length": 4
+                }
+            ]
+        },
+        {
+            "name": "阻尼器-圆盘型工具",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "-AF/10"
+                }
+            ],
+            "input": [
+                {
+                    "key": "AF",
+                    "length": 4
+                }
+            ]
+        },
+        {
+            "name": "阻尼器-把手工具",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "-AF/10"
+                }
+            ],
+            "input": [
+                {
+                    "key": "AF",
+                    "length": 4
+                }
+            ]
+        },
+        {
+            "name": "阻尼器-杠杆工具",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "-AF/10"
+                }
+            ],
+            "input": [
+                {
+                    "key": "AF",
+                    "length": 4
+                }
+            ]
+        },
+        {
+            "name": "阻尼器-方向盘",
             "value": [
                 {
                     "key": "x",
