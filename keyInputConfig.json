@@ -5,7 +5,9 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "AC"
+                    "equation": "AC",
+                    "min": 0,
+                    "max": "最大值"
                 }
             ],
             "input": [
@@ -20,7 +22,9 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "AD"
+                    "equation": "AD",
+                    "min": 0,
+                    "max": "最大值"
                 }
             ],
             "input": [
@@ -35,7 +39,9 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "-AF/10"
+                    "equation": "-AF/10",
+                    "min": "最小值",
+                    "max": "最大值"
                 }
             ],
             "input": [
@@ -50,7 +56,9 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "-AF/10"
+                    "equation": "-AF/10",
+                    "min": "最小值",
+                    "max": "最大值"
                 }
             ],
             "input": [
@@ -65,7 +73,9 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "-AF/10"
+                    "equation": "-AF/10",
+                    "min": "最小值",
+                    "max": "最大值"
                 }
             ],
             "input": [
@@ -80,7 +90,9 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "-AF/10"
+                    "equation": "-AF/10",
+                    "min": "最小值",
+                    "max": "最大值"
                 }
             ],
             "input": [
@@ -95,7 +107,9 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "-AF/10"
+                    "equation": "-AF/10",
+                    "min": "最小值",
+                    "max": "最大值"
                 }
             ],
             "input": [
@@ -110,7 +124,9 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "-AF/10"
+                    "equation": "-AF/10",
+                    "min": "最小值",
+                    "max": "最大值"
                 }
             ],
             "input": [
@@ -125,7 +141,9 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "-AF/10"
+                    "equation": "-AF/10",
+                    "min": "最小值",
+                    "max": "最大值"
                 }
             ],
             "input": [
@@ -378,13 +396,15 @@
                 },
                 {
                     "key": "y",
-                    "max": "最大值",
-                    "min": "最小值"
+                    "max": "最大值", 
+                    "min": "最小值",
+                    "origin": 0.5
                 },
                 {
                     "key": "z",
                     "max": "最大值",
-                    "min": "最小值"
+                    "min": "最小值",
+                    "origin": 0.5
                 }
             ]
         },
