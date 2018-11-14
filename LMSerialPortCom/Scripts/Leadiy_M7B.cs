@@ -58,7 +58,8 @@ public class Leadiy_M7B : LMBasePortResolver
             m_getString += m_bytes[i].ToString("X").PadLeft(2, '0') + " ";
         }
 
-        string detect = "A7 7A 60 ";
+        // string detect = "A7 7A 60 ";
+        string detect = "A7 7A 72 ";
 
         int keyIndex = m_getString.IndexOf(detect);
 
@@ -131,17 +132,21 @@ public class Leadiy_M7B : LMBasePortResolver
 
     private void SetupKeyValues(int[] _byteValues)
     {
-        m_gyro.x = LMUtility.ConvertBitwiseToInt16((_byteValues[1] << 8) | _byteValues[0]);
-        m_gyro.y = LMUtility.ConvertBitwiseToInt16((_byteValues[3] << 8) | _byteValues[2]);
-        m_gyro.z = LMUtility.ConvertBitwiseToInt16((_byteValues[5] << 8) | _byteValues[4]);
+        // m_gyro.x = LMUtility.ConvertBitwiseToInt16((_byteValues[1] << 8) | _byteValues[0]);
+        // m_gyro.y = LMUtility.ConvertBitwiseToInt16((_byteValues[3] << 8) | _byteValues[2]);
+        // m_gyro.z = LMUtility.ConvertBitwiseToInt16((_byteValues[5] << 8) | _byteValues[4]);
 
-        m_acc.x = LMUtility.ConvertBitwiseToInt16((_byteValues[7] << 8) | _byteValues[6]);
-        m_acc.y = LMUtility.ConvertBitwiseToInt16((_byteValues[9] << 8) | _byteValues[8]);
-        m_acc.z = LMUtility.ConvertBitwiseToInt16((_byteValues[11] << 8) | _byteValues[10]);
+        // m_acc.x = LMUtility.ConvertBitwiseToInt16((_byteValues[7] << 8) | _byteValues[6]);
+        // m_acc.y = LMUtility.ConvertBitwiseToInt16((_byteValues[9] << 8) | _byteValues[8]);
+        // m_acc.z = LMUtility.ConvertBitwiseToInt16((_byteValues[11] << 8) | _byteValues[10]);
 
-        m_angle.x = LMUtility.ConvertBitwiseToInt16((_byteValues[13] << 8) | _byteValues[12]);
-        m_angle.y = LMUtility.ConvertBitwiseToInt16((_byteValues[15] << 8) | _byteValues[14]);
-        m_angle.z = LMUtility.ConvertBitwiseToInt16((_byteValues[17] << 8) | _byteValues[16]);
+        // m_angle.x = LMUtility.ConvertBitwiseToInt16((_byteValues[13] << 8) | _byteValues[12]);
+        // m_angle.y = LMUtility.ConvertBitwiseToInt16((_byteValues[15] << 8) | _byteValues[14]);
+        // m_angle.z = LMUtility.ConvertBitwiseToInt16((_byteValues[17] << 8) | _byteValues[16]);
+
+        m_angle.x = LMUtility.ConvertBitwiseToInt16((_byteValues[1] << 8) | _byteValues[0]);
+        m_angle.y = LMUtility.ConvertBitwiseToInt16((_byteValues[3] << 8) | _byteValues[2]);
+        m_angle.z = LMUtility.ConvertBitwiseToInt16((_byteValues[5] << 8) | _byteValues[4]);
 
         m_angle *= 0.01f;
 

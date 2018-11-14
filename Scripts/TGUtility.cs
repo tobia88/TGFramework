@@ -80,6 +80,15 @@ public static class TGUtility
             rv += di;
         }
 
+        if (rv >= 360)
+        {
+            rv %= 360;
+        }
+        else if (rv <= -360)
+        {
+            rv %= -360;
+        }
+
         return rv;
     }
 
