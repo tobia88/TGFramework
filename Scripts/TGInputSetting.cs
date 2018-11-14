@@ -71,6 +71,11 @@ public class TGInputSetting : TGBaseBehaviour
         yield return 1;
     }
 
+    public float GetValueFromEvalAxis()
+    {
+        return GetValue(TGController.Instance.evaluationSetupData.valueAxis.ToString());
+    }
+
     public float GetValue(string key)
     {
         if (IsPortActive)
