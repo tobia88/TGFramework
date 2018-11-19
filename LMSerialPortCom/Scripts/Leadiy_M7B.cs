@@ -150,6 +150,9 @@ public class Leadiy_M7B : LMBasePortResolver
 
         m_angle *= 0.01f;
 
+        if (values == null)
+            return;
+
         if (values.Length >= 0) values[0].SetValue(m_angle.x);
         if (values.Length >= 1) values[1].SetValue(m_angle.y);
         if (values.Length >= 2) values[2].SetValue(m_angle.z);

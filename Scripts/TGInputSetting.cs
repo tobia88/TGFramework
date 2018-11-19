@@ -10,7 +10,10 @@ public class TGInputSetting : TGBaseBehaviour
     public bool forceUsePort;
     public LMTouchCtrl touchCtrl { get; private set; }
     public KeyInputConfig keyInputConfig;
-    public bool IsPortActive { get; private set; }
+    public bool IsPortActive 
+    {
+        get { return portInput.isPortActive; }
+    }
 
     public string DeviceType
     {
@@ -57,9 +60,7 @@ public class TGInputSetting : TGBaseBehaviour
         {
             portInput.portInfo.comName = "COM" + _controller.gameConfig.GetValue("端口", -1);
 
-            IsPortActive = portInput.OnStart(portData);
-
-            if (!IsPortActive)
+            if (!portInput.OnStart(portData))
             {
                 Debug.LogWarning(portInput.ErrorTxt);
                 touchCtrl.enabled = true;

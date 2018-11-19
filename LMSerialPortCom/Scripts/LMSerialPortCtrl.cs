@@ -82,7 +82,7 @@ public class LMSerialPortCtrl : MonoBehaviour
 
     private void ThreadUpdate(object _obj)
     {
-        while (m_port.IsOpen)
+        while (m_port != null && m_port.IsOpen)
         {
             if (m_receiver != null)
                 m_receiver.OnReceivePort(m_port);

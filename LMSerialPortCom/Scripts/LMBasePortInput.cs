@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO.Ports;
 using System.Linq;
 using UnityEngine;
@@ -18,6 +19,8 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 {
     protected bool m_isInit;
     protected byte[] m_bytes;
+    protected float m_cdToReconnect;
+    protected int m_byteLength;
     public SerialPort Port { get; private set; }
     public LMBasePortResolver CurrentResolver { get; private set; }
     public LMSerialPortCtrl SerialPortCtrl { get; private set; }
@@ -27,7 +30,6 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         get;
         protected set;
     }
-
 
     public PortInfo portInfo;
     public bool isPortActive = false;
@@ -45,12 +47,33 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
             return false;
         }
 
-        CurrentResolver = GetProperResolver(portData);
-
-        isPortActive = true;
-        SerialPortCtrl.Open(portInfo, this, true);
+        Connect();
 
         return true;
+    }
+
+    public void Connect()
+    {
+        CurrentResolver = GetProperResolver(KeyportData);
+        SerialPortCtrl.Open(portInfo, this, true);
+
+        isPortActive = true;
+    }
+
+    private bool CountdownToReconnect()
+    {
+        return m_cdToReconnect > 500;
+    }
+
+    private void Update()
+    {
+        if (!isPortActive)
+            return;
+
+        if (CountdownToReconnect())
+        {
+            ReconnectInFewSeconds();
+        }
     }
 
     public void OnReceivePort(SerialPort _port)
@@ -61,20 +84,19 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
             if (Port.IsOpen)
             {
                 if (!m_isInit)
+                    InitPortResolver();
+
+                m_byteLength = Port.BytesToRead;
+
+                if (m_byteLength > 0)
                 {
-                    CurrentResolver.Init(this);
-                    m_isInit = true;
+                    m_cdToReconnect = 0;
+                    ReadData();
                 }
-
-                int byteLength = Port.BytesToRead;
-
-                if (byteLength <= 0)
-                    return;
-
-                m_bytes = new byte[byteLength];
-                Port.Read(m_bytes, 0, byteLength);
-
-                CurrentResolver.ResolveBytes(m_bytes);
+                else
+                {
+                    m_cdToReconnect++;
+                }
             }
         }
         catch (Exception _ex)
@@ -84,7 +106,43 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         }
     }
 
-    public virtual float GetValue(string key) 
+    private void ReconnectInFewSeconds()
+    {
+        isPortActive = false;
+        m_isInit = false;
+        m_cdToReconnect = 0f;
+        SerialPortCtrl.Close();
+        StartCoroutine(ReconnectDelay());
+    }
+
+    IEnumerator ReconnectDelay()
+    {
+        Debug.Log("Reconnecting in 5 seconds...");
+        yield return new WaitForSeconds(5);
+        Debug.Log("Reconnect");
+        Connect();
+    }
+
+    private void InitPortResolver()
+    {
+
+        CurrentResolver.Init(this);
+        m_isInit = true;
+    }
+
+    private void ReadData()
+    {
+        m_cdToReconnect = 0f;
+        isPortActive = true;
+
+        m_bytes = new byte[m_byteLength];
+        Port.Read(m_bytes, 0, m_byteLength);
+
+        CurrentResolver.ResolveBytes(m_bytes);
+
+    }
+
+    public virtual float GetValue(string key)
     {
         return CurrentResolver.GetValue(key);
     }
@@ -100,7 +158,7 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 
         Debug.Log("Port Data Type: " + portData.type);
 
-        if (portData.type == "jy901") 
+        if (portData.type == "jy901")
         {
             retval = new JY901();
         }
