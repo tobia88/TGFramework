@@ -7,12 +7,11 @@ public class TGInputSetting : TGBaseBehaviour
 {
     public string configFileName;
     public LMBasePortInput portInput { get; private set; }
-    public bool forceUsePort;
     public LMTouchCtrl touchCtrl { get; private set; }
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive
     {
-        get { return portInput.isPortActive; }
+        get { return (portInput == null) ? false : portInput.isPortActive; }
     }
 
     public string DeviceName { get; private set; }
@@ -77,7 +76,10 @@ public class TGInputSetting : TGBaseBehaviour
 
     public float GetValueFromEvalAxis()
     {
-        return GetValue((int)TGController.Instance.evaluationSetupData.valueAxis);
+        var data = TGController.Instance.evaluationSetupData;
+        var valueAxis = data.valueAxis;
+        var sign = (data.reverse) ? -1 : 1;
+        return GetValue((int)valueAxis) * sign;
     }
 
     public float GetValue(int index)

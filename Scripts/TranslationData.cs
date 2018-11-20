@@ -12,13 +12,6 @@ public enum ValueAxis
 [System.Serializable]
 public struct EvaluationSetupData
 {
-	public enum FlipMethods
-	{
-		Null,
-		FlipModel,
-		FlipEntire
-	}
-
 	public string cnTitle;
 	public string animName;
 	public string FilterAnimName

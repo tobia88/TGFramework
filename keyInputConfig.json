@@ -177,19 +177,19 @@
                     "key": "x",
                     "max": "最大值",
                     "min": "最小值",
-                    "origin": 0
+                    "origin": -1
                 },
                 {
                     "key": "y",
                     "max": "最大值",
                     "min": "最小值",
-                    "origin": 0
+                    "origin": -1
                 },
                 {
                     "key": "z",
                     "max": "最大值",
                     "min": "最小值",
-                    "origin": 0
+                    "origin": -1
                 }
             ]
         },

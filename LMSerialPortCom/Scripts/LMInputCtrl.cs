@@ -49,6 +49,9 @@ public class LMInputCtrl : MonoBehaviour
 
     private void TouchInputUpdate(LMTouchCtrl touch)
     {
+        if (touch == null)
+            return;
+
         if (touch.IsTouched)
             m_playerCtrl.MoveByTouch(touch.CurrentPosition);
     }

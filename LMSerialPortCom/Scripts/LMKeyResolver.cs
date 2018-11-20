@@ -36,7 +36,7 @@ public class KeyResolveValue
 
         equation = _data.equation;
 
-        value = m_default = min + (max - min) * _data.origin;
+        value = m_default = (_data.origin == -1) ? 0 : min + (max - min) * _data.origin;
     }
 
     public void Recalibration()
