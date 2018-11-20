@@ -20,11 +20,12 @@ public class KeyResolveValue
     public float max;
     public bool isDegree;
     public bool raw;
+    public bool reverse;
 
     public double LastRawValue { get; private set; }
     public double RawValue { get; private set; }
 
-    public KeyResolveValue(KeyPortValueData _data, bool _degree, bool _raw)
+    public KeyResolveValue(KeyPortValueData _data, bool _degree, bool _raw, bool _reverse)
     {
         key = _data.key;
         isDegree = _degree;
@@ -68,11 +69,13 @@ public class KeyResolveValue
 
         if (isDegree)
         {
-            value = TGUtility.PreventValueSkipping(value, LastRawValue, RawValue);
+            value = TGUtility.PreventValueSkipping(value, LastRawValue, RawValue, reverse);
         }
         else
         {
-            value += (float)(RawValue - LastRawValue);
+            int sign = (reverse) ? -1 : 1;
+            float dist = (float)(RawValue - LastRawValue);
+            value += dist * sign;
         }
 
     }

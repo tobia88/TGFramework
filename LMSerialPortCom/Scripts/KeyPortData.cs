@@ -9,6 +9,7 @@ public class KeyPortValueData
     public string min;
     public string max;
     public float origin;
+    public bool reverse;
 }
 
 [System.Serializable]

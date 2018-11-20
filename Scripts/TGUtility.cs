@@ -62,23 +62,25 @@ public static class TGUtility
         return TGController.Instance.fileWriter.ReadJSON<KeyInputConfig>(_configFileName);
     }
 
-    public static double PreventValueSkipping(double cx, double lv, double nv)
+    public static double PreventValueSkipping(double cx, double lv, double nv, bool r)
     {
+        double sign = (r) ? -1 : 1;
+
         double di = nv - lv;
         double rv = cx;
 
+        double delta = di;
+
         if (di <= -180) //Warp around toward right
         {
-            rv += (360 - lv) + nv;
+            delta = (360 - lv) + nv;
         }
         else if (di >= 180) //Warp around toward left
         {
-            rv -= ((360 - nv) + lv);
+            delta = (nv - 360) - lv;
         }
-        else
-        {
-            rv += di;
-        }
+
+        rv += delta * sign;
 
         if (rv >= 360)
         {

@@ -17,13 +17,17 @@ public class Leadiy_M7B : LMBasePortResolver
 
     public int[] byteValues;
 
-    // public override void Init(LMBasePortInput _portInput)
-    // {
-    //     base.Init(_portInput);
-    //     string hexCode = StringToHex(FULL_VALUE_CODE);
-    //     Debug.Log("Converting Code: " + FULL_VALUE_CODE + " to " + hexCode + " and send to port");
-    //     _portInput.Port.Write(hexCode);
-    // }
+    public override void Init(LMBasePortInput _portInput)
+    {
+        base.Init(_portInput);
+
+        var setupData = TGController.Instance.evaluationSetupData;
+        var currentValue = values[(int)setupData.valueAxis];
+        currentValue.reverse = setupData.reverse;
+        // string hexCode = StringToHex(FULL_VALUE_CODE);
+        // Debug.Log("Converting Code: " + FULL_VALUE_CODE + " to " + hexCode + " and send to port");
+        // _portInput.Port.Write(hexCode);
+    }
 
     // private string StringToHex(string hexStr)
     // {

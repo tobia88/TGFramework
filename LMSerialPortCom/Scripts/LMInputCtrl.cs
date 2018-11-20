@@ -8,7 +8,6 @@ public interface IInputReceiver
     void MoveByTouch(Vector2 _pos);
 }
 
-
 public class LMInputCtrl : MonoBehaviour
 {
     [Range(0f, 1f)]
@@ -64,28 +63,42 @@ public class LMInputCtrl : MonoBehaviour
 
         if (input.DeviceType == "m7b")
         {
-            if (strOrder[0] == 'x')
-                target.x = input.GetValueFromEvalAxis();
-            
-            else if (strOrder[0] == 'y')
-                target.y = input.GetValueFromEvalAxis();
-
-            else if (strOrder[0] == 'z')
-                target.z = input.GetValueFromEvalAxis();
+            target = M7BUpdate(input, strOrder);
         }
         else
         {
             target = input.GetValues(strOrder);
-        }
 
-        target.x = Mathf.Clamp(target.x, 0f, 1f);
-        target.y = Mathf.Clamp(target.y, 0f, 1f);
-        target.z = Mathf.Clamp(target.z, 0f, 1f);
+            target.x = Mathf.Clamp01(target.x);
+            target.y = Mathf.Clamp01(target.y);
+            target.z = Mathf.Clamp01(target.z);
+        }
 
         m_input.x = Mathf.Lerp(m_input.x, target.x, damp);
         m_input.y = Mathf.Lerp(m_input.y, target.y, damp);
         m_input.z = Mathf.Lerp(m_input.z, target.z, damp);
 
         m_playerCtrl.MoveByPort(m_input);
+    }
+
+    private Vector3 M7BUpdate(TGInputSetting input, string strOrder)
+    {
+        Vector3 retval = Vector3.zero;
+
+        float val = Mathf.Clamp01(input.GetValueFromEvalAxis());
+
+        if (TGController.Instance.evaluationSetupData.reverse)
+            val = 1f - val;
+
+        if (strOrder[0] == 'x')
+            retval.x = val;
+
+        else if (strOrder[0] == 'y')
+            retval.y = val;
+
+        else if (strOrder[0] == 'z')
+            retval.z = val;
+
+        return retval;
     }
 }

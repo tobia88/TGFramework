@@ -78,8 +78,7 @@ public class TGInputSetting : TGBaseBehaviour
     {
         var data = TGController.Instance.evaluationSetupData;
         var valueAxis = data.valueAxis;
-        var sign = (data.reverse) ? -1 : 1;
-        return GetValue((int)valueAxis) * sign;
+        return GetValue((int)valueAxis);
     }
 
     public float GetValue(int index)

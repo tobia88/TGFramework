@@ -68,8 +68,6 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         Debug.Log("正在读取端口: " + portInfo.comName);
         CurrentResolver = GetProperResolver(KeyportData);
         isPortActive = SerialPortCtrl.Open(portInfo, this, true);
-
-        isPortActive = true;
     }
 
     private bool CountdownToReconnect()
