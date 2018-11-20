@@ -13,6 +13,17 @@ public interface IPortReceiver
 public class KeyInputConfig
 {
     public KeyPortData[] keys;
+
+    public KeyPortData GetKeyportData(string keyName)
+    {
+        foreach (KeyPortData k in keys)
+        {
+            if (k.name.FirstOrDefault(n => n == keyName) != null)
+                return k;
+        }
+
+        return null;
+    }
 }
 
 public class LMBasePortInput : MonoBehaviour, IPortReceiver
@@ -54,15 +65,16 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 
     public void Connect()
     {
+        Debug.Log("正在读取端口: " + portInfo.comName);
         CurrentResolver = GetProperResolver(KeyportData);
-        SerialPortCtrl.Open(portInfo, this, true);
+        isPortActive = SerialPortCtrl.Open(portInfo, this, true);
 
         isPortActive = true;
     }
 
     private bool CountdownToReconnect()
     {
-        return m_cdToReconnect > 500;
+        return m_cdToReconnect > 20000;
     }
 
     private void Update()
@@ -101,8 +113,8 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         }
         catch (Exception _ex)
         {
-            ErrorTxt = _ex.ToString();
-            Debug.LogWarning(_ex);
+            ErrorTxt = _ex.Message;
+            m_cdToReconnect++;
         }
     }
 
@@ -142,9 +154,23 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 
     }
 
-    public virtual float GetValue(string key)
+    public virtual float GetValue(int index)
     {
-        return CurrentResolver.GetValue(key);
+        var v = CurrentResolver.values;
+        if (v == null)
+        {
+            TGController.Instance.DebugText("没有串口数据");
+            return 0f;
+        }
+
+        if (v.Length > index)
+        {
+            return v[index].GetValue();
+        }
+
+        TGController.Instance.DebugText("取值索引" + index + "大于数组长度: " + CurrentResolver.values.Length);
+
+        return 0f;
     }
 
     public virtual void Recalibration()

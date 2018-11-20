@@ -13,22 +13,22 @@ public class Leadiy_M7B : LMBasePortResolver
     private Vector3 m_gyro, m_acc, m_angle;
 
     private int m_length;
-    public const string FULL_VALUE_CODE = "D66D2020";
+    // public const string FULL_VALUE_CODE = "D66D2020";
 
     public int[] byteValues;
 
-    public override void Init(LMBasePortInput _portInput)
-    {
-        base.Init(_portInput);
-        string hexCode = StringToHex(FULL_VALUE_CODE);
-        Debug.Log("Converting Code: " + FULL_VALUE_CODE + " to " + hexCode + " and send to port");
-        _portInput.Port.Write(hexCode);
-    }
+    // public override void Init(LMBasePortInput _portInput)
+    // {
+    //     base.Init(_portInput);
+    //     string hexCode = StringToHex(FULL_VALUE_CODE);
+    //     Debug.Log("Converting Code: " + FULL_VALUE_CODE + " to " + hexCode + " and send to port");
+    //     _portInput.Port.Write(hexCode);
+    // }
 
-    private string StringToHex(string hexStr)
-    {
-        return String.Concat(hexStr.Select(x => Convert.ToInt32(x).ToString("X")));
-    }
+    // private string StringToHex(string hexStr)
+    // {
+    //     return String.Concat(hexStr.Select(x => Convert.ToInt32(x).ToString("X")));
+    // }
 
     public override float GetValue(string key)
     {

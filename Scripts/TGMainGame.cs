@@ -42,7 +42,7 @@ public class TGMainGame : TGBaseBehaviour
         }
         else
         {
-            _controller.ErrorQuit("TGBaseScene doesn't found in scene " + this.SceneName);
+            _controller.ErrorQuit("TGBaseScene doesn't found on scene " + this.SceneName);
             yield break;
         }
     }

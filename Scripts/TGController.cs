@@ -55,13 +55,19 @@ public class TGController : MonoBehaviour
         StopAllCoroutines();
         Application.Quit();
     }
+    
+    public void DebugText(string _txt)
+    {
+        dxCentre.DebugText(_txt);
+    }
+
     public void ErrorQuit(string _error) 
     {
         // Write down error
         Debug.LogWarning(_error);
         StopAllCoroutines();
         systemCam.gameObject.SetActive(true);
-        dxCentre.DebugText(_error);
+        DebugText(_error); 
         // Quit();
         
         EnableDiagnosis();

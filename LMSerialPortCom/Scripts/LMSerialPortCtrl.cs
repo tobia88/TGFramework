@@ -36,7 +36,7 @@ public class LMSerialPortCtrl : MonoBehaviour
         return false;
     }
 
-    public LMSerialPortCtrl Open(PortInfo _info, IPortReceiver _receiver, bool _isBackground = true, int _writeTimeout = 1, int _readTimeout = 1)
+    public bool Open(PortInfo _info, IPortReceiver _receiver, bool _isBackground = true, int _writeTimeout = 1, int _readTimeout = 1)
     {
         m_receiver = _receiver;
 
@@ -51,13 +51,16 @@ public class LMSerialPortCtrl : MonoBehaviour
             m_thread = new Thread(new ParameterizedThreadStart(ThreadUpdate));
             m_thread.IsBackground = _isBackground;
             m_thread.Start(m_port);
+
+            return true;
         }
         catch (Exception _ex)
         {
+            TGController.Instance.DebugText(_ex.Message);
             Debug.LogWarning(_ex.Message);
         }
 
-        return this;
+        return false;
     }
 
     private void OnDestroy()

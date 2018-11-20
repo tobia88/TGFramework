@@ -1,7 +1,10 @@
 {
     "keys": [
         {
-            "name": "捏力",
+            "name": [
+                "捏力",
+                "握力"
+            ],
             "value": [
                 {
                     "key": "x",
@@ -18,24 +21,15 @@
             ]
         },
         {
-            "name": "握力",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "AD",
-                    "min": 0,
-                    "max": "最大值"
-                }
+            "name": [
+                "阻尼器-钥匙型工具",
+                "阻尼器-钥匙型工具",
+                "阻尼器-圆柱形工具",
+                "阻尼器-圆盘型工具",
+                "阻尼器-把手工具",
+                "阻尼器-杠杆工具",
+                "阻尼器-方向盘"
             ],
-            "input": [
-                {
-                    "key": "AD",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "阻尼器",
             "value": [
                 {
                     "key": "x",
@@ -52,109 +46,9 @@
             ]
         },
         {
-            "name": "阻尼器-钥匙型工具",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "-AF/10",
-                    "min": "最小值",
-                    "max": "最大值"
-                }
+            "name": [
+                "腕部尺偏桡偏"
             ],
-            "input": [
-                {
-                    "key": "AF",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "阻尼器-圆柱型工具",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "-AF/10",
-                    "min": "最小值",
-                    "max": "最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "AF",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "阻尼器-圆盘型工具",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "-AF/10",
-                    "min": "最小值",
-                    "max": "最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "AF",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "阻尼器-把手工具",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "-AF/10",
-                    "min": "最小值",
-                    "max": "最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "AF",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "阻尼器-杠杆工具",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "-AF/10",
-                    "min": "最小值",
-                    "max": "最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "AF",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "阻尼器-方向盘",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "-AF/10",
-                    "min": "最小值",
-                    "max": "最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "AF",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "腕部尺偏桡偏",
             "value": [
                 {
                     "key": "x",
@@ -172,7 +66,9 @@
             ]
         },
         {
-            "name": "前臂旋前旋后",
+            "name": [
+                "前臂旋前旋后"
+            ],
             "value": [
                 {
                     "key": "x",
@@ -190,7 +86,9 @@
             ]
         },
         {
-            "name": "手腕屈伸",
+            "name": [
+                "手腕屈伸"
+            ],
             "value": [
                 {
                     "key": "x",
@@ -208,7 +106,16 @@
             ]
         },
         {
-            "name": "拇指活动度",
+            "name": [
+                "拇指活动度",
+                "柱状抓握",
+                "提拉",
+                "平拉",
+                "手指伸展",
+                "球状抓握",
+                "侧捏协调",
+                "全指抓捏"
+            ],
             "value": [
                 {
                     "key": "x",
@@ -226,133 +133,10 @@
             ]
         },
         {
-            "name": "柱状抓握",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "BB/10",
-                    "origin": 0,
-                    "min": 0,
-                    "max": "活动范围最大值"
-                }
+            "name": [
+                "压力板(手部)",
+                "压力板(脚部)"
             ],
-            "input": [
-                {
-                    "key": "BB",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "提拉",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "BB/10",
-                    "origin": 0,
-                    "min": 0,
-                    "max": "活动范围最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "BB",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "平拉",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "BB/10",
-                    "origin": 0,
-                    "min": 0,
-                    "max": "活动范围最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "BB",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "手指伸展",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "BB/10",
-                    "origin": 0,
-                    "min": 0,
-                    "max": "活动范围最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "BB",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "球状抓握",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "BB/10",
-                    "origin": 0,
-                    "min": 0,
-                    "max": "活动范围最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "BB",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "侧捏协调",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "BB/10",
-                    "origin": 0,
-                    "min": 0,
-                    "max": "活动范围最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "BB",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "全指抓捏",
-            "value": [
-                {
-                    "key": "x",
-                    "equation": "BB/10",
-                    "origin": 0,
-                    "min": 0,
-                    "max": "活动范围最大值"
-                }
-            ],
-            "input": [
-                {
-                    "key": "BB",
-                    "length": 4
-                }
-            ]
-        },
-        {
-            "name": "平衡器",
             "value": [
                 {
                     "key": "x",
@@ -384,7 +168,9 @@
             ]
         },
         {
-            "name": "3D传感器",
+            "name": [
+                "3D传感器"
+            ],
             "type": "m7b",
             "isDegree": true,
             "value": [
@@ -392,24 +178,26 @@
                     "key": "x",
                     "max": "最大值",
                     "min": "最小值",
-                    "origin": 0.5
+                    "origin": 0
                 },
                 {
                     "key": "y",
-                    "max": "最大值", 
+                    "max": "最大值",
                     "min": "最小值",
-                    "origin": 0.5
+                    "origin": 0
                 },
                 {
                     "key": "z",
                     "max": "最大值",
                     "min": "最小值",
-                    "origin": 0.5
+                    "origin": 0
                 }
             ]
         },
         {
-            "name": "触屏控制",
+            "name": [
+                "触屏控制"
+            ],
             "type": "touch"
         }
     ]

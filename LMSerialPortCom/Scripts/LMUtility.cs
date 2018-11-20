@@ -20,7 +20,7 @@ public static class LMUtility
         throw new System.ArgumentException("Key is only accept x, y or z");
     }
 
-    public static Vector3 GetReorderPos(this Vector3 output, string order)
+    public static Vector3 Reorder(this Vector3 output, string order)
     {
         switch(order)
         {

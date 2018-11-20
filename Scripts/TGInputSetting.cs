@@ -10,10 +10,12 @@ public class TGInputSetting : TGBaseBehaviour
     public bool forceUsePort;
     public LMTouchCtrl touchCtrl { get; private set; }
     public KeyInputConfig keyInputConfig;
-    public bool IsPortActive 
+    public bool IsPortActive
     {
         get { return portInput.isPortActive; }
     }
+
+    public string DeviceName { get; private set; }
 
     public string DeviceType
     {
@@ -44,13 +46,13 @@ public class TGInputSetting : TGBaseBehaviour
 
         keyInputConfig = TGUtility.ParseConfigFile(configFileName);
 
-        string equipName = _controller.gameConfig.GetValue("训练器材", string.Empty);
+        DeviceName = _controller.gameConfig.GetValue("训练器材", string.Empty);
 
-        KeyPortData portData = keyInputConfig.keys.FirstOrDefault(k => k.name == equipName);
+        KeyPortData portData = keyInputConfig.GetKeyportData(DeviceName);
 
         if (portData == null)
         {
-            _controller.ErrorQuit("训练器材 " + equipName + "不存在！");
+            _controller.ErrorQuit("训练器材 " + DeviceName + "不存在！");
             yield break;
         }
 
@@ -62,7 +64,8 @@ public class TGInputSetting : TGBaseBehaviour
 
             if (!portInput.OnStart(portData))
             {
-                Debug.LogWarning(portInput.ErrorTxt);
+                // Debug.LogWarning(portInput.ErrorTxt);
+                _controller.DebugText(portInput.ErrorTxt);
                 touchCtrl.enabled = true;
             }
         }
@@ -74,15 +77,28 @@ public class TGInputSetting : TGBaseBehaviour
 
     public float GetValueFromEvalAxis()
     {
-        return GetValue(TGController.Instance.evaluationSetupData.valueAxis.ToString());
+        return GetValue((int)TGController.Instance.evaluationSetupData.valueAxis);
     }
 
-    public float GetValue(string key)
+    public float GetValue(int index)
     {
         if (IsPortActive)
-            return portInput.GetValue(key);
-        
+            return portInput.GetValue(index);
+
         return 0f;
+    }
+
+    public Vector3 GetValues(string order)
+    {
+        Vector3 retval = Vector3.zero;
+        if (IsPortActive)
+        {
+            retval.x = portInput.GetValue(0);
+            retval.y = portInput.GetValue(1);
+            retval.z = portInput.GetValue(2);
+            retval.Reorder(order);
+        }
+        return retval;
     }
 
     public void Recalibration()

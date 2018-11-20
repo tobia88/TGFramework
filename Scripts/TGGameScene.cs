@@ -106,6 +106,7 @@ public class TGGameScene : TGBaseScene
         uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
         uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 
+        uiRoot.tutorialPanel.SetImage(Resources.Load<Sprite>(controller.inputSetting.DeviceName));
         uiRoot.tutorialPanel.confirmBtn.onClick.AddListener(uiRoot.tutorialPanel.Exit);
         uiRoot.tutorialPanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 

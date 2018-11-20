@@ -3,14 +3,19 @@ public abstract class LMBasePortResolver
     protected byte[] m_bytes;
     protected LMBasePortInput m_portInput;
 
-    public string deviceName;
     public string deviceType;
     public KeyPortData PortData { get; private set; }
     public KeyResolveValue[] values;
     public KeyResolveInput[] inputs;
     public int AxisAmount
     {
-        get { return values.Length; }
+        get
+        {
+            if (values == null)
+                return 0;
+
+            return values.Length;
+        }
     }
 
     public virtual void Init(LMBasePortInput _portInput)
@@ -19,7 +24,6 @@ public abstract class LMBasePortResolver
 
         PortData = m_portInput.KeyportData;
 
-        deviceName = PortData.name;
         deviceType = PortData.type;
 
         InitInputs(PortData.input);

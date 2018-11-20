@@ -6,7 +6,6 @@ public class KeyPortValueData
     public string key;
     public string equation;
     
-    public float value;
     public string min;
     public string max;
     public float origin;
@@ -22,9 +21,8 @@ public class KeyPortInputData
 [System.Serializable]
 public class KeyPortData
 {
-    public string name;
+    public string[] name;
     public string type;
-    public string order;
     public bool isDegree;
     public bool raw;
     public string thresholdEquation;

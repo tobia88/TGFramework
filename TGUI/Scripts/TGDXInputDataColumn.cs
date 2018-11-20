@@ -17,13 +17,16 @@ public class TGDXInputDataColumn : MonoBehaviour {
 	{
 		m_keyResolver = keyResolver;
 
-		titleTxt.text = m_keyResolver.deviceName;
+		titleTxt.text = TGController.Instance.inputSetting.DeviceName;
 
 		SetupTestBars();
 	}
 
 	private void SetupTestBars()
 	{
+		if (m_keyResolver.values == null)
+			return;
+
 		int length = m_keyResolver.values.Length;
 		testBars = new TGDXKeyTestBar[length];
 
