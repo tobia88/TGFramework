@@ -97,9 +97,8 @@ public class TGInputSetting : TGBaseBehaviour
             retval.x = portInput.GetValue(0);
             retval.y = portInput.GetValue(1);
             retval.z = portInput.GetValue(2);
-            retval.Reorder(order);
         }
-        return retval;
+        return retval.Reorder(order);
     }
 
     public void Recalibration()

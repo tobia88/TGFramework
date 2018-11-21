@@ -90,14 +90,16 @@ public class LMInputCtrl : MonoBehaviour
         if (TGController.Instance.evaluationSetupData.reverse)
             val = 1f - val;
 
-        if (strOrder[0] == 'x')
-            retval.x = val;
+        retval.x = val;
 
-        else if (strOrder[0] == 'y')
-            retval.y = val;
+        // if (strOrder[0] == 'x')
+        //     retval.x = val;
 
-        else if (strOrder[0] == 'z')
-            retval.z = val;
+        // else if (strOrder[0] == 'y')
+        //     retval.y = val;
+
+        // else if (strOrder[0] == 'z')
+        //     retval.z = val;
 
         return retval;
     }
