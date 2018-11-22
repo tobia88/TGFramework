@@ -89,7 +89,7 @@ public class TGInputSetting : TGBaseBehaviour
         return 0f;
     }
 
-    public Vector3 GetValues(string order)
+    public Vector3 GetValues()
     {
         Vector3 retval = Vector3.zero;
         if (IsPortActive)
@@ -98,7 +98,13 @@ public class TGInputSetting : TGBaseBehaviour
             retval.y = portInput.GetValue(1);
             retval.z = portInput.GetValue(2);
         }
-        return retval.Reorder(order);
+
+        return retval;
+    }
+
+    public Vector3 GetValues(string order)
+    {
+        return GetValues().Reorder(order);
     }
 
     public void Recalibration()

@@ -11,15 +11,15 @@ public class JY901 : LMBasePortResolver
 
     // public int[] byteValues;
 
-    public override float GetValue(string key)
-    {
-        Vector3 euler = Vector3.zero;
-        euler.x = (values.Length > 0) ? values[0].GetValue() : 0;
-        euler.y = (values.Length > 1) ? values[1].GetValue() : 0;
-        euler.z = (values.Length > 2) ? values[2].GetValue() : 0;
+    // public override float GetValue(string key)
+    // {
+    //     Vector3 euler = Vector3.zero;
+    //     euler.x = (values.Length > 0) ? values[0].GetValue() : 0;
+    //     euler.y = (values.Length > 1) ? values[1].GetValue() : 0;
+    //     euler.z = (values.Length > 2) ? values[2].GetValue() : 0;
 
-        return euler.GetPosFromAxis(key);
-    }
+    //     return euler.GetPosFromAxis(key);
+    // }
 
     public override void Recalibration()
     {

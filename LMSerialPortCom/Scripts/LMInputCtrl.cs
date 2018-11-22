@@ -74,6 +74,8 @@ public class LMInputCtrl : MonoBehaviour
             target.z = Mathf.Clamp01(target.z);
         }
 
+        Debug.Log(target);
+
         m_input.x = Mathf.Lerp(m_input.x, target.x, damp);
         m_input.y = Mathf.Lerp(m_input.y, target.y, damp);
         m_input.z = Mathf.Lerp(m_input.z, target.z, damp);
@@ -92,14 +94,14 @@ public class LMInputCtrl : MonoBehaviour
 
         retval.x = val;
 
-        // if (strOrder[0] == 'x')
-        //     retval.x = val;
+        if (strOrder[0] == 'x')
+            retval.x = val;
 
-        // else if (strOrder[0] == 'y')
-        //     retval.y = val;
+        else if (strOrder[0] == 'y')
+            retval.y = val;
 
-        // else if (strOrder[0] == 'z')
-        //     retval.z = val;
+        else if (strOrder[0] == 'z')
+            retval.z = val;
 
         return retval;
     }

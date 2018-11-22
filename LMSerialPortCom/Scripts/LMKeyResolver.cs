@@ -230,14 +230,6 @@ public class LMKeyResolver : LMBasePortResolver
             v.Recalibration();
     }
 
-    public override float GetValue(string key)
-    {
-        if (!Threshold)
-            return 0f;
-
-        return GetValueByKey(key).GetValue();
-    }
-
     public float ResolveEquation(string equation)
     {
         string resolved = equation;

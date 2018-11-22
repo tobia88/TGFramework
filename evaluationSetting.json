@@ -16,7 +16,7 @@
       "cnTitle": "颈椎前屈后伸",
       "animName": "NeckExtensionAndFlexion",
       "valueAxis": 0,
-      "reverse": true
+      "reverse": false
     },
     {
       "cnTitle": "颈椎左侧屈右侧屈",

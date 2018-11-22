@@ -161,7 +161,7 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
             return 0f;
         }
 
-        if (v.Length > index)
+        if (index < v.Length)
         {
             return v[index].GetValue();
         }

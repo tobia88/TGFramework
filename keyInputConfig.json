@@ -2,8 +2,7 @@
     "keys": [
         {
             "name": [
-                "捏力",
-                "握力"
+                "捏力"
             ],
             "value": [
                 {
@@ -16,6 +15,25 @@
             "input": [
                 {
                     "key": "AC",
+                    "length": 4
+                }
+            ]
+        },
+        {
+            "name": [
+                "握力"
+            ],
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "AD",
+                    "min": 0,
+                    "max": "最大值"
+                }
+            ],
+            "input": [
+                {
+                    "key": "AD",
                     "length": 4
                 }
             ]
