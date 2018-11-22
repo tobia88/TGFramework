@@ -70,7 +70,7 @@
       "cnTitle": "左肩关节外展内收",
       "animName": "ShoulderAbductionAndAdduction_L",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "右肩关节外展内收",
