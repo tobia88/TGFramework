@@ -38,6 +38,8 @@ public abstract class LMBasePortResolver
     public abstract void Recalibration();
     // public abstract float GetValue(string key);
 
+    public virtual void Close() {}
+
     protected virtual void InitInputs(KeyPortInputData[] datas)
     {
         if (datas == null)

@@ -63,11 +63,29 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         return true;
     }
 
+    public void Write(string _hex)
+    {
+        if (Port != null)
+        {
+            Debug.Log("Writing to port: " + _hex);
+            Port.Write(_hex);
+        }
+    }
+
     public void Connect()
     {
         Debug.Log("正在读取端口: " + portInfo.comName);
         CurrentResolver = GetProperResolver(KeyportData);
         isPortActive = SerialPortCtrl.Open(portInfo, this, true);
+    }
+
+    public void Close()
+    {
+        if (SerialPortCtrl != null)
+            SerialPortCtrl.Close();
+
+        if (CurrentResolver != null)
+            CurrentResolver.Close();
     }
 
     private bool CountdownToReconnect()
@@ -186,7 +204,7 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         {
             retval = new JY901();
         }
-        else if (portData.type == "m7b")
+        else if (portData.type == "m7b" || portData.type == "m7b2D")
         {
             retval = new Leadiy_M7B();
         }

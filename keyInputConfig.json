@@ -151,7 +151,29 @@
         },
         {
             "name": [
-                "压力板(手部)",
+                "压力板(手部)"
+            ],
+            "type": "key",
+            "value": [
+                {
+                    "key": "x",
+                    "equation": "(((AB-AA)/(AA+AB))+1)/2"
+                }
+            ],
+            "thresholdEquation": "(AA+AB)-1",
+            "input": [
+                {
+                    "key": "AA",
+                    "length": 4
+                },
+                {
+                    "key": "AB",
+                    "length": 4
+                }
+            ]
+        },
+        {
+            "name": [
                 "压力板(脚部)"
             ],
             "type": "key2D",

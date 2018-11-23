@@ -27,6 +27,9 @@ public class LMInputCtrl : MonoBehaviour
         ZYX
     }
 
+    public bool reverseX;
+    public bool reverseY;
+
     private void Awake()
     {
         m_playerCtrl = GetComponent<IInputReceiver>();
@@ -61,20 +64,27 @@ public class LMInputCtrl : MonoBehaviour
 
         string strOrder = axisOrder.ToString().ToLower();
 
-        if (input.DeviceType == "m7b")
+        if (input.DeviceType == "m7b" || input.DeviceType == "m7b2D")
         {
-            target = M7BUpdate(input, strOrder);
+            target = input.GetValueFromEvalAxis();
         }
         else
         {
-            target = input.GetValues(strOrder);
-
-            target.x = Mathf.Clamp01(target.x);
-            target.y = Mathf.Clamp01(target.y);
-            target.z = Mathf.Clamp01(target.z);
+            target = input.GetValues();
         }
 
-        Debug.Log(target);
+
+        target = target.Reorder(strOrder);
+
+        target.x = Mathf.Clamp01(target.x);
+        target.y = Mathf.Clamp01(target.y);
+        target.z = Mathf.Clamp01(target.z);
+
+        if (reverseX)
+            target.x = 1.0f - target.x;
+
+        if (reverseY)
+            target.y = 1.0f - target.y;
 
         m_input.x = Mathf.Lerp(m_input.x, target.x, damp);
         m_input.y = Mathf.Lerp(m_input.y, target.y, damp);
@@ -83,26 +93,27 @@ public class LMInputCtrl : MonoBehaviour
         m_playerCtrl.MoveByPort(m_input);
     }
 
-    private Vector3 M7BUpdate(TGInputSetting input, string strOrder)
-    {
-        Vector3 retval = Vector3.zero;
+    // private Vector3 M7BUpdate(TGInputSetting input, string strOrder)
+    // {
+    //     Vector3 retval = Vector3.zero;
 
-        float val = Mathf.Clamp01(input.GetValueFromEvalAxis());
+    //     Vector3 val = input.GetValueFromEvalAxis();
+    //     val.x = Mathf.Clamp01(val.x);
+    //     val.y = Mathf.Clamp01(val.y);
+    //     val.z = Mathf.Clamp01(val.z);
 
-        if (TGController.Instance.evaluationSetupData.reverse)
-            val = 1f - val;
+    //     if (TGController.Instance.evaluationSetupData.reverse)
+    //         val.x = 1f - val.x;
 
-        retval.x = val;
+    //     if (strOrder[0] == 'x')
+    //         retval.x = val;
 
-        if (strOrder[0] == 'x')
-            retval.x = val;
+    //     else if (strOrder[0] == 'y')
+    //         retval.y = val;
 
-        else if (strOrder[0] == 'y')
-            retval.y = val;
+    //     else if (strOrder[0] == 'z')
+    //         retval.z = val;
 
-        else if (strOrder[0] == 'z')
-            retval.z = val;
-
-        return retval;
-    }
+    //     return retval;
+    // }
 }

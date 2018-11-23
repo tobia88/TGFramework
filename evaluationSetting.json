@@ -22,7 +22,8 @@
       "cnTitle": "颈椎左侧屈右侧屈",
       "animName": "CervicalVertebraLateralFlexion",
       "valueAxis": 1,
-      "reverse": false
+      "reverse": false,
+      "dire": 1
     },
     {
       "cnTitle": "颈椎左旋右旋",
@@ -34,13 +35,13 @@
       "cnTitle": "左肘关节屈曲和伸展",
       "animName": "ElbowAdductionAndAbduction_L",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "右肘关节屈曲和伸展",
       "animName": "ElbowAdductionAndAbduction_R",
       "valueAxis": 0,
-      "reverse": false
+      "reverse":true
     },
     {
       "cnTitle": "左肘关节旋前和旋后",
@@ -76,7 +77,7 @@
       "cnTitle": "右肩关节外展内收",
       "animName": "ShoulderAbductionAndAdduction_R",
       "valueAxis": 0,
-      "reverse": true
+      "reverse": false
     },
     {
       "cnTitle": "左肩关节水平屈曲和伸展",
@@ -130,13 +131,15 @@
       "cnTitle": "左腕关节掌屈背屈",
       "animName": "WristJointPronationAndSupination_L",
       "valueAxis": 0,
-      "reverse": true
+      "reverse": true,
+      "isFullAxis": true
     },
     {
       "cnTitle": "右腕关节掌屈背屈",
       "animName": "WristJointPronationAndSupination_R",
       "valueAxis": 0,
-      "reverse": true
+      "reverse": true,
+      "isFullAxis": true
     },
     {
       "cnTitle": "左腕关节尺偏桡偏",

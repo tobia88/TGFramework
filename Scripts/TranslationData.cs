@@ -4,9 +4,9 @@ using UnityEngine;
 
 public enum ValueAxis
 {
-	x,
-	y,
-	z
+	xyz,
+	yzx,
+	zxy
 }
 
 [System.Serializable]
@@ -24,6 +24,8 @@ public struct EvaluationSetupData
 	}
 	public ValueAxis valueAxis;
 	public bool reverse;
+	public bool isFullAxis;
+	public int dire;
 }
 
 [CreateAssetMenu(menuName="Data/Translation Data")]

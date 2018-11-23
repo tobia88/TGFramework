@@ -52,6 +52,7 @@ public class TGController : MonoBehaviour
     {
         Debug.Log("Application Quit");
         gameConfig.Close(); 
+        inputSetting.Close();
         StopAllCoroutines();
         Application.Quit();
     }

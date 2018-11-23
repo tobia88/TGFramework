@@ -38,6 +38,11 @@ public class TGInputSetting : TGBaseBehaviour
         }
     }
 
+    public void Close()
+    {
+        portInput.Close();
+    }
+
     public override IEnumerator StartRoutine(TGController _controller)
     {
         portInput = GetComponent<LMBasePortInput>();
@@ -61,6 +66,10 @@ public class TGInputSetting : TGBaseBehaviour
         {
             portInput.portInfo.comName = "COM" + _controller.gameConfig.GetValue("端口", -1);
 
+            // FIXME: Temperory
+            if (_controller.evaluationSetupData.isFullAxis)
+                portData.type += "2D";
+
             if (!portInput.OnStart(portData))
             {
                 // Debug.LogWarning(portInput.ErrorTxt);
@@ -74,19 +83,23 @@ public class TGInputSetting : TGBaseBehaviour
         yield return 1;
     }
 
-    public float GetValueFromEvalAxis()
+    public Vector3 GetValueFromEvalAxis()
     {
+        if (!IsPortActive)
+            return Vector3.zero;
+
         var data = TGController.Instance.evaluationSetupData;
         var valueAxis = data.valueAxis;
-        return GetValue((int)valueAxis);
-    }
 
-    public float GetValue(int index)
-    {
-        if (IsPortActive)
-            return portInput.GetValue(index);
+        Vector3 values = GetValues();
+        Vector3 retval = values.Reorder(valueAxis.ToString());
 
-        return 0f;
+        if (!data.isFullAxis)
+        {
+            retval.y = retval.z = 0f;
+        }
+
+        return retval;
     }
 
     public Vector3 GetValues()
@@ -100,11 +113,6 @@ public class TGInputSetting : TGBaseBehaviour
         }
 
         return retval;
-    }
-
-    public Vector3 GetValues(string order)
-    {
-        return GetValues().Reorder(order);
     }
 
     public void Recalibration()

@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Leadiy_M7B : LMBasePortResolver
 {
+    private const string CODE_DETECTION = "A7 7A 72 ";
+    private const string HEX_CODE = "D66D30300";
     private string m_getString;
 
     private int m_checksum;
@@ -15,8 +17,7 @@ public class Leadiy_M7B : LMBasePortResolver
     private int m_length;
     // public const string FULL_VALUE_CODE = "D66D2020";
 
-    public int[] byteValues;
-
+    public int[] byteValues; 
     public override void Init(LMBasePortInput _portInput)
     {
         base.Init(_portInput);
@@ -24,6 +25,10 @@ public class Leadiy_M7B : LMBasePortResolver
         var setupData = TGController.Instance.evaluationSetupData;
         var currentValue = values[(int)setupData.valueAxis];
         currentValue.reverse = setupData.reverse;
+
+        _portInput.Write(HEX_CODE + setupData.dire);
+
+
         // string hexCode = StringToHex(FULL_VALUE_CODE);
         // Debug.Log("Converting Code: " + FULL_VALUE_CODE + " to " + hexCode + " and send to port");
         // _portInput.Port.Write(hexCode);
@@ -160,6 +165,11 @@ public class Leadiy_M7B : LMBasePortResolver
         if (values.Length >= 0) values[0].SetValue(m_angle.x);
         if (values.Length >= 1) values[1].SetValue(m_angle.y);
         if (values.Length >= 2) values[2].SetValue(m_angle.z);
+    }
+
+    public override void Close()
+    {
+        m_portInput.Write(HEX_CODE + 0);
     }
 
 
