@@ -58,11 +58,6 @@ public class TGDXCentre : MonoBehaviour
 		inputDataColumns[0] = column;
 	}
 
-	public void Quit()
-	{
-		TGController.Instance.Quit();
-	}
-
 	private void ClearColumns()
 	{
 		if (inputDataColumns == null)

@@ -65,9 +65,9 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 
     public void Write(string _hex)
     {
-        if (Port != null)
+        if (Port != null && Port.IsOpen)
         {
-            Debug.Log("Writing to port: " + _hex);
+            Debug.Log("Write Port: " + _hex);
             Port.Write(_hex);
         }
     }
@@ -81,11 +81,11 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 
     public void Close()
     {
-        if (SerialPortCtrl != null)
-            SerialPortCtrl.Close();
-
         if (CurrentResolver != null)
             CurrentResolver.Close();
+
+        if (SerialPortCtrl != null)
+            SerialPortCtrl.Close();
     }
 
     private bool CountdownToReconnect()
