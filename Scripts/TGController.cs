@@ -33,13 +33,7 @@ public class TGController : MonoBehaviour
 
     public string SceneName
     {
-        get
-        {
-            Debug.Log("Device Type: " + inputSetting.DeviceType + ", Result: " + (inputSetting.DeviceType == "key2D"));
-            if (inputSetting.DeviceType == "key2D") return "Scene_2D";
-            if (inputSetting.DeviceType == "m7b2D") return "Scene_m7b2D";
-            else return "Scene_1D";
-        }
+        get { return settingData.GetSceneNameByDeviceType(inputSetting.DeviceType); }
     }
 
     private void Awake()
