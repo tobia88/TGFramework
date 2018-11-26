@@ -5,7 +5,7 @@ using UnityEngine;
 public interface IInputReceiver
 {
     void MoveByPort(Vector3 _input);
-    void MoveByTouch(Vector2 _pos);
+    void MoveByTouch(Vector3 _pos);
 }
 
 public class LMInputCtrl : MonoBehaviour

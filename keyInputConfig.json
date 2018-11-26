@@ -180,11 +180,13 @@
             "value": [
                 {
                     "key": "x",
-                    "equation": "(AI+AJ)-(AG+AH)"
+                    "equation": "(((AI+AJ)-(AG+AH))/(AI+AJ+AG+AH)+1)/2",
+                    "raw": true
                 },
                 {
                     "key": "y",
-                    "equation": "(AG+AI)-(AH+AJ)"
+                    "equation": "(((AG+AI)-(AH+AJ))/(AI+AJ+AG+AH)+1)/2",
+                    "raw": true
                 }
             ],
             "thresholdEquation": "(AI+AJ+AG+AH)-300",
