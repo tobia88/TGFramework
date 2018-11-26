@@ -16,16 +16,7 @@ public class TGInputSetting : TGBaseBehaviour
 
     public string DeviceName { get; private set; }
 
-    public string DeviceType
-    {
-        get
-        {
-            if (portInput.CurrentResolver != null)
-                return portInput.CurrentResolver.deviceType;
-
-            return "touch";
-        }
-    }
+    public string DeviceType { get; private set; }
 
     public int AxisAmount
     {
@@ -77,6 +68,7 @@ public class TGInputSetting : TGBaseBehaviour
                 touchCtrl.enabled = true;
             }
         }
+        DeviceType = portData.type;
 
         Debug.Log("Input Setup Success");
 

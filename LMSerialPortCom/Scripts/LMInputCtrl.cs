@@ -6,6 +6,7 @@ public interface IInputReceiver
 {
     void MoveByPort(Vector3 _input);
     void MoveByTouch(Vector3 _pos);
+    LMInputCtrl InputCtrl {get;}
 }
 
 public class LMInputCtrl : MonoBehaviour
@@ -30,12 +31,12 @@ public class LMInputCtrl : MonoBehaviour
     public bool reverseX;
     public bool reverseY;
 
-    private void Awake()
+    public void OnInit(IInputReceiver _receiver)
     {
-        m_playerCtrl = GetComponent<IInputReceiver>();
+        m_playerCtrl = _receiver;
     }
 
-    private void Update()
+    public void OnUpdate()
     {
         var input = TGController.Instance.inputSetting;
 
@@ -73,7 +74,6 @@ public class LMInputCtrl : MonoBehaviour
             target = input.GetValues();
         }
 
-
         target = target.Reorder(strOrder);
 
         target.x = Mathf.Clamp01(target.x);
@@ -89,6 +89,8 @@ public class LMInputCtrl : MonoBehaviour
         m_input.x = Mathf.Lerp(m_input.x, target.x, damp);
         m_input.y = Mathf.Lerp(m_input.y, target.y, damp);
         m_input.z = Mathf.Lerp(m_input.z, target.z, damp);
+
+        // TGController.Instance.WriteLine("Input After: " + m_input.ToString());
 
         m_playerCtrl.MoveByPort(m_input);
     }
