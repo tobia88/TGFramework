@@ -131,15 +131,13 @@
       "cnTitle": "左腕关节掌屈背屈",
       "animName": "WristJointPronationAndSupination_L",
       "valueAxis": 0,
-      "reverse": true,
-      "isFullAxis": true
+      "reverse": true
     },
     {
       "cnTitle": "右腕关节掌屈背屈",
       "animName": "WristJointPronationAndSupination_R",
       "valueAxis": 0,
-      "reverse": true,
-      "isFullAxis": true
+      "reverse": true
     },
     {
       "cnTitle": "左腕关节尺偏桡偏",
@@ -152,6 +150,20 @@
       "animName": "WristJointRadialAndUlnarDiviation_R",
       "valueAxis": 2,
       "reverse": false
+    },
+    {
+      "cnTitle": "左手部活动",
+      "animName": "WristJointPronationAndSupination_L",
+      "valueAxis": 2,
+      "reverse": false,
+      "isFullAxis": true
+    },
+    {
+      "cnTitle": "右手部活动",
+      "animName": "WristJointPronationAndSupination_R",
+      "valueAxis": 2,
+      "reverse": true,
+      "isFullAxis": true
     }
   ]
 }
