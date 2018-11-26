@@ -29,11 +29,19 @@ public class TGGameConfig : TGBaseBehaviour
             if (configData != null)
             {
                 string cnTitle = GetValue("体侧", string.Empty);
-                _controller.evaluationSetupData = GetConfigDataFromTitle(cnTitle);
+                var data = GetConfigDataFromTitle(cnTitle);
+                _controller.evaluationSetupData = data;
 
-                Debug.Log("体侧: " + cnTitle + ", Axis: " + _controller.evaluationSetupData.valueAxis.ToString());
+                Debug.Log("体侧: " + cnTitle + 
+                          ", Axis: " + data.valueAxis +
+                          ", IsFullAxis: " + data.isFullAxis);
             }
         }
+        else
+        {
+            Debug.LogWarning(evaluationFileName + "Has not found");
+        }
+
         yield return 1;
     }
     private EvaluationSetupData GetConfigDataFromTitle(string cnTitle)
