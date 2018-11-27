@@ -6,6 +6,7 @@ public interface IInputReceiver
 {
     void MoveByPort(Vector3 _input);
     void MoveByTouch(Vector3 _pos);
+    LMInputCtrl InputCtrl {get;}
 }
 
 public class LMInputCtrl : MonoBehaviour
