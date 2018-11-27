@@ -18,17 +18,6 @@ public class TGInputSetting : TGBaseBehaviour
 
     public string DeviceType { get; private set; }
 
-    public int AxisAmount
-    {
-        get
-        {
-            if (portInput.CurrentResolver != null)
-                return portInput.CurrentResolver.AxisAmount;
-
-            return -1;
-        }
-    }
-
     public void Close()
     {
         portInput.Close();

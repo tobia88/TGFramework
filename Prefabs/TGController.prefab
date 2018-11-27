@@ -457,7 +457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   systemCam: {fileID: 20360474029733652}
-  settingData: {fileID: 11400000, guid: b17b894784193584ab5302a00b8d87cb, type: 2}
+  settingData: {fileID: 11400000, guid: 29ac0b9819f6a52448102502d7199560, type: 2}
   gameConfig: {fileID: 114141293912262460}
   inputSetting: {fileID: 114975440256637252}
   mainGame: {fileID: 114048559315297874}
@@ -545,7 +545,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portInfo:
     comName: COM4
-    baudRate: 9600
+    baudRate: 115200
     parity: 0
     dataBits: 8
     stopBits: 1
