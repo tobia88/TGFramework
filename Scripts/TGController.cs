@@ -11,10 +11,12 @@ public class TGController : MonoBehaviour
     public DateTime startTime;
     public DateTime endTime;
     public Camera systemCam;
-    public string GameNameCn
-    {
-        get { return settingData.gameNameCn; }
-    }
+    // public string GameNameCn
+    // {
+    //     get { return settingData.gameNameCn; }
+    // }
+
+    public string GameNameCn { get; private set; }
     public TGSettingData settingData;
     public TGGameConfig gameConfig;
     public TGInputSetting inputSetting;
@@ -39,6 +41,8 @@ public class TGController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        GameNameCn = settingData.gameNameCn;
 
         systemCam.gameObject.SetActive(false);
 
@@ -78,6 +82,11 @@ public class TGController : MonoBehaviour
     {
         if (dxTextCentre.isActive)
             dxTextCentre.WriteLine(_line);
+    }
+
+    public void RenameChinese(string cnName)
+    {
+        GameNameCn = cnName;
     }
 
     public void ErrorQuit(string _error)
