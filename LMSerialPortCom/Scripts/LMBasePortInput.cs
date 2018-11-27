@@ -90,7 +90,7 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 
     private bool CountdownToReconnect()
     {
-        return m_cdToReconnect > 20000;
+        return m_cdToReconnect > 200000;
     }
 
     private void Update()

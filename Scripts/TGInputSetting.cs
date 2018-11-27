@@ -47,7 +47,7 @@ public class TGInputSetting : TGBaseBehaviour
             portInput.portInfo.comName = "COM" + _controller.gameConfig.GetValue("端口", -1);
 
             // FIXME: Temperory
-            if (_controller.evaluationSetupData.isFullAxis)
+            if (portData.type == "m7b" && _controller.evaluationSetupData.isFullAxis)
                 portData.type += "2D";
 
             if (!portInput.OnStart(portData))

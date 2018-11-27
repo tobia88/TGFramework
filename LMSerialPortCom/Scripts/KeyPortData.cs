@@ -23,7 +23,7 @@ public class KeyPortInputData
 public class KeyPortData
 {
     public string[] name;
-    public string type;
+    public string type = "key";
     public bool isDegree;
     public bool raw;
     public string thresholdEquation;

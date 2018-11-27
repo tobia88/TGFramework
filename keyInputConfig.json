@@ -47,12 +47,14 @@
                 "阻尼器-杠杆工具",
                 "阻尼器-方向盘"
             ],
+            "isDegree": true,
             "value": [
                 {
                     "key": "x",
-                    "equation": "-AF/10",
+                    "equation": "AF/10",
                     "min": "最小值",
-                    "max": "最大值"
+                    "max": "最大值",
+					"origin": -1
                 }
             ],
             "input": [
