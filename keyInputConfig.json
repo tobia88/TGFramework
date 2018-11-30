@@ -179,19 +179,18 @@
                 "压力板(脚部)"
             ],
             "type": "key2D",
+            "raw": true,
             "value": [
                 {
                     "key": "x",
-                    "equation": "((((AI+AJ)-(AG+AH))/((AI+AJ+AG+AH)*0.9))+1)/2",
-                    "raw": true
+                    "equation": "((((AI+AJ)-(AG+AH))/((AI+AJ+AG+AH)*0.9))+1)/2"
                 },
                 {
                     "key": "y",
-                    "equation": "((((AG+AI)-(AH+AJ))/((AI+AJ+AG+AH)*0.9))+1)/2",
-                    "raw": true
+                    "equation": "((((AG+AI)-(AH+AJ))/((AI+AJ+AG+AH)*0.9))+1)/2"
                 }
             ],
-            "thresholdEquation": "(AI+AJ+AG+AH)-300",
+            "inputTotalGap": 300,
             "input": [
                 {
                     "key": "AI",

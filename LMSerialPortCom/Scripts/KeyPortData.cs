@@ -26,7 +26,8 @@ public class KeyPortData
     public string type = "key";
     public bool isDegree;
     public bool raw;
-    public string thresholdEquation;
+    // public string thresholdEquation;
+    public int inputTotalGap;
     public KeyPortValueData[] value;
     public KeyPortInputData[] input;
 

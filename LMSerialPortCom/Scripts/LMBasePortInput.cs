@@ -177,21 +177,10 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 
     public virtual float GetValue(int index)
     {
-        var v = CurrentResolver.values;
-        if (v == null)
-        {
-            TGController.Instance.DebugText("没有串口数据");
+        if (CurrentResolver == null)
             return 0f;
-        }
 
-        if (index < v.Length)
-        {
-            return v[index].GetValue();
-        }
-
-        TGController.Instance.DebugText("取值索引" + index + "大于数组长度: " + CurrentResolver.values.Length);
-
-        return 0f;
+        return CurrentResolver.GetValue(index);
     }
 
     public virtual void Recalibration()

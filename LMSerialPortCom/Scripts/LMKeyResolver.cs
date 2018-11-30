@@ -32,6 +32,8 @@ public class KeyResolveValue
 
         raw = _raw;
 
+        Debug.Log(_data.key + ": " + raw);
+
         min = TGUtility.GetValueFromINI(_data.min);
         max = TGUtility.GetValueFromINI(_data.max);
 
@@ -63,7 +65,7 @@ public class KeyResolveValue
 
         if (raw)
         {
-            value = (float)newVal;
+            value = (float)RawValue;
             return;
         }
 
@@ -84,7 +86,7 @@ public class KeyResolveValue
     {
         if (min != max)
         {
-            return (float)((value - min) / (max - min));
+            return (float)(value - min) / (max - min);
         }
 
         return (float)value;
@@ -105,37 +107,62 @@ public class KeyResolveInput
 
     public float GetValue()
     {
-        return value + bias;
+        return value - bias;
     }
 
     public override string ToString()
     {
-        return key + ": " + value.ToString();
+        string retval = key + ": " + value.ToString(); 
+
+        if (bias != 0f)
+            retval += "(" + (bias * -1f).ToString() + ")";
+
+        return retval;
     }
 }
 
 public class LMKeyResolver : LMBasePortResolver
 {
     private string m_getString;
-    private TGExpressionParser m_solver;
 
+    public int inputTotalGap;
 
-    public bool Threshold
+    public float InputTotal
     {
         get
         {
-            if (string.IsNullOrEmpty(PortData.thresholdEquation))
-                return true;
+            if (inputs == null)
+                return 0;
 
-            return ResolveEquation(PortData.thresholdEquation) > 0;
+            return inputs.Sum(i => i.GetValue());
         }
+    }
+
+    public bool Threshold
+    {
+        get { return InputTotal >= inputTotalGap; }
     }
 
     public override void Init(LMBasePortInput _portInput)
     {
         base.Init(_portInput);
 
-        m_solver = new TGExpressionParser();
+        inputTotalGap = _portInput.KeyportData.inputTotalGap;
+
+        string txt = TGController.Instance.gameConfig.GetValue("校准", string.Empty);
+
+        if (!string.IsNullOrEmpty(txt))
+        {
+            SetBiases(txt);
+        }
+    }
+
+    public override float GetValue(int index)
+    {
+        if (!Threshold)
+            return 0f;
+
+        return base.GetValue(index);
     }
 
     public void SetBiases(string bias)
@@ -230,32 +257,4 @@ public class LMKeyResolver : LMBasePortResolver
             v.Recalibration();
     }
 
-    public float ResolveEquation(string equation)
-    {
-        string resolved = equation;
-
-        foreach (var i in inputs)
-        {
-            if (resolved.IndexOf(i.key) >= 0)
-            {
-                string v = i.GetValue().ToString();
-
-                if (string.IsNullOrEmpty(v))
-                    v = "0";
-
-                resolved = resolved.Replace(i.key, v);
-            }
-        }
-        return (float)m_solver.EvaluateExpression(resolved).Value;
-    }
-
-    public KeyResolveValue GetValueByKey(string key)
-    {
-        KeyResolveValue retval = values.FirstOrDefault(v => v.key == key);
-
-        if (retval != default(KeyResolveValue))
-            return retval;
-
-        throw new System.ArgumentNullException("Invalid Key: " + key);
-    }
 }
