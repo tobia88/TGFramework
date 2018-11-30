@@ -48,13 +48,16 @@ public class TGDXInputDataColumn : MonoBehaviour {
 
 	public void OnUpdate()
 	{
-		if (testBars == null)
+		if (testBars == null || m_keyResolver.values == null)
 			return;
 
 		inputTxt.text = GetInputText();
 
 		for (int i = 0; i < testBars.Length; i++)
 		{
+			if (m_keyResolver.values[i] == null)
+				continue;
+
 			testBars[i].UpdateData(m_keyResolver.values[i]);
 		}
 	}

@@ -30,12 +30,16 @@ public class TGDXCentre : MonoBehaviour
 			SetupColumns();
 		else
 			ClearColumns();
+
+		if (!string.IsNullOrWhiteSpace(bugText.text))
+		{
+			debugGroup.SetActive(inputDataColumns == null || inputDataColumns.Length == 0);
+		}
 	}
 
 	public void DebugText(string _text)
 	{
 		bugText.text = _text;
-		debugGroup.SetActive(true);
 	}
 
 	private void SetupColumns()

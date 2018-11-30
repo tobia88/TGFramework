@@ -74,7 +74,7 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 
     public void Connect()
     {
-        Debug.Log("正在读取端口: " + portInfo.comName);
+        TGController.Instance.DebugText("正在读取端口: " + portInfo.comName);
         CurrentResolver = GetProperResolver(KeyportData);
         isPortActive = SerialPortCtrl.Open(portInfo, this, true);
     }
@@ -101,6 +101,11 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
         if (CountdownToReconnect())
         {
             ReconnectInFewSeconds();
+        }
+
+        if (m_byteLength > 0)
+        {
+            TGController.Instance.DebugText("连接成功，请重新打开数据面板");
         }
     }
 
@@ -145,9 +150,9 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
 
     IEnumerator ReconnectDelay()
     {
-        Debug.Log("Reconnecting in 5 seconds...");
+        TGController.Instance.DebugText("正在重新链接串口...");
         yield return new WaitForSeconds(5);
-        Debug.Log("Reconnect");
+        TGController.Instance.DebugText("连接串口中...");
         Connect();
     }
 
