@@ -32,8 +32,6 @@ public class KeyResolveValue
 
         raw = _raw;
 
-        Debug.Log(_data.key + ": " + raw);
-
         min = TGUtility.GetValueFromINI(_data.min);
         max = TGUtility.GetValueFromINI(_data.max);
 

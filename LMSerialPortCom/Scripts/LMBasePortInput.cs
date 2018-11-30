@@ -67,7 +67,7 @@ public class LMBasePortInput : MonoBehaviour, IPortReceiver
     {
         if (Port != null && Port.IsOpen)
         {
-            Debug.Log("Write Port: " + _hex);
+            // Debug.Log("Write Port: " + _hex);
             Port.Write(_hex);
         }
     }
