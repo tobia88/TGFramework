@@ -169,7 +169,8 @@ public class Leadiy_M7B : LMBasePortResolver
 
     public override void Close()
     {
-        m_portInput.Write(HEX_CODE + 0);
+        if (m_portInput != null)
+            m_portInput.Write(HEX_CODE + 0);
     }
 
 
