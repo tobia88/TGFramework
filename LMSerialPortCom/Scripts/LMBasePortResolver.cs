@@ -55,6 +55,14 @@ public abstract class LMBasePortResolver
 
     public virtual void Close() {}
 
+    public void SetPressureRatio(float _ratio)
+    {
+        foreach (KeyResolveValue v in values)
+        {
+            v.SetRatio(_ratio);
+        }
+    }
+
     public virtual float GetValue(int index)
     {
         if (values == null)

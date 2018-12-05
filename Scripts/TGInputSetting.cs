@@ -17,6 +17,7 @@ public class TGInputSetting : TGBaseBehaviour
     public string DeviceName { get; private set; }
 
     public string DeviceType { get; private set; }
+    public KeyPortData KeyportData { get; private set; }
 
     public void Close()
     {
@@ -32,36 +33,55 @@ public class TGInputSetting : TGBaseBehaviour
 
         DeviceName = _controller.gameConfig.GetValue("训练器材", string.Empty);
 
-        KeyPortData portData = keyInputConfig.GetKeyportData(DeviceName);
+        KeyportData = keyInputConfig.GetKeyportData(DeviceName);
 
-        if (portData == null)
+        if (KeyportData == null)
         {
             _controller.ErrorQuit("训练器材 " + DeviceName + "不存在！");
             yield break;
         }
 
-        touchCtrl.enabled = portData.type == "touch";
+        touchCtrl.enabled = KeyportData.type == "touch";
 
         if (!touchCtrl.enabled)
         {
             portInput.portInfo.comName = "COM" + _controller.gameConfig.GetValue("端口", -1);
 
             // FIXME: Temperory
-            if (portData.type == "m7b" && _controller.evaluationSetupData.isFullAxis)
-                portData.type += "2D";
+            if (KeyportData.type == "m7b" && _controller.evaluationSetupData.isFullAxis)
+                KeyportData.type += "2D";
 
-            if (!portInput.OnStart(portData))
+            if (!portInput.OnStart(KeyportData))
             {
                 // Debug.LogWarning(portInput.ErrorTxt);
                 _controller.DebugText(portInput.ErrorTxt);
                 touchCtrl.enabled = true;
             }
         }
-        DeviceType = portData.type;
+        DeviceType = KeyportData.type;
 
         Debug.Log("Input Setup Success");
 
         yield return 1;
+    }
+
+    public void SetPressureLevel(int level)
+    {
+        float[] arr = KeyportData.levels;
+
+        if (arr == null || arr.Length == 0)
+        {
+            Debug.LogWarning("压力等级尚未设置");
+            return;
+        }
+
+        float pressure = arr[level - 1];
+        Debug.Log("压力比例设置为: " + pressure);
+
+        if (portInput.CurrentResolver != null)
+        {
+            portInput.CurrentResolver.SetPressureRatio(pressure);
+        }
     }
 
     public Vector3 GetValueFromEvalAxis()

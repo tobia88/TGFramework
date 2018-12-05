@@ -30,5 +30,5 @@ public class KeyPortData
     public int inputTotalGap;
     public KeyPortValueData[] value;
     public KeyPortInputData[] input;
-
+    public float[] levels;
 }

@@ -12,15 +12,18 @@ public class KeyResolveValue
 {
     private float m_default;
     private bool m_isInit;
+    private float m_min, m_max;
 
     public string key;
     public string equation;
     public double value;
-    public float min;
-    public float max;
     public bool isDegree;
     public bool raw;
     public bool reverse;
+
+    public float Ratio { get; private set; }
+    public float Min { get { return m_min * Ratio; } }
+    public float Max { get { return m_max * Ratio; } } 
 
     public double LastRawValue { get; private set; }
     public double RawValue { get; private set; }
@@ -32,12 +35,17 @@ public class KeyResolveValue
 
         raw = _raw;
 
-        min = TGUtility.GetValueFromINI(_data.min);
-        max = TGUtility.GetValueFromINI(_data.max);
+        m_min = TGUtility.GetValueFromINI(_data.min);
+        m_max = TGUtility.GetValueFromINI(_data.max);
 
         equation = _data.equation;
 
-        value = m_default = (_data.origin == -1) ? 0 : min + (max - min) * _data.origin;
+        value = m_default = (_data.origin == -1) ? 0 : Min + (Max - Min) * _data.origin;
+    }
+
+    public void SetRatio(float _ratio)
+    {
+        Ratio = _ratio;
     }
 
     public void Recalibration()
@@ -82,9 +90,9 @@ public class KeyResolveValue
 
     public float GetValue()
     {
-        if (min != max)
+        if (Min != Max)
         {
-            return (float)(value - min) / (max - min);
+            return (float)(value - Min) / (Max - Min);
         }
 
         return (float)value;

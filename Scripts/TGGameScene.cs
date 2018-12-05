@@ -140,6 +140,7 @@ public class TGGameScene : TGBaseScene
     protected virtual void OnDifficultyChanged(int _difficulty)
     {
         m_difficultyLv = _difficulty;
+        controller.inputSetting.SetPressureLevel(m_difficultyLv);
     }
 
     public override void OnUpdate()
