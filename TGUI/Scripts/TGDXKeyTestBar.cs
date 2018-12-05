@@ -15,8 +15,10 @@ public class TGDXKeyTestBar : MonoBehaviour
 	public void UpdateData(KeyResolveValue value)
 	{
 		nameTxt.text = value.key + ":";
-		minTxt.text = value.Min.ToString();
-		maxTxt.text = value.Max.ToString();
+
+		string format = "{0}({1}*{2})";
+		minTxt.text = string.Format(format, value.Min.ToString(), value.StartMin.ToString(), value.Ratio.ToString());
+		maxTxt.text = string.Format(format, value.Max.ToString(), value.StartMax.ToString(), value.Ratio.ToString());
 		equationTxt.text = value.equation;
 		valueTxt.text = "raw: " + value.RawValue.ToString("0.00") + ", cur: " + value.value.ToString("0.00");
 

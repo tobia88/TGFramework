@@ -12,7 +12,6 @@ public class KeyResolveValue
 {
     private float m_default;
     private bool m_isInit;
-    private float m_min, m_max;
 
     public string key;
     public string equation;
@@ -22,8 +21,10 @@ public class KeyResolveValue
     public bool reverse;
 
     public float Ratio { get; private set; }
-    public float Min { get { return m_min * Ratio; } }
-    public float Max { get { return m_max * Ratio; } } 
+    public float StartMin { get; private set; }
+    public float StartMax { get; private set; }
+    public float Min { get { return StartMin * Ratio; } }
+    public float Max { get { return StartMax * Ratio; } } 
 
     public double LastRawValue { get; private set; }
     public double RawValue { get; private set; }
@@ -35,12 +36,14 @@ public class KeyResolveValue
 
         raw = _raw;
 
-        m_min = TGUtility.GetValueFromINI(_data.min);
-        m_max = TGUtility.GetValueFromINI(_data.max);
+        StartMin = TGUtility.GetValueFromINI(_data.min);
+        StartMax = TGUtility.GetValueFromINI(_data.max);
 
         equation = _data.equation;
 
         value = m_default = (_data.origin == -1) ? 0 : Min + (Max - Min) * _data.origin;
+
+        Ratio = 1;
     }
 
     public void SetRatio(float _ratio)
