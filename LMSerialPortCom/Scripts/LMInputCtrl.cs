@@ -59,7 +59,8 @@ public class LMInputCtrl : MonoBehaviour
             m_playerCtrl.MoveByTouch(touch.CurrentPosition);
 
 
-        TGUtility.DrawHeatmap2D(touch.CurrentPosition);
+        if (touch.IsTouched)
+            TGUtility.DrawHeatmap2D(touch.ScreenPosition);
     }
 
     private void PortInputUpdate(TGInputSetting input)

@@ -15,6 +15,7 @@ public class LMTouchCtrl : MonoBehaviour
     public Action onTouchUp;
 
     public Vector3 LastPosition { get; private set; }
+    public Vector3 ScreenPosition { get; private set; }
     public Vector3 CurrentPosition
     {
         get { return m_currentPosition; }
@@ -81,17 +82,17 @@ public class LMTouchCtrl : MonoBehaviour
     {
         Camera cam = Camera.main;
 
-        Vector3 screenPos = GetSingleInputPos();
+        ScreenPosition = GetSingleInputPos();
 
-        CurrentPosition = cam.ScreenToWorldPoint(screenPos);
+        CurrentPosition = cam.ScreenToWorldPoint(ScreenPosition);
     }
 
     private void Get3DTouchValue()
     {
         Camera cam = Camera.main;
 
-        Vector3 screenPos = GetSingleInputPos();
-        Ray ray = cam.ScreenPointToRay(screenPos);
+        ScreenPosition = GetSingleInputPos();
+        Ray ray = cam.ScreenPointToRay(ScreenPosition);
 
         RaycastHit hit;
 

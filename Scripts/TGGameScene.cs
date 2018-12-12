@@ -208,6 +208,9 @@ public class TGGameScene : TGBaseScene
 
     protected virtual void OnUpdateGamePlaying()
     {
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Q))
+            TimeLeft = 0f;
+
         if (TimeLeft <= 0f)
         {
             GameState = GameStates.GameOver;

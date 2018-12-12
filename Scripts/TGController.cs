@@ -17,7 +17,7 @@ public class TGController : MonoBehaviour
     // }
 
     public string GameNameCn { get; private set; }
-    public TGSettingData settingData;
+    public TGSettingData settingData { get; private set; }
     public TGGameConfig gameConfig;
     public TGInputSetting inputSetting;
     public HeatmapInput heatmapInput;
@@ -35,6 +35,7 @@ public class TGController : MonoBehaviour
         get;
         private set;
     }
+    public bool IsInit { get; private set; }
 
     public string SceneName
     {
@@ -45,11 +46,9 @@ public class TGController : MonoBehaviour
     {
         Instance = this;
 
-        GameNameCn = settingData.gameNameCn;
-
-        systemCam.gameObject.SetActive(false);
-
-        AudioMng.Init();
+        dxCentre.OnInit(this);
+        dxTextCentre.OnInit(this);
+        dxHeatmapPanel.OnInit(this);
 
 #if UNITY_EDITOR
         RootPath = Application.dataPath + "/TGFramework/";
@@ -58,13 +57,29 @@ public class TGController : MonoBehaviour
 #endif
         fileWriter.Init(RootPath);
 
-        dxCentre.OnInit(this);
-        dxTextCentre.OnInit(this);
-        dxHeatmapPanel.OnInit(this);
+        settingData = Resources.Load<TGSettingData>("SettingData");
+
+        if (settingData == null)
+        {
+            ErrorQuit("缺少Setting Data文件！务必确保Resources文件夹底下有SettingData");
+            return;
+        }
+
+        GameNameCn = settingData.gameNameCn;
+
+        systemCam.gameObject.SetActive(false);
+
+        AudioMng.Init();
+
+        IsInit = true;
+
     }
 
     private void Start()
     {
+        if (!IsInit)
+            return;
+
         StartCoroutine(ProcessRoutine());
     }
 
@@ -128,6 +143,13 @@ public class TGController : MonoBehaviour
 
     private void Update()
     {
+        if (!IsInit)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+                Application.Quit();
+            return;
+        }
+
         if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.BackQuote))
         {
             dxCentre.SetActive(!dxCentre.isActive);

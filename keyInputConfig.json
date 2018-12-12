@@ -251,7 +251,8 @@
             "name": [
                 "触屏控制"
             ],
-            "type": "touch"
+            "type": "touch",
+            "heatmap": true
         }
     ]
 }

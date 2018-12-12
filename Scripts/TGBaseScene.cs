@@ -69,9 +69,9 @@ public class TGBaseScene : MonoBehaviour
 
     public virtual void ExitScene()
     {
-        if (!additionDataToSave.ContainsKey(ssKey))
+        if (!additionDataToSave.ContainsKey(MAIN_SCREENSHOT_KEY))
         {
-            additionDataToSave.Add(ssKey, string.Empty);
+            additionDataToSave.Add(MAIN_SCREENSHOT_KEY, string.Empty);
         }
         isActive = false;
     }
@@ -83,10 +83,10 @@ public class TGBaseScene : MonoBehaviour
 
     private bool m_captureScreen;
 
-    public void CaptureScreen(System.Action<string> callback = null)
+    public void CaptureScreen()
     {
         m_captureScreen = true;
-        onCaptureScreen = callback;
+        // onCaptureScreen = callback;
     }
 
     public virtual void Recalibration()
@@ -98,18 +98,37 @@ public class TGBaseScene : MonoBehaviour
     {
         if (m_captureScreen)
         {
-            var fileName = System.DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
-            StartCoroutine(RecordFrame(fileName));
+            var dateStr = System.DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
+            StartCoroutine(RecordFrame(dateStr));
             m_captureScreen = false;
         }
     }
-    IEnumerator RecordFrame(string _dateString)
+    IEnumerator RecordFrame(string _dateStr)
     {
         yield return new WaitForEndOfFrame();
-        float ratio = (float)screenshotCropInfo.width / screenshotCropInfo.height;
-        int width = 700;
-        int height = Mathf.RoundToInt((float)width / ratio);
+        yield return StartCoroutine(SaveMainScreenshot(_dateStr));
+        yield return StartCoroutine(SaveHeatmapTex(_dateStr));
+        // if (onCaptureScreen != null)
+        // {
+        //     onCaptureScreen(fileName);
+        //     onCaptureScreen = null;
+        // }
+    }
 
+    private IEnumerator SaveHeatmapTex(string _dateStr)
+    {
+        if (controller.heatmapInput.enabled)
+        {
+            string fileName = "heat_" + _dateStr + ".png";
+            yield return StartCoroutine(SaveTexture(controller.heatmapInput.outputTex, fileName));
+            SaveScreenshotKey(HEATMAP_SCREENSHOT_KEY, fileName);
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator SaveMainScreenshot(string _dateStr)
+    {
         var raw = ScreenCapture.CaptureScreenshotAsTexture();
         Color[] c = raw.GetPixels(screenshotCropInfo.xPos,
                                   screenshotCropInfo.yPos,
@@ -119,36 +138,42 @@ public class TGBaseScene : MonoBehaviour
         tex.SetPixels(c);
         tex.Apply(false);
 
-        tex = TextureScaler.ResizeTexture(tex, TextureScaler.ImageFilterMode.Bilinear, width, height);
 
-        byte[] bytes = tex.EncodeToPNG();
-        GameObject.Destroy(tex);
-
-        string fileName = _dateString + ".png";
-
-        controller.fileWriter.Write(fileName, bytes);
-
-        SaveScreenshotKey(fileName);
-
-        if (onCaptureScreen != null)
-        {
-            onCaptureScreen(fileName);
-            onCaptureScreen = null;
-        }
+        string fileName = _dateStr + ".png";
+        yield return StartCoroutine(SaveTexture(tex, fileName));
+        SaveScreenshotKey(MAIN_SCREENSHOT_KEY, fileName);
     }
 
-    private const string ssKey = "图片";
+    private IEnumerator SaveTexture(Texture2D _tex, string _name)
+    {
+        float ratio = (float)_tex.width / _tex.height;
 
-    private void SaveScreenshotKey(string fileName)
+        int width = 700;
+        int height = Mathf.RoundToInt(width / ratio);
+
+        _tex = TextureScaler.ResizeTexture(_tex, TextureScaler.ImageFilterMode.Bilinear, width, height);
+
+        byte[] bytes = _tex.EncodeToPNG();
+        GameObject.Destroy(_tex);
+
+        controller.fileWriter.Write(_name, bytes);
+
+        yield return null;
+    }
+
+    private const string MAIN_SCREENSHOT_KEY = "图片";
+    private const string HEATMAP_SCREENSHOT_KEY = "热图";
+
+    private void SaveScreenshotKey(string _key, string _fileName)
     {
 
-        if (additionDataToSave.ContainsKey(ssKey))
+        if (additionDataToSave.ContainsKey(_key))
         {
-            additionDataToSave[ssKey] += "|" + fileName;
+            additionDataToSave[_key] += "|" + _fileName;
         }
         else
         {
-            additionDataToSave.Add(ssKey, fileName);
+            additionDataToSave.Add(_key, _fileName);
         }
     }
 
