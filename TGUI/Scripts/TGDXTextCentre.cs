@@ -4,23 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Text;
 
-public class TGDXTextCentre : MonoBehaviour
+public class TGDXTextCentre : TGDXBaseCentre
 {
 	private StringBuilder m_stringBuilder;
 	public Text debugText;
-	public bool isActive;
 
-	public void OnInit(TGController _controller)
+	public override void OnInit(TGController _controller)
 	{
+		base.OnInit(_controller);
 		m_stringBuilder = new StringBuilder();
-		SetActive(false);
-	}
-
-	public void SetActive(bool _active)
-	{
-		isActive = _active;
-
-		gameObject.SetActive(isActive);
 	}
 
 	public void WriteLine(string _line)

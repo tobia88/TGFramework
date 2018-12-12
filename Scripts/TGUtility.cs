@@ -99,4 +99,14 @@ public static class TGUtility
         float ratio = (value - min) / Mathf.Abs(max - min);
         return remapMin + ratio * (remapMax - remapMin);
     }
+
+    public static void DrawHeatmap2D(Vector2 pos)
+    {
+        var heatmap = TGController.Instance.heatmapInput;
+
+        if (!heatmap.enabled)
+            return;
+
+        heatmap.DrawPos(pos);
+    }
 }

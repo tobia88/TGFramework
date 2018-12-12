@@ -20,10 +20,13 @@ public class TGController : MonoBehaviour
     public TGSettingData settingData;
     public TGGameConfig gameConfig;
     public TGInputSetting inputSetting;
+    public HeatmapInput heatmapInput;
     public TGMainGame mainGame;
     public TGResultMng resultMng;
+    [Header("Debug")]
     public TGDXCentre dxCentre;
     public TGDXTextCentre dxTextCentre;
+    public TGDXHeatmapPanel dxHeatmapPanel;
     public EvaluationSetupData evaluationSetupData;
 
     public LMFileWriter fileWriter;
@@ -57,6 +60,7 @@ public class TGController : MonoBehaviour
 
         dxCentre.OnInit(this);
         dxTextCentre.OnInit(this);
+        dxHeatmapPanel.OnInit(this);
     }
 
     private void Start()
@@ -76,6 +80,21 @@ public class TGController : MonoBehaviour
     public void DebugText(string _txt)
     {
         dxCentre.DebugText(_txt);
+    }
+
+    public void SetHeatmapEnable(bool _enable)
+    {
+        heatmapInput.enabled = _enable;
+
+        if (_enable)
+        {
+            heatmapInput.Init(Screen.width, Screen.height);
+            dxHeatmapPanel.SetTexture(heatmapInput.outputTex);
+        }
+        else
+        {
+            dxHeatmapPanel.ShowWarning(inputSetting.DeviceName);
+        }
     }
 
     public void WriteLine(string _line)
@@ -117,6 +136,11 @@ public class TGController : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Alpha1))
         {
             dxTextCentre.SetActive(!dxTextCentre.isActive);
+        }
+
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            dxHeatmapPanel.SetActive(!dxHeatmapPanel.isActive);
         }
 
         if (dxCentre.isActive)

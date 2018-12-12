@@ -3,30 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TGDXCentre : MonoBehaviour
+public class TGDXCentre : TGDXBaseCentre
 {
-	public bool isActive;
 	public Text bugText;
 	public TGDXInputDataColumn inputDataColumnPrefab;
 	public TGDXInputDataColumn[] inputDataColumns;
 	public GameObject debugGroup;
 
-	private TGController m_controller;
 
-	public void OnInit(TGController _controller)
+	public override void OnInit(TGController _controller)
 	{
-		m_controller = _controller;
+		base.OnInit(_controller);
 		debugGroup.SetActive(false);
-		gameObject.SetActive(false);
 	}
 
-	public void SetActive(bool _active)
+	public override void SetActive(bool _active)
 	{
-		isActive = _active;
+		base.SetActive(_active);
 
-		gameObject.SetActive(isActive);
-
-		if (isActive)
+		if (_active)
 			SetupColumns();
 		else
 			ClearColumns();

@@ -26,6 +26,7 @@ public class KeyPortData
     public string type = "key";
     public bool isDegree;
     public bool raw;
+    public bool heatmap;
     // public string thresholdEquation;
     public int inputTotalGap;
     public KeyPortValueData[] value;

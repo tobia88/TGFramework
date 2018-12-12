@@ -60,6 +60,7 @@ public class TGInputSetting : TGBaseBehaviour
         }
         DeviceType = KeyportData.type;
 
+        _controller.SetHeatmapEnable(KeyportData.heatmap);
         Debug.Log("Input Setup Success");
 
         yield return 1;

@@ -1,16 +1,16 @@
-{
+﻿{
   "infos": [
     {
       "cnTitle": "左踝关节背屈和跖屈",
       "animName": "AnklePlantarflexionAndDorsiflexion_L",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "右踝关节背屈和跖屈",
       "animName": "AnklePlantarflexionAndDorsiflexion_R",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "颈椎前屈后伸",
@@ -22,7 +22,7 @@
       "cnTitle": "颈椎左侧屈右侧屈",
       "animName": "CervicalVertebraLateralFlexion",
       "valueAxis": 1,
-      "reverse": false,
+      "reverse": true,
       "dire": 1
     },
     {
@@ -35,37 +35,37 @@
       "cnTitle": "左肘关节屈曲和伸展",
       "animName": "ElbowAdductionAndAbduction_L",
       "valueAxis": 0,
-      "reverse": true
+      "reverse": false
     },
     {
       "cnTitle": "右肘关节屈曲和伸展",
       "animName": "ElbowAdductionAndAbduction_R",
       "valueAxis": 0,
-      "reverse":true
+      "reverse": false
     },
     {
       "cnTitle": "左肘关节旋前和旋后",
       "animName": "ElbowJointPronationAndSupination_L",
       "valueAxis": 1,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "右肘关节旋前和旋后",
       "animName": "ElbowJointPronationAndSupination_R",
       "valueAxis": 1,
-      "reverse": true
+      "reverse": false
     },
     {
       "cnTitle": "左膝关节屈曲和伸展",
       "animName": "KneeJointAbductionAndAdduction_L",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "右膝关节屈曲和伸展",
       "animName": "KneeJointAbductionAndAdduction_R",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "左肩关节外展内收",
@@ -77,7 +77,7 @@
       "cnTitle": "右肩关节外展内收",
       "animName": "ShoulderAbductionAndAdduction_R",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "左肩关节水平屈曲和伸展",
@@ -95,49 +95,49 @@
       "cnTitle": "左肩关节伸展",
       "animName": "ShoulderJointAbduction_L",
       "valueAxis": 0,
-      "reverse": true
+      "reverse": false
     },
     {
       "cnTitle": "右肩关节伸展",
       "animName": "ShoulderJointAbduction_R",
       "valueAxis": 0,
-      "reverse": true
+      "reverse":false
     },
     {
       "cnTitle": "左肩关节屈曲",
       "animName": "ShoulderJointAdduction_L",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "右肩关节屈曲",
       "animName": "ShoulderJointAdduction_R",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "左肩关节外旋内旋",
       "animName": "ShoulderJointRotation_L",
       "valueAxis": 0,
-      "reverse": true
+      "reverse":  false
     },
     {
       "cnTitle": "右肩关节外旋内旋",
       "animName": "ShoulderJointRotation_R",
       "valueAxis": 0,
-      "reverse": true
+      "reverse":   false
     },
     {
       "cnTitle": "左腕关节掌屈背屈",
       "animName": "WristJointPronationAndSupination_L",
       "valueAxis": 0,
-      "reverse": true
+      "reverse": false
     },
     {
       "cnTitle": "右腕关节掌屈背屈",
       "animName": "WristJointPronationAndSupination_R",
       "valueAxis": 0,
-      "reverse": true
+      "reverse": false
     },
     {
       "cnTitle": "左腕关节尺偏桡偏",
