@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 [System.Serializable]
 public struct ScreenshotCropInfo
@@ -83,10 +84,10 @@ public class TGBaseScene : MonoBehaviour
 
     private bool m_captureScreen;
 
-    public void CaptureScreen()
+    public void CaptureScreen(Action<string> _callback = null)
     {
         m_captureScreen = true;
-        // onCaptureScreen = callback;
+        onCaptureScreen = _callback;
     }
 
     public virtual void Recalibration()
@@ -108,11 +109,11 @@ public class TGBaseScene : MonoBehaviour
         yield return new WaitForEndOfFrame();
         yield return StartCoroutine(SaveMainScreenshot(_dateStr));
         yield return StartCoroutine(SaveHeatmapTex(_dateStr));
-        // if (onCaptureScreen != null)
-        // {
-        //     onCaptureScreen(fileName);
-        //     onCaptureScreen = null;
-        // }
+        if (onCaptureScreen != null)
+        {
+            onCaptureScreen(_dateStr);
+            onCaptureScreen = null;
+        }
     }
 
     private IEnumerator SaveHeatmapTex(string _dateStr)
