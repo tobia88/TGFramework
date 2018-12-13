@@ -121,6 +121,7 @@ public class TGBaseScene : MonoBehaviour
         if (controller.heatmapInput.enabled)
         {
             string fileName = "heat_" + _dateStr + ".png";
+            controller.heatmapInput.ApplyHeatmap();
             yield return StartCoroutine(SaveTexture(controller.heatmapInput.outputTex, fileName));
             SaveScreenshotKey(HEATMAP_SCREENSHOT_KEY, fileName);
         }

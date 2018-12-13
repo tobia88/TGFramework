@@ -12,6 +12,7 @@ public class HeatmapInput : MonoBehaviour
 	public float plotStrength = 0.5f;
 	public Gradient gradient;
 	public int drawInterval = 30;
+	public bool updateRuntime = false;
 	private float[] m_maskValues;
 	private int m_width;
 	private int m_height;
@@ -64,6 +65,18 @@ public class HeatmapInput : MonoBehaviour
 		return true;
 	}
 
+	public void ApplyHeatmap()
+	{
+		for (int y = 0; y < m_height; y++)
+		{
+			for (int x = 0; x < m_width; x++)
+			{
+				outputTex.SetPixel(x, y, gradient.Evaluate(m_maskValues[x + y * m_width]));
+			}
+		}
+		outputTex.Apply();
+	}
+
 
 	private void DrawPlot(float _inputX, float _inputY)
 	{
@@ -94,11 +107,13 @@ public class HeatmapInput : MonoBehaviour
 				v = Mathf.Clamp01(v);
 
 				m_maskValues[pixelIndex] = v;
-				outputTex.SetPixel(bpx, bpy, gradient.Evaluate(v));
+
+				if (updateRuntime)
+					outputTex.SetPixel(bpx, bpy, gradient.Evaluate(v));
 			}
 		}
 
-		outputTex.Apply();
-
+		if (updateRuntime)
+			outputTex.Apply();
 	}
 }
