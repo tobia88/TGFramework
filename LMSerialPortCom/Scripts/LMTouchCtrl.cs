@@ -59,7 +59,7 @@ public class LMTouchCtrl : MonoBehaviour
 
     public TouchDimension touchDimension;
 
-    private void Update()
+    public void OnUpdate()
     {
         if (EventSystem.current.currentSelectedGameObject != null)
             return;

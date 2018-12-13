@@ -71,7 +71,12 @@ public class HeatmapInput : MonoBehaviour
 		{
 			for (int x = 0; x < m_width; x++)
 			{
-				outputTex.SetPixel(x, y, gradient.Evaluate(m_maskValues[x + y * m_width]));
+				float v = m_maskValues[x + y * m_width];
+
+				if (v == 0f)
+					continue;
+
+				outputTex.SetPixel(x, y, gradient.Evaluate(v));
 			}
 		}
 		outputTex.Apply();

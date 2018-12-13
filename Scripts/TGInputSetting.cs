@@ -104,6 +104,12 @@ public class TGInputSetting : TGBaseBehaviour
         return retval;
     }
 
+    public void OnUpdate()
+    {
+        if (touchCtrl != null)
+            touchCtrl.OnUpdate();
+    }
+
     public Vector3 GetValues()
     {
         Vector3 retval = Vector3.zero;

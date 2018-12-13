@@ -18,6 +18,7 @@ public class TGSettingData : ScriptableObject
     [Header ("Scene Setup")]
     public string defaultSceneName;
 	public SceneMatchData[] sceneDatas;
+    public bool outputHeatmap = true;
 
     public string GetSceneNameByDeviceType(string _deviceType)
     {

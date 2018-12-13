@@ -99,7 +99,7 @@ public class TGController : MonoBehaviour
 
     public void SetHeatmapEnable(bool _enable)
     {
-        heatmapInput.enabled = _enable;
+        heatmapInput.enabled = settingData.outputHeatmap && _enable;
 
         if (_enable)
         {
@@ -149,6 +149,8 @@ public class TGController : MonoBehaviour
                 Application.Quit();
             return;
         }
+
+        inputSetting.OnUpdate();
 
         if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.BackQuote))
         {
