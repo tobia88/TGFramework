@@ -75,6 +75,14 @@ public class TGController : MonoBehaviour
 
     }
 
+    private void OnApplicationQuit()
+    {
+        if (IsInit)
+        {
+            Flush();
+        }
+    }
+
     private void Start()
     {
         if (!IsInit)
@@ -85,11 +93,17 @@ public class TGController : MonoBehaviour
 
     public void Quit()
     {
+        Flush();
+        Application.Quit();
+    }
+
+    private void Flush()
+    {
+        IsInit = false;
         gameConfig.Close();
         inputSetting.Close();
         Debug.Log("Application Quit");
         StopAllCoroutines();
-        Application.Quit();
     }
 
     public void DebugText(string _txt)

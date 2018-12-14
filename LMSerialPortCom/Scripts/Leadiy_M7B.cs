@@ -12,7 +12,8 @@ public class Leadiy_M7B : LMBasePortResolver
 
     private int m_checksum;
     private Vector3 m_lastGyro, m_lastAcc, m_lastAngle;
-    private Vector3 m_gyro, m_acc, m_angle;
+    // private Vector3 m_gyro, m_acc;
+    private Vector3 m_angle;
 
     private int m_length;
     // public const string FULL_VALUE_CODE = "D66D2020";
@@ -26,7 +27,7 @@ public class Leadiy_M7B : LMBasePortResolver
         var currentValue = values[(int)setupData.valueAxis];
         currentValue.reverse = setupData.reverse;
 
-        _portInput.Write(HEX_CODE + setupData.dire);
+        // _portInput.Write(HEX_CODE + setupData.dire);
 
 
         // string hexCode = StringToHex(FULL_VALUE_CODE);
@@ -167,16 +168,10 @@ public class Leadiy_M7B : LMBasePortResolver
         if (values.Length >= 2) values[2].SetValue(m_angle.z);
     }
 
-    public override void Close()
-    {
-        if (m_portInput != null)
-            m_portInput.Write(HEX_CODE + 0);
-    }
 
-
-    public override string ToString()
-    {
-        string format = "Gyro: {0}\nAcc: {1}\nAngle:{2}";
-        return string.Format(format, m_gyro, m_acc, m_angle);
-    }
+    // public override string ToString()
+    // {
+    //     string format = "Gyro: {0}\nAcc: {1}\nAngle:{2}";
+    //     return string.Format(format, m_gyro, m_acc, m_angle);
+    // }
 }

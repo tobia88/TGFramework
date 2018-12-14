@@ -24,9 +24,13 @@ public class TGInputSetting : TGBaseBehaviour
         portInput.Close();
     }
 
+    private TGController m_controller;
+
     public override IEnumerator StartRoutine(TGController _controller)
     {
-        portInput = GetComponent<LMBasePortInput>();
+        m_controller = _controller;
+
+        // portInput = GetComponent<LMBasePortInput>();
         touchCtrl = GetComponent<LMTouchCtrl>();
 
         keyInputConfig = TGUtility.ParseConfigFile(configFileName);
@@ -45,15 +49,14 @@ public class TGInputSetting : TGBaseBehaviour
 
         if (!touchCtrl.enabled)
         {
-            portInput.portInfo.comName = "COM" + _controller.gameConfig.GetValue("端口", -1);
-
             // FIXME: Temperory
             if (KeyportData.type == "m7b" && _controller.evaluationSetupData.isFullAxis)
                 KeyportData.type += "2D";
 
+            portInput = GetProperInput();
+
             if (!portInput.OnStart(KeyportData))
             {
-                // Debug.LogWarning(portInput.ErrorTxt);
                 _controller.DebugText(portInput.ErrorTxt);
                 touchCtrl.enabled = true;
             }
@@ -64,6 +67,26 @@ public class TGInputSetting : TGBaseBehaviour
         Debug.Log("Input Setup Success");
 
         yield return 1;
+    }
+
+    private LMBasePortInput GetProperInput()
+    {
+        int udp = m_controller.gameConfig.GetValue("UDP", -1);
+
+        if (udp >= 0)
+        {
+            var retval = new LMInput_UDP();
+            retval.Init(m_controller, udp);
+            return retval;
+        }
+        else
+        {
+            var retval = new LMInput_Port();
+            retval.Init(m_controller, 
+                        m_controller.gameConfig.GetValue("端口", -1),
+                        GetComponent<LMSerialPortCtrl>());
+            return retval;
+        }
     }
 
     public void SetPressureLevel(int level)
@@ -108,6 +131,9 @@ public class TGInputSetting : TGBaseBehaviour
     {
         if (touchCtrl != null)
             touchCtrl.OnUpdate();
+
+        if (portInput != null)
+            portInput.OnUpdate();
     }
 
     public Vector3 GetValues()

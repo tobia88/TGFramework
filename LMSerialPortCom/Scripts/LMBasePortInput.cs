@@ -26,187 +26,123 @@ public class KeyInputConfig
     }
 }
 
-public class LMBasePortInput : MonoBehaviour, IPortReceiver
+public class LMBasePortInput
 {
-    protected bool m_isInit;
-    protected byte[] m_bytes;
-    protected float m_cdToReconnect;
-    protected int m_byteLength;
-    public SerialPort Port { get; private set; }
-    public LMBasePortResolver CurrentResolver { get; private set; }
-    public LMSerialPortCtrl SerialPortCtrl { get; private set; }
+	
+	protected bool m_isInit;
+	protected byte[] m_bytes;
+	protected float m_cdToReconnect;
+	protected int m_byteLength;
+    protected TGController m_controller;
+	public bool isPortActive = false;
+	public LMBasePortResolver CurrentResolver { get; protected set; }
+	public KeyPortData KeyportData { get; private set; }
+	public string ErrorTxt { get; protected set; }
 
-    public string ErrorTxt
+    public void Init(TGController _controller)
     {
-        get;
-        protected set;
+        m_controller = _controller;
     }
-
-    public PortInfo portInfo;
-    public bool isPortActive = false;
-    public KeyPortData KeyportData { get; private set; }
 
     public virtual bool OnStart(KeyPortData portData)
     {
-        SerialPortCtrl = GetComponent<LMSerialPortCtrl>();
-
-        KeyportData = portData;
-
-        if (!SerialPortCtrl.CheckPortAvailable(portInfo.comName))
-        {
-            ErrorTxt = "端口" + portInfo.comName + "不存在！";
-            return false;
-        }
-
-        Connect();
-
+		KeyportData = portData;
         return true;
     }
 
-    public void Write(string _hex)
+    public virtual void Close()
     {
-        if (Port != null && Port.IsOpen)
-        {
-            // Debug.Log("Write Port: " + _hex);
-            Port.Write(_hex);
-        }
+		if (CurrentResolver != null)
+			CurrentResolver.Close();
     }
 
-    public void Connect()
-    {
-        TGController.Instance.DebugText("正在读取端口: " + portInfo.comName);
-        CurrentResolver = GetProperResolver(KeyportData);
-        isPortActive = SerialPortCtrl.Open(portInfo, this, true);
-    }
+	private bool CountdownToReconnect()
+	{
+		return m_cdToReconnect > 200000;
+	}
 
-    public void Close()
-    {
-        if (CurrentResolver != null)
-            CurrentResolver.Close();
+	public void OnUpdate()
+	{
+		if (!isPortActive)
+			return;
 
-        if (SerialPortCtrl != null)
-            SerialPortCtrl.Close();
-    }
+		if (CountdownToReconnect())
+		{
+			ReconnectInFewSeconds();
+		}
 
-    private bool CountdownToReconnect()
-    {
-        return m_cdToReconnect > 200000;
-    }
+		if (m_bytes != null)
+		{
+			TGController.Instance.DebugText("连接成功，请重新打开数据面板");
+		}
+	}
 
-    private void Update()
-    {
-        if (!isPortActive)
-            return;
+	protected void InitPortResolver()
+	{
+		CurrentResolver = GetProperResolver(KeyportData);
+		CurrentResolver.Init(this);
+		m_isInit = true;
+	}
 
-        if (CountdownToReconnect())
-        {
-            ReconnectInFewSeconds();
-        }
+	protected virtual void ReconnectInFewSeconds()
+	{
+		isPortActive = false;
+		m_isInit = false;
+		m_cdToReconnect = 0f;
+	}
 
-        if (m_byteLength > 0)
-        {
-            TGController.Instance.DebugText("连接成功，请重新打开数据面板");
-        }
-    }
+	public virtual float GetValue(int index)
+	{
+		if (CurrentResolver == null)
+			return 0f;
 
-    public void OnReceivePort(SerialPort _port)
-    {
-        Port = _port;
-        try
-        {
-            if (Port.IsOpen)
-            {
-                if (!m_isInit)
-                    InitPortResolver();
+		return CurrentResolver.GetValue(index);
+	}
 
-                m_byteLength = Port.BytesToRead;
+	public virtual void Recalibration()
+	{
+		CurrentResolver.Recalibration();
+	}
 
-                if (m_byteLength > 0)
-                {
-                    m_cdToReconnect = 0;
-                    ReadData();
-                }
-                else
-                {
-                    m_cdToReconnect++;
-                }
-            }
-        }
-        catch (Exception _ex)
-        {
-            ErrorTxt = _ex.Message;
-            m_cdToReconnect++;
-        }
-    }
+	protected LMBasePortResolver GetProperResolver(KeyPortData portData)
+	{
+		LMBasePortResolver retval = null;
 
-    private void ReconnectInFewSeconds()
-    {
-        isPortActive = false;
-        m_isInit = false;
-        m_cdToReconnect = 0f;
-        SerialPortCtrl.Close();
-        StartCoroutine(ReconnectDelay());
-    }
+		Debug.Log("Port Data Type: " + portData.type);
 
-    IEnumerator ReconnectDelay()
-    {
-        TGController.Instance.DebugText("正在重新链接串口...");
-        yield return new WaitForSeconds(5);
-        TGController.Instance.DebugText("连接串口中...");
-        Connect();
-    }
+		if (portData.type == "jy901")
+		{
+			retval = new JY901();
+		}
+		else if (portData.type == "m7b" || portData.type == "m7b2D")
+		{
+			retval = new Leadiy_M7B();
+		}
+		else
+		{
+			retval = new LMKeyResolver();
+		}
 
-    private void InitPortResolver()
-    {
+		return retval;
+	}
 
-        CurrentResolver.Init(this);
-        m_isInit = true;
-    }
+	protected void ReadData(byte[] _bytes)
+	{
+		if (!m_isInit)
+			InitPortResolver();
 
-    private void ReadData()
-    {
-        m_cdToReconnect = 0f;
-        isPortActive = true;
+		if (_bytes == null || _bytes.Length == 0)
+		{
+			m_cdToReconnect++;
+			return;
+		}
 
-        m_bytes = new byte[m_byteLength];
-        Port.Read(m_bytes, 0, m_byteLength);
+		m_cdToReconnect = 0f;
+		isPortActive = true;
 
-        CurrentResolver.ResolveBytes(m_bytes);
+		m_bytes = _bytes;
 
-    }
+		CurrentResolver.ResolveBytes(m_bytes);
+	}
 
-    public virtual float GetValue(int index)
-    {
-        if (CurrentResolver == null)
-            return 0f;
-
-        return CurrentResolver.GetValue(index);
-    }
-
-    public virtual void Recalibration()
-    {
-        CurrentResolver.Recalibration();
-    }
-
-    private LMBasePortResolver GetProperResolver(KeyPortData portData)
-    {
-        LMBasePortResolver retval = null;
-
-        Debug.Log("Port Data Type: " + portData.type);
-
-        if (portData.type == "jy901")
-        {
-            retval = new JY901();
-        }
-        else if (portData.type == "m7b" || portData.type == "m7b2D")
-        {
-            retval = new Leadiy_M7B();
-        }
-        else
-        {
-            retval = new LMKeyResolver();
-        }
-
-        return retval;
-    }
 }
