@@ -164,7 +164,7 @@ public class TGController : MonoBehaviour
             return;
         }
 
-        inputSetting.OnUpdate();
+        // inputSetting.OnUpdate();
 
         if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.BackQuote))
         {

@@ -10,8 +10,12 @@ public class TGMainGame : TGBaseBehaviour
     public string SceneName { get; private set; }
     public Dictionary<string, string> additionDataToSave;
 
+    private TGController m_controller;
+
     public override IEnumerator StartRoutine(TGController _controller)
     {
+        m_controller = _controller;
+
         SceneName = _controller.SceneName;
 
         Scene scene = SceneManager.GetSceneByName(SceneName);
@@ -49,8 +53,8 @@ public class TGMainGame : TGBaseBehaviour
 
         while (_scene.isActive)
         {
-            TGController.Instance.dxTextCentre.Clear();
             _scene.OnUpdate();
+            m_controller.inputSetting.OnUpdate();
             yield return 1;
         }
     }
