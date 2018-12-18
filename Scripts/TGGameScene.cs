@@ -14,6 +14,12 @@ public enum GameStates
     End
 }
 
+public enum GameTypes
+{
+    TimeLimit,
+    Missions
+}
+
 public class TGGameScene : TGBaseScene
 {
     protected float m_timeLeft;
@@ -24,7 +30,8 @@ public class TGGameScene : TGBaseScene
     protected int m_stageLevel = -1;
 
     public Sound bgm;
-    public TGUIRoot uiRoot; 
+    public TGUIRoot uiRoot;
+    public GameTypes gameType;
 
     public int DifficultyLv
 
@@ -35,7 +42,8 @@ public class TGGameScene : TGBaseScene
 
     public float Duration
     {
-        get; private set;
+        get;
+        private set;
     }
 
     public float TimeLeft
@@ -43,6 +51,9 @@ public class TGGameScene : TGBaseScene
         get { return m_timeLeft; }
         set
         {
+            if (gameType != GameTypes.TimeLimit)
+                return;
+
             m_timeLeft = Mathf.Clamp(value, 0, Duration);
             uiRoot.timeBar.SetValue(m_timeLeft / Duration);
         }
@@ -50,7 +61,7 @@ public class TGGameScene : TGBaseScene
 
     protected override void OnTimePassed(float _value)
     {
-		float delta = _value - m_timePassed;
+        float delta = _value - m_timePassed;
         base.OnTimePassed(_value);
         TimeLeft -= delta;
         StageLevel = Mathf.FloorToInt(m_timePassed / 60);
@@ -87,7 +98,6 @@ public class TGGameScene : TGBaseScene
             if (m_gameState != value)
             {
                 m_gameState = value;
-                ConsoleProDebug.Watch("Game State", m_gameState.ToString());
                 OnEnterGameState(m_gameState);
             }
         }
@@ -145,7 +155,7 @@ public class TGGameScene : TGBaseScene
 
     public override void OnUpdate()
     {
-		base.OnUpdate();
+        base.OnUpdate();
 
         if (m_gameState == GameStates.Playing)
             OnUpdateGamePlaying();
@@ -188,9 +198,8 @@ public class TGGameScene : TGBaseScene
         }
     }
 
-    protected virtual void OnStartTutorial() 
+    protected virtual void OnStartTutorial()
     {
-        // uiRoot.tutorialPanel.Show();
         Time.timeScale = 0f;
         uiRoot.tutorialPanel.Show();
     }
@@ -209,11 +218,17 @@ public class TGGameScene : TGBaseScene
     protected virtual void OnUpdateGamePlaying()
     {
         if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Q))
-            TimeLeft = 0f;
-
-        if (TimeLeft <= 0f)
         {
+            TimeLeft = 0f;
             GameState = GameStates.GameOver;
+        }
+
+        if (gameType == GameTypes.TimeLimit)
+        {
+            if (TimeLeft <= 0f)
+            {
+                GameState = GameStates.GameOver;
+            }
         }
     }
 
@@ -244,13 +259,13 @@ public class TGGameScene : TGBaseScene
         ExitScene();
     }
 
-	public override void ExitScene()
-	{
-		AudioMng.Instance.StopAll();
+    public override void ExitScene()
+    {
+        AudioMng.Instance.StopAll();
 
         additionDataToSave.Add("分数", Score.ToString());
-		base.ExitScene();
-	}
+        base.ExitScene();
+    }
 
     protected virtual void OnStartPlaying()
     {
@@ -273,5 +288,3 @@ public class TGGameScene : TGBaseScene
     }
 
 }
-
-

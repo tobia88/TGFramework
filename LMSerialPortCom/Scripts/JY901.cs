@@ -65,8 +65,6 @@ public class JY901 : LMBasePortResolver
         SetupAngularVel(gyroSplit);
         SetupAngle(angleSplit);
 
-        ConsoleProDebug.Watch("JY901", ToString());
-
         m_getString = string.Empty;
     }
 
