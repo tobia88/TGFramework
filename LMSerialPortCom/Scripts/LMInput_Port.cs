@@ -17,6 +17,8 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 
 		SerialPortCtrl = _serialPortCtrl;
 
+		portInfo = new PortInfo();
+
 		portInfo.comName = "COM" + _com;
 		portInfo.baudRate = 115200;
 	}
