@@ -21,7 +21,8 @@ public class TGInputSetting : TGBaseBehaviour
 
     public void Close()
     {
-        portInput.Close();
+        if (portInput != null)
+            portInput.Close();
     }
 
     private TGController m_controller;
