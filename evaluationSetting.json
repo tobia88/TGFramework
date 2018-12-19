@@ -131,13 +131,13 @@
       "cnTitle": "左腕关节掌屈背屈",
       "animName": "WristJointPronationAndSupination_L",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "右腕关节掌屈背屈",
       "animName": "WristJointPronationAndSupination_R",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "左腕关节尺偏桡偏",
