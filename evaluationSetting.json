@@ -16,7 +16,7 @@
       "cnTitle": "颈椎前屈后伸",
       "animName": "NeckExtensionAndFlexion",
       "valueAxis": 0,
-      "reverse": false
+      "reverse": true
     },
     {
       "cnTitle": "颈椎左侧屈右侧屈",
@@ -119,13 +119,13 @@
       "cnTitle": "左肩关节外旋内旋",
       "animName": "ShoulderJointRotation_L",
       "valueAxis": 0,
-      "reverse":  false
+      "reverse": true
     },
     {
       "cnTitle": "右肩关节外旋内旋",
       "animName": "ShoulderJointRotation_R",
       "valueAxis": 0,
-      "reverse":   false
+      "reverse": true
     },
     {
       "cnTitle": "左腕关节掌屈背屈",

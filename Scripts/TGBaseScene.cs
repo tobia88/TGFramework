@@ -123,7 +123,7 @@ public class TGBaseScene : MonoBehaviour
             string fileName = "heat_" + _dateStr + ".png";
             controller.heatmapInput.ApplyHeatmap();
             yield return StartCoroutine(SaveTexture(controller.heatmapInput.outputTex, fileName));
-            SaveScreenshotKey(HEATMAP_SCREENSHOT_KEY, fileName);
+            SaveScreenshotKey(MAIN_SCREENSHOT_KEY, fileName);
         }
 
         yield return null;
@@ -164,7 +164,6 @@ public class TGBaseScene : MonoBehaviour
     }
 
     private const string MAIN_SCREENSHOT_KEY = "图片";
-    private const string HEATMAP_SCREENSHOT_KEY = "热图";
 
     private void SaveScreenshotKey(string _key, string _fileName)
     {
