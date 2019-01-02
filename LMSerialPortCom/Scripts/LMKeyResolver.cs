@@ -24,7 +24,7 @@ public class KeyResolveValue
     public float StartMin { get; private set; }
     public float StartMax { get; private set; }
     public float Min { get { return StartMin * Ratio; } }
-    public float Max { get { return StartMax * Ratio; } } 
+    public float Max { get { return StartMax * Ratio; } }
 
     public double LastRawValue { get; private set; }
     public double RawValue { get; private set; }
@@ -41,7 +41,8 @@ public class KeyResolveValue
 
         equation = _data.equation;
 
-        value = m_default = (_data.origin == -1) ? 0 : Min + (Max - Min) * _data.origin;
+        value = m_default = (_data.origin == -1) ?
+            0 : Min + (Max - Min) * _data.origin;
 
         Ratio = 1;
     }
@@ -56,8 +57,16 @@ public class KeyResolveValue
         value = m_default;
     }
 
+    private int _delayFrame = 30;
+
     public void SetValue(double newVal)
     {
+        if (_delayFrame > 0)
+        {
+            _delayFrame--;
+            return;
+        }
+
         if (double.IsNaN(newVal))
             newVal = 0f;
 
@@ -121,10 +130,10 @@ public class KeyResolveInput
 
     public override string ToString()
     {
-        string retval = key + ": " + value.ToString(); 
+        string retval = key + ": " + GetValue().ToString();
 
         if (bias != 0f)
-            retval += "(" + (bias * -1f).ToString() + ")";
+            retval += "(" + value.ToString() + (bias * -1f).ToString() + ")";
 
         return retval;
     }
@@ -149,7 +158,7 @@ public class LMKeyResolver : LMBasePortResolver
 
     public bool Threshold
     {
-        get { return InputTotal >= inputTotalGap; }
+        get { return inputTotalGap == 0 || InputTotal >= inputTotalGap; }
     }
 
     public override void Init(LMBasePortInput _portInput)
@@ -169,7 +178,10 @@ public class LMKeyResolver : LMBasePortResolver
     public override float GetValue(int index)
     {
         if (!Threshold)
+        {
+            Debug.Log("Failed Threshold, Return 0f");
             return 0f;
+        }
 
         return base.GetValue(index);
     }
@@ -192,7 +204,6 @@ public class LMKeyResolver : LMBasePortResolver
             }
         }
     }
-
 
     public override void ResolveBytes(byte[] _bytes)
     {

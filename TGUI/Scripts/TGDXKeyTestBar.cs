@@ -22,8 +22,8 @@ public class TGDXKeyTestBar : MonoBehaviour
 		equationTxt.text = value.equation;
 		valueTxt.text = "raw: " + value.RawValue.ToString("0.00") + ", cur: " + value.value.ToString("0.00");
 
-		progress.minValue = value.Min;
-		progress.maxValue = value.Max;	
-		progress.value = (float)value.value;
+		progress.minValue = 0f;
+		progress.maxValue = 1f;	
+		progress.value = value.GetValue();
 	}
 }
