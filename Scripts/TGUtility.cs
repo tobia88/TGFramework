@@ -100,13 +100,13 @@ public static class TGUtility
         return remapMin + ratio * (remapMax - remapMin);
     }
 
-    public static void DrawHeatmap2D(Vector2 pos)
+    public static void DrawHeatmap2D(Vector2 pos, float value = -1f)
     {
         var heatmap = TGController.Instance.heatmapInput;
 
         if (!heatmap.enabled)
             return;
 
-        heatmap.DrawPos(pos);
+        heatmap.DrawPos(pos, value);
     }
 }

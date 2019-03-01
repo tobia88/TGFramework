@@ -46,14 +46,13 @@ public class HeatmapInput : MonoBehaviour
 		DrawPlot(vp.x * m_width, vp.y * m_height);
 	}
 
-	public void DrawPos(Vector2 pos)
+	public void DrawPos(Vector2 pos, float value = -1f)
 	{
 		if (!CheckDrawable())
 			return;
 
-		DrawPlot(pos.x, pos.y);
+		DrawPlot(pos.x, pos.y, value);
 	}
-
 
 	public bool CheckDrawable()
 	{
@@ -82,8 +81,7 @@ public class HeatmapInput : MonoBehaviour
 		outputTex.Apply();
 	}
 
-
-	private void DrawPlot(float _inputX, float _inputY)
+	private void DrawPlot(float _inputX, float _inputY, float value = -1f)
 	{
 		int sizeInRatio = Mathf.RoundToInt(plotTex.width * plotSize);
 
@@ -105,6 +103,12 @@ public class HeatmapInput : MonoBehaviour
 					continue;
 
 				float v = m_maskValues[pixelIndex] + plotTex.GetPixelBilinear((float)x / sizeInRatio, (float)y / sizeInRatio).r * plotStrength;
+
+				if (value != -1f)
+				{
+					float nv = plotTex.GetPixelBilinear((float)x / sizeInRatio, (float)y / sizeInRatio).r * value * plotStrength;
+					v = Mathf.Max(nv, v);
+				}
 
 				if (v <= 0)
 					continue;
