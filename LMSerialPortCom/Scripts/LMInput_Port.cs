@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public class LMInput_Port : LMBasePortInput, IPortReceiver
@@ -23,7 +24,6 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		portInfo.baudRate = 115200;
 	}
 
-
 	public override bool OnStart(KeyPortData portData)
 	{
 		base.OnStart(portData);
@@ -39,13 +39,23 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		return true;
 	}
 
-	public void Write(string _hex)
+	public override void Write(byte[] bytes)
 	{
 		if (Port != null && Port.IsOpen)
 		{
-			// Debug.Log("Write Port: " + _hex);
-			Port.Write(_hex);
+			m_controller.StartCoroutine(PortWriteRoutine(bytes));
 		}
+	}
+
+	private IEnumerator PortWriteRoutine(byte[] bytes)
+	{
+		Port.Write(bytes, 0, bytes.Length);
+		IsPortWriting = true;
+
+		yield return new WaitForSeconds(1f);
+		yield return new WaitUntil(() => m_bytes != null && m_bytes.Length > 0);
+
+		IsPortWriting = false;
 	}
 
 	public void ConnectPort()
@@ -96,6 +106,4 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		TGController.Instance.DebugText("连接串口中...");
 		ConnectPort();
 	}
-
-
 }

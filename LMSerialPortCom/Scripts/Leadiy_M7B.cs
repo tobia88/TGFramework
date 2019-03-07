@@ -7,16 +7,12 @@ using UnityEngine;
 public class Leadiy_M7B : LMBasePortResolver
 {
     private const string CODE_DETECTION = "A7 7A 72 ";
-    private const string HEX_CODE = "D66D30300";
     private string m_getString;
 
     private int m_checksum;
-    private Vector3 m_lastGyro, m_lastAcc, m_lastAngle;
-    // private Vector3 m_gyro, m_acc;
     private Vector3 m_angle;
 
     private int m_length;
-    // public const string FULL_VALUE_CODE = "D66D2020";
 
     public int[] byteValues; 
     public override void Init(LMBasePortInput _portInput)
@@ -26,29 +22,7 @@ public class Leadiy_M7B : LMBasePortResolver
         var setupData = TGController.Instance.evaluationSetupData;
         var currentValue = values[(int)setupData.valueAxis];
         currentValue.reverse = setupData.reverse;
-
-        // _portInput.Write(HEX_CODE + setupData.dire);
-
-
-        // string hexCode = StringToHex(FULL_VALUE_CODE);
-        // Debug.Log("Converting Code: " + FULL_VALUE_CODE + " to " + hexCode + " and send to port");
-        // _portInput.Port.Write(hexCode);
     }
-
-    // private string StringToHex(string hexStr)
-    // {
-    //     return String.Concat(hexStr.Select(x => Convert.ToInt32(x).ToString("X")));
-    // }
-
-    // public override float GetValue(string key)
-    // {
-    //     Vector3 euler = Vector3.zero;
-    //     euler.x = (values.Length > 0) ? values[0].GetValue() : 0;
-    //     euler.y = (values.Length > 1) ? values[1].GetValue() : 0;
-    //     euler.z = (values.Length > 2) ? values[2].GetValue() : 0;
-
-    //     return euler.GetPosFromAxis(key);
-    // }
 
     public override void Recalibration()
     {
@@ -68,14 +42,11 @@ public class Leadiy_M7B : LMBasePortResolver
             m_getString += m_bytes[i].ToString("X").PadLeft(2, '0') + " ";
         }
 
-        // string detect = "A7 7A 60 ";
-        string detect = "A7 7A 72 ";
-
-        int keyIndex = m_getString.IndexOf(detect);
+        int keyIndex = m_getString.IndexOf(CODE_DETECTION);
 
         if (keyIndex != -1)
         {
-            var sub = m_getString.Substring(keyIndex + detect.Length);
+            var sub = m_getString.Substring(keyIndex + CODE_DETECTION.Length);
 
             var split = sub.Split(' ');
 
@@ -142,18 +113,6 @@ public class Leadiy_M7B : LMBasePortResolver
 
     private void SetupKeyValues(int[] _byteValues)
     {
-        // m_gyro.x = LMUtility.ConvertBitwiseToInt16((_byteValues[1] << 8) | _byteValues[0]);
-        // m_gyro.y = LMUtility.ConvertBitwiseToInt16((_byteValues[3] << 8) | _byteValues[2]);
-        // m_gyro.z = LMUtility.ConvertBitwiseToInt16((_byteValues[5] << 8) | _byteValues[4]);
-
-        // m_acc.x = LMUtility.ConvertBitwiseToInt16((_byteValues[7] << 8) | _byteValues[6]);
-        // m_acc.y = LMUtility.ConvertBitwiseToInt16((_byteValues[9] << 8) | _byteValues[8]);
-        // m_acc.z = LMUtility.ConvertBitwiseToInt16((_byteValues[11] << 8) | _byteValues[10]);
-
-        // m_angle.x = LMUtility.ConvertBitwiseToInt16((_byteValues[13] << 8) | _byteValues[12]);
-        // m_angle.y = LMUtility.ConvertBitwiseToInt16((_byteValues[15] << 8) | _byteValues[14]);
-        // m_angle.z = LMUtility.ConvertBitwiseToInt16((_byteValues[17] << 8) | _byteValues[16]);
-
         m_angle.x = LMUtility.ConvertBitwiseToInt16((_byteValues[1] << 8) | _byteValues[0]);
         m_angle.y = LMUtility.ConvertBitwiseToInt16((_byteValues[3] << 8) | _byteValues[2]);
         m_angle.z = LMUtility.ConvertBitwiseToInt16((_byteValues[5] << 8) | _byteValues[4]);
@@ -167,11 +126,4 @@ public class Leadiy_M7B : LMBasePortResolver
         if (values.Length >= 1) values[1].SetValue(m_angle.y);
         if (values.Length >= 2) values[2].SetValue(m_angle.z);
     }
-
-
-    // public override string ToString()
-    // {
-    //     string format = "Gyro: {0}\nAcc: {1}\nAngle:{2}";
-    //     return string.Format(format, m_gyro, m_acc, m_angle);
-    // }
 }

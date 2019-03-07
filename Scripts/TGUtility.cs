@@ -109,4 +109,20 @@ public static class TGUtility
 
         heatmap.DrawPos(pos, value);
     }
+
+    public static byte[] StringToByteArray(string hex)
+    {
+        hex.Replace(" ", "");
+        if ((hex.Length % 2) != 0)
+            hex += " ";
+
+        int length = hex.Length;
+
+        byte[] retval = new byte[length / 2];
+        for (int i = 0; i < retval.Length; i++)
+        {
+            retval[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+        }
+        return retval;
+    }
 }

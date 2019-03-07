@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
+using System.Text;
 
 public class LMInput_UDP : LMBasePortInput, IPortReceiver
 {
@@ -75,11 +76,23 @@ public class LMInput_UDP : LMBasePortInput, IPortReceiver
 	public override void Close()
 	{
 		base.Close();
+
 		if (m_receiveThread != null && m_receiveThread.IsAlive)
 			m_receiveThread.Abort();
 
 		if (m_serialPortCtrl != null)
 			m_serialPortCtrl.Close();
+
+		if (m_client != null)
+			m_client.Close();
+	}
+
+	public override void Write(byte[] bytes)
+	{
+		if (m_client == null)
+			return;
+
+		m_client.Send(bytes, bytes.Length, m_endPoint);
 	}
 
 	private void ReceiveData()
@@ -95,6 +108,7 @@ public class LMInput_UDP : LMBasePortInput, IPortReceiver
 			{
 				if (TGController.Instance != null)
 					TGController.Instance.DebugText(e.Message);
+
 				m_cdToReconnect++;
 			}
 		}

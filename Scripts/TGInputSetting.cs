@@ -11,7 +11,7 @@ public class TGInputSetting : TGBaseBehaviour
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive
     {
-        get { return (portInput == null) ? false : portInput.isPortActive; }
+        get { return (portInput == null) ? false : portInput.isPortActive && !portInput.IsPortWriting; }
     }
 
     public string DeviceName { get; private set; }
@@ -148,6 +148,19 @@ public class TGInputSetting : TGBaseBehaviour
         }
 
         return retval;
+    }
+
+    public Vector3 GetRawValues()
+    {
+        Vector3 retval = Vector3.zero;
+        if (IsPortActive)
+        {
+            retval.x = portInput.GetRawValue(0);
+            retval.y = portInput.GetRawValue(1);
+            retval.z = portInput.GetRawValue(2);
+        }
+
+        return retval;  
     }
 
     public void Recalibration()
