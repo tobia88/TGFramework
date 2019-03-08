@@ -4,5 +4,11 @@ using UnityEngine;
 
 public abstract class TGBaseBehaviour : MonoBehaviour
 {
-    public abstract IEnumerator StartRoutine(TGController _controller);
+    protected TGController m_controller;
+    public void Init(TGController _controller)
+    {
+        m_controller = _controller;
+    }
+
+    public abstract IEnumerator StartRoutine();
 }

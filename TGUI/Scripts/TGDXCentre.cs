@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class TGDXCentre : TGDXBaseCentre
 {
+	public string debugTxt { get; private set; }
 	public Text bugText;
 	public TGDXInputDataColumn inputDataColumnPrefab;
 	public TGDXInputDataColumn[] inputDataColumns;
@@ -34,7 +35,8 @@ public class TGDXCentre : TGDXBaseCentre
 
 	public void DebugText(string _text)
 	{
-		bugText.text = _text;
+		debugTxt = _text;
+		bugText.text = debugTxt;
 	}
 
 	private void SetupColumns()

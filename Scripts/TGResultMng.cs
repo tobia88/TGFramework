@@ -6,28 +6,28 @@ public class TGResultMng : TGBaseBehaviour
 {
     public string saveFileName = "ret.txt";
     public bool isWrited = false;
-    public override IEnumerator StartRoutine(TGController _controller)
+    public override IEnumerator StartRoutine()
     {
-        ForceWrite(_controller);
+        ForceWrite();
         isWrited = true;
         yield return 1;
     }
 
-    public void ForceWrite(TGController _controller)
+    public void ForceWrite()
     {
         // _controller.fileWriter.Write(saveFileName, _controller.gameConfig.configInfo.ToString());
-        string path = TGController.Instance.RootPath + saveFileName;
+        string path = m_controller.RootPath + saveFileName;
 
         INIParser ini = new INIParser();
         
         ini.Open(path);
 
-        ini.WriteValue("ret", "名称", TGController.Instance.GameNameCn);
+        ini.WriteValue("ret", "名称", m_controller.GameNameCn);
         ini.WriteValue("ret", "种类", "2");
         ini.WriteValue("ret", "开始时间", TGUtility.ParseDateTimeToString(TGController.Instance.startTime));
         ini.WriteValue("ret", "结束时间", TGUtility.ParseDateTimeToString(TGController.Instance.endTime));
 
-        Dictionary<string, string> keys = TGController.Instance.mainGame.additionDataToSave;
+        Dictionary<string, string> keys = m_controller.mainGame.additionDataToSave;
         foreach (string k in keys.Keys)
         {
             ini.WriteValue("ret", k, keys[k]);

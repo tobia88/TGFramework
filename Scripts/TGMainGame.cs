@@ -10,13 +10,9 @@ public class TGMainGame : TGBaseBehaviour
     public string SceneName { get; private set; }
     public Dictionary<string, string> additionDataToSave;
 
-    private TGController m_controller;
-
-    public override IEnumerator StartRoutine(TGController _controller)
+    public override IEnumerator StartRoutine()
     {
-        m_controller = _controller;
-
-        SceneName = _controller.SceneName;
+        SceneName = m_controller.SceneName;
 
         Scene scene = SceneManager.GetSceneByName(SceneName);
 
@@ -34,26 +30,26 @@ public class TGMainGame : TGBaseBehaviour
 
         if (baseScn != null)
         {
-            yield return _controller.StartCoroutine(GameRoutine(baseScn));
-            yield return _controller.StartCoroutine(UnloadScene(baseScn));
+            yield return m_controller.StartCoroutine(GameRoutine(baseScn));
+            yield return m_controller.StartCoroutine(UnloadScene(baseScn));
 
             Debug.Log("Main Game: Finished");
         }
         else
         {
-            _controller.ErrorQuit("TGBaseScene doesn't found on scene " + this.SceneName);
+            m_controller.ErrorQuit("TGBaseScene doesn't found on scene " + this.SceneName);
             yield break;
         }
     }
 
-    private IEnumerator GameRoutine(TGBaseScene _scene)
+    private IEnumerator GameRoutine(TGBaseScene scene)
     {
-        _scene.Init();
-        _scene.OnStart();
+        scene.Init();
+        scene.OnStart();
 
-        while (_scene.isActive)
+        while (scene.isActive)
         {
-            _scene.OnUpdate();
+            scene.OnUpdate();
             m_controller.inputSetting.OnUpdate();
             yield return 1;
         }

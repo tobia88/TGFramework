@@ -11,7 +11,12 @@ public class TGInputSetting : TGBaseBehaviour
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive
     {
-        get { return (portInput == null) ? false : portInput.isPortActive && !portInput.IsPortWriting; }
+        get { return IsPortConnected && !portInput.IsPortWriting; }
+    }
+    
+    public bool IsPortConnected
+    {
+        get { return (portInput == null) ? false : portInput.isPortActive; }
     }
 
     public string DeviceName { get; private set; }
@@ -25,24 +30,19 @@ public class TGInputSetting : TGBaseBehaviour
             portInput.Close();
     }
 
-    private TGController m_controller;
-
-    public override IEnumerator StartRoutine(TGController _controller)
+    public override IEnumerator StartRoutine()
     {
-        m_controller = _controller;
-
-        // portInput = GetComponent<LMBasePortInput>();
         touchCtrl = GetComponent<LMTouchCtrl>();
 
         keyInputConfig = TGUtility.ParseConfigFile(configFileName);
 
-        DeviceName = _controller.gameConfig.GetValue("训练器材", string.Empty);
+        DeviceName = m_controller.gameConfig.GetValue("训练器材", string.Empty);
 
         KeyportData = keyInputConfig.GetKeyportData(DeviceName);
 
         if (KeyportData == null)
         {
-            _controller.ErrorQuit("训练器材 " + DeviceName + "不存在！");
+            m_controller.ErrorQuit("训练器材 " + DeviceName + "不存在！");
             yield break;
         }
 
@@ -51,20 +51,20 @@ public class TGInputSetting : TGBaseBehaviour
         if (!touchCtrl.enabled)
         {
             // FIXME: Temperory
-            if (KeyportData.type == "m7b" && _controller.evaluationSetupData.isFullAxis)
+            if (KeyportData.type == "m7b" && m_controller.evaluationSetupData.isFullAxis)
                 KeyportData.type += "2D";
 
             portInput = GetProperInput();
 
             if (!portInput.OnStart(KeyportData))
             {
-                _controller.DebugText(portInput.ErrorTxt);
+                m_controller.DebugText(portInput.ErrorTxt);
                 touchCtrl.enabled = true;
             }
         }
         DeviceType = KeyportData.type;
 
-        _controller.SetHeatmapEnable(KeyportData.heatmap);
+        m_controller.SetHeatmapEnable(KeyportData.heatmap);
         Debug.Log("Input Setup Success");
 
         yield return 1;

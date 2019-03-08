@@ -19,18 +19,18 @@ public class TGGameConfig : TGBaseBehaviour
 
     private INIParser m_iniParser;
 
-    public override IEnumerator StartRoutine(TGController _controller)
+    public override IEnumerator StartRoutine()
     {
         InitParser();
         if (!string.IsNullOrEmpty(evaluationFileName))
         {
-            configData = _controller.fileWriter.ReadJSON<ConfigData>(evaluationFileName);
+            configData = m_controller.fileWriter.ReadJSON<ConfigData>(evaluationFileName);
 
             if (configData != null)
             {
                 string cnTitle = GetValue("体侧", string.Empty);
                 var data = GetConfigDataFromTitle(cnTitle);
-                _controller.evaluationSetupData = data;
+                m_controller.evaluationSetupData = data;
 
                 Debug.Log("体侧: " + cnTitle + 
                           ", Axis: " + data.valueAxis +

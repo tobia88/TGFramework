@@ -11,10 +11,6 @@ public class TGController : MonoBehaviour
     public DateTime startTime;
     public DateTime endTime;
     public Camera systemCam;
-    // public string GameNameCn
-    // {
-    //     get { return settingData.gameNameCn; }
-    // }
 
     public string GameNameCn { get; private set; }
     public TGSettingData settingData { get; private set; }
@@ -45,6 +41,11 @@ public class TGController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        gameConfig.Init(this);
+        inputSetting.Init(this);
+        mainGame.Init(this);
+        resultMng.Init(this);
 
         dxCentre.OnInit(this);
         dxTextCentre.OnInit(this);
@@ -164,8 +165,11 @@ public class TGController : MonoBehaviour
             return;
         }
 
-        // inputSetting.OnUpdate();
+        DebugInputUpdate();
+    }
 
+    private void DebugInputUpdate()
+    {
         if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.BackQuote))
         {
             dxCentre.SetActive(!dxCentre.isActive);
@@ -188,11 +192,11 @@ public class TGController : MonoBehaviour
     IEnumerator ProcessRoutine()
     {
         startTime = DateTime.Now;
-        yield return StartCoroutine(gameConfig.StartRoutine(this));
-        yield return StartCoroutine(inputSetting.StartRoutine(this));
-        yield return StartCoroutine(mainGame.StartRoutine(this));
+        yield return StartCoroutine(gameConfig.StartRoutine());
+        yield return StartCoroutine(inputSetting.StartRoutine());
+        yield return StartCoroutine(mainGame.StartRoutine());
         endTime = DateTime.Now;
-        yield return StartCoroutine(resultMng.StartRoutine(this));
+        yield return StartCoroutine(resultMng.StartRoutine());
         Debug.Log("Game Finsihed");
         Quit();
         yield return 1;

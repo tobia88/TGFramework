@@ -30,8 +30,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 
 		if (!SerialPortCtrl.CheckPortAvailable(portInfo.comName))
 		{
-			ErrorTxt = "端口" + portInfo.comName + "不存在！";
-			return false;
+			throw new InvalidPortNumberException(portInfo.comName);
 		}
 
 		ConnectPort();
@@ -62,6 +61,11 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 	{
 		TGController.Instance.DebugText("正在读取端口: " + portInfo.comName);
 		isPortActive = SerialPortCtrl.Open(portInfo, this, true);
+
+		if (!isPortActive)
+		{
+			ReconnectInFewSeconds();
+		}
 	}
 
 	public override void Close()
