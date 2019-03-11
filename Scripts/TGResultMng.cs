@@ -15,7 +15,6 @@ public class TGResultMng : TGBaseBehaviour
 
     public void ForceWrite()
     {
-        // _controller.fileWriter.Write(saveFileName, _controller.gameConfig.configInfo.ToString());
         string path = m_controller.RootPath + saveFileName;
 
         INIParser ini = new INIParser();
@@ -24,18 +23,21 @@ public class TGResultMng : TGBaseBehaviour
 
         ini.WriteValue("ret", "名称", m_controller.GameNameCn);
         ini.WriteValue("ret", "种类", "2");
-        ini.WriteValue("ret", "开始时间", TGUtility.ParseDateTimeToString(TGController.Instance.startTime));
-        ini.WriteValue("ret", "结束时间", TGUtility.ParseDateTimeToString(TGController.Instance.endTime));
-
-        Dictionary<string, string> keys = m_controller.mainGame.additionDataToSave;
-        foreach (string k in keys.Keys)
-        {
-            ini.WriteValue("ret", k, keys[k]);
-        }
-
+        ini.WriteValue("ret", "开始时间", TGUtility.ParseDateTimeToString(m_controller.startTime));
+        ini.WriteValue("ret", "结束时间", TGUtility.ParseDateTimeToString(m_controller.endTime));
+        WriteExtraData(ini);
         ini.Close();
 
 
         Debug.Log("Finished Write");
+    }
+
+    private void WriteExtraData(INIParser ini)
+    {
+        Dictionary<string, string> keys = m_controller.mainGame.extraData;
+        foreach (string k in keys.Keys)
+        {
+            ini.WriteValue("ret", k, keys[k]);
+        }
     }
 }

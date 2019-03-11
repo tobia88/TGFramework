@@ -16,6 +16,7 @@ public abstract class LMBasePortResolver
         if (m_portInput != null)
             m_portInput.Write(hex);
     }
+
     public float ResolveEquation(string equation)
     {
         string resolved = equation;
@@ -56,7 +57,6 @@ public abstract class LMBasePortResolver
     }
 
     public abstract void Recalibration();
-    // public abstract float GetValue(string key);
 
     public virtual void Close() {}
 

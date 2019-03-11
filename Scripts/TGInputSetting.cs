@@ -21,7 +21,7 @@ public class TGInputSetting : TGBaseBehaviour
 
     public string DeviceName { get; private set; }
 
-    public string DeviceType { get; private set; }
+    public string DeviceType { get { return (KeyportData == null) ? string.Empty : KeyportData.type; } }
     public KeyPortData KeyportData { get; private set; }
 
     public void Close()
@@ -51,7 +51,7 @@ public class TGInputSetting : TGBaseBehaviour
         if (!touchCtrl.enabled)
         {
             // FIXME: Temperory
-            if (KeyportData.type == "m7b" && m_controller.evaluationSetupData.isFullAxis)
+            if (KeyportData.type == "m7b" && m_gameConfig.evaluationSetupData.isFullAxis)
                 KeyportData.type += "2D";
 
             portInput = GetProperInput();
@@ -62,7 +62,6 @@ public class TGInputSetting : TGBaseBehaviour
                 touchCtrl.enabled = true;
             }
         }
-        DeviceType = KeyportData.type;
 
         m_controller.SetHeatmapEnable(KeyportData.heatmap);
         Debug.Log("Input Setup Success");
@@ -114,7 +113,7 @@ public class TGInputSetting : TGBaseBehaviour
         if (!IsPortActive)
             return Vector3.zero;
 
-        var data = TGController.Instance.evaluationSetupData;
+        var data = m_gameConfig.evaluationSetupData;
         var valueAxis = data.valueAxis;
 
         Vector3 values = GetValues();

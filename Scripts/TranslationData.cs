@@ -26,6 +26,11 @@ public struct EvaluationSetupData
 	public bool reverse;
 	public bool isFullAxis;
 	public int dire;
+
+	public override string ToString()
+	{
+		return string.Format("体侧: {0}, Axis: {1}, Full Axis: {2}", cnTitle, valueAxis, isFullAxis);
+	}
 }
 
 [CreateAssetMenu(menuName="Data/Translation Data")]

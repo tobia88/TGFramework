@@ -23,7 +23,6 @@ public class TGController : MonoBehaviour
     public TGDXCentre dxCentre;
     public TGDXTextCentre dxTextCentre;
     public TGDXHeatmapPanel dxHeatmapPanel;
-    public EvaluationSetupData evaluationSetupData;
 
     public LMFileWriter fileWriter;
     public string RootPath
@@ -40,6 +39,14 @@ public class TGController : MonoBehaviour
 
     private void Awake()
     {
+        settingData = Resources.Load<TGSettingData>("SettingData");
+
+        if (settingData == null)
+        {
+            ErrorQuit("缺少Setting Data文件！务必确保Resources文件夹底下有SettingData");
+            return;
+        }
+
         Instance = this;
 
         gameConfig.Init(this);
@@ -58,14 +65,6 @@ public class TGController : MonoBehaviour
 #endif
         fileWriter.Init(RootPath);
 
-        settingData = Resources.Load<TGSettingData>("SettingData");
-
-        if (settingData == null)
-        {
-            ErrorQuit("缺少Setting Data文件！务必确保Resources文件夹底下有SettingData");
-            return;
-        }
-
         GameNameCn = settingData.gameNameCn;
 
         systemCam.gameObject.SetActive(false);
@@ -73,7 +72,6 @@ public class TGController : MonoBehaviour
         AudioMng.Init();
 
         IsInit = true;
-
     }
 
     private void OnApplicationQuit()
@@ -94,6 +92,7 @@ public class TGController : MonoBehaviour
 
     public void Quit()
     {
+        Debug.Log("Game Finished");
         Flush();
         Application.Quit();
     }
@@ -145,7 +144,6 @@ public class TGController : MonoBehaviour
         StopAllCoroutines();
         systemCam.gameObject.SetActive(true);
         DebugText(_error);
-        // Quit();
 
         EnableDiagnosis();
     }
@@ -162,6 +160,7 @@ public class TGController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Escape))
                 Application.Quit();
+
             return;
         }
 
@@ -192,13 +191,15 @@ public class TGController : MonoBehaviour
     IEnumerator ProcessRoutine()
     {
         startTime = DateTime.Now;
+
         yield return StartCoroutine(gameConfig.StartRoutine());
         yield return StartCoroutine(inputSetting.StartRoutine());
         yield return StartCoroutine(mainGame.StartRoutine());
+
         endTime = DateTime.Now;
+
         yield return StartCoroutine(resultMng.StartRoutine());
-        Debug.Log("Game Finsihed");
+
         Quit();
-        yield return 1;
     }
 }

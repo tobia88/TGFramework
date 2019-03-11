@@ -16,6 +16,7 @@ public class TGGameConfig : TGBaseBehaviour
     public string sectionName;
     public string evaluationFileName;
     public ConfigData configData;
+    public EvaluationSetupData evaluationSetupData;
 
     private INIParser m_iniParser;
 
@@ -29,12 +30,7 @@ public class TGGameConfig : TGBaseBehaviour
             if (configData != null)
             {
                 string cnTitle = GetValue("体侧", string.Empty);
-                var data = GetConfigDataFromTitle(cnTitle);
-                m_controller.evaluationSetupData = data;
-
-                Debug.Log("体侧: " + cnTitle + 
-                          ", Axis: " + data.valueAxis +
-                          ", IsFullAxis: " + data.isFullAxis);
+                evaluationSetupData = GetConfigDataFromTitle(cnTitle);
             }
         }
         else
@@ -71,14 +67,14 @@ public class TGGameConfig : TGBaseBehaviour
 
     private void InitParser()
     {
-        string path = TGController.Instance.RootPath + "/" + fileName;
+        string path = m_controller.RootPath + "/" + fileName;
 
         m_iniParser = new INIParser();
         m_iniParser.Open(path);
 
         if (string.IsNullOrEmpty(m_iniParser.iniString))
         {
-            TGController.Instance.ErrorQuit("Config is NULL! Path = " + path);
+            m_controller.ErrorQuit("Config is NULL! Path = " + path);
             return;
         }
     }

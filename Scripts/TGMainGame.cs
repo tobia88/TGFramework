@@ -8,30 +8,30 @@ using UnityEngine.SceneManagement;
 public class TGMainGame : TGBaseBehaviour
 {
     public string SceneName { get; private set; }
-    public Dictionary<string, string> additionDataToSave;
+    public Dictionary<string, string> extraData;
+    public TGBaseScene CurrentScene {get; private set;}
 
     public override IEnumerator StartRoutine()
     {
         SceneName = m_controller.SceneName;
 
-        Scene scene = SceneManager.GetSceneByName(SceneName);
+        Scene tmpScene = SceneManager.GetSceneByName(SceneName);
 
-
-        if (!scene.isLoaded)
-            yield return SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
-
-
-        Debug.Log("Load Scene: " + SceneName);
-
-        scene = SceneManager.GetSceneByName(SceneName);
-        SceneManager.SetActiveScene(scene);
-
-        var baseScn = scene.GetComponent<TGBaseScene>();
-
-        if (baseScn != null)
+        if (!tmpScene.isLoaded)
         {
-            yield return m_controller.StartCoroutine(GameRoutine(baseScn));
-            yield return m_controller.StartCoroutine(UnloadScene(baseScn));
+            // FIXME: 插入读取场景
+            yield return SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
+            // FIXME: 释放读取场景
+        }
+
+        Debug.Log("Scene Loaded: " + SceneName);
+
+        CurrentScene = SetSceneActive(SceneName);
+
+        if (CurrentScene != null)
+        {
+            yield return m_controller.StartCoroutine(GameRoutine(CurrentScene));
+            yield return m_controller.StartCoroutine(UnloadScene(CurrentScene));
 
             Debug.Log("Main Game: Finished");
         }
@@ -40,6 +40,14 @@ public class TGMainGame : TGBaseBehaviour
             m_controller.ErrorQuit("TGBaseScene doesn't found on scene " + this.SceneName);
             yield break;
         }
+    }
+
+    private TGBaseScene SetSceneActive(string sceneName)
+    {
+        var tmpScene = SceneManager.GetSceneByName(SceneName);
+        SceneManager.SetActiveScene(tmpScene);
+
+        return tmpScene.GetComponent<TGBaseScene>();
     }
 
     private IEnumerator GameRoutine(TGBaseScene scene)
@@ -58,7 +66,7 @@ public class TGMainGame : TGBaseBehaviour
     private IEnumerator UnloadScene(TGBaseScene _scene)
     {
 
-        additionDataToSave = _scene.additionDataToSave;
+        extraData = _scene.additionDataToSave;
         yield return SceneManager.UnloadSceneAsync(SceneName);
     }
 }

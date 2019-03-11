@@ -19,7 +19,7 @@ public class Leadiy_M7B : LMBasePortResolver
     {
         base.Init(_portInput);
 
-        var setupData = TGController.Instance.evaluationSetupData;
+        var setupData = TGController.Instance.gameConfig.evaluationSetupData;
         var currentValue = values[(int)setupData.valueAxis];
         currentValue.reverse = setupData.reverse;
     }
