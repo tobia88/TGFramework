@@ -262,7 +262,7 @@ public class TGGameScene : TGBaseScene
         uiRoot.gameOverPanel.Show();
 
         StartCoroutine(CountdownToQuitRoutine());
-        StartCoroutine(CaptureDelay());
+        // StartCoroutine(CaptureDelay());
     }
 
     IEnumerator CountdownToQuitRoutine()
@@ -277,10 +277,10 @@ public class TGGameScene : TGBaseScene
         GameState = GameStates.End;
     }
 
-    IEnumerator CaptureDelay()
-    {
-        yield return new WaitForSeconds(1f);
-        CaptureScreen();
-    }
+    // IEnumerator CaptureDelay()
+    // {
+    //     yield return new WaitForSeconds(1f);
+    //     CaptureScreen();
+    // }
 
 }

@@ -202,12 +202,14 @@ public class TGController : MonoBehaviour
         if (mainGame.CurrentScene != null)
         {
             yield return StartCoroutine(mainGame.GameRoutine());
+
+            endTime = DateTime.Now;
+            var dateStr = endTime.ToString("yyyy_MM_dd_HH_mm_ss");
+
+            yield return StartCoroutine(mainGame.TakeScreenshot(dateStr));
+            yield return StartCoroutine(resultMng.SetupRoutine());
             yield return StartCoroutine(mainGame.UnloadScene());
         }
-
-        endTime = DateTime.Now;
-
-        yield return StartCoroutine(resultMng.SetupRoutine());
 
         Quit();
     }

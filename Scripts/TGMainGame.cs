@@ -41,13 +41,19 @@ public class TGMainGame : TGBaseBehaviour
             m_controller.inputSetting.OnUpdate();
             yield return 1;
         }
+        extraData = CurrentScene.extraData;
+    }
+
+    public IEnumerator TakeScreenshot(string dateSpr)
+    {
+        yield return StartCoroutine(CurrentScene.RecordFrame(dateSpr));
     }
 
     public IEnumerator UnloadScene()
     {
-        extraData = CurrentScene.extraData;
         yield return SceneManager.UnloadSceneAsync(SceneName);
     }
+
 
     private TGBaseScene SetSceneActive(string sceneName)
     {

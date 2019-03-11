@@ -83,38 +83,18 @@ public class TGBaseScene : MonoBehaviour
         StartCoroutine(DelayCallRoutine(_func, _delay));
     }
 
-    private bool m_captureScreen;
-
-    public void CaptureScreen(Action<string> _callback = null)
-    {
-        m_captureScreen = true;
-        onCaptureScreen = _callback;
-    }
-
     public virtual void Recalibration()
     {
         controller.inputSetting.Recalibration();
     }
 
-    private void LateUpdate()
-    {
-        if (m_captureScreen)
-        {
-            var dateStr = System.DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
-            StartCoroutine(RecordFrame(dateStr));
-            m_captureScreen = false;
-        }
-    }
-    IEnumerator RecordFrame(string _dateStr)
+    public IEnumerator RecordFrame(string _dateStr)
     {
         yield return new WaitForEndOfFrame();
         yield return StartCoroutine(SaveMainScreenshot(_dateStr));
         yield return StartCoroutine(SaveHeatmapTex(_dateStr));
         if (onCaptureScreen != null)
-        {
             onCaptureScreen(_dateStr);
-            onCaptureScreen = null;
-        }
     }
 
     private IEnumerator SaveHeatmapTex(string _dateStr)
