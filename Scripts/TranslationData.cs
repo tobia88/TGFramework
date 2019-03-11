@@ -10,7 +10,7 @@ public enum ValueAxis
 }
 
 [System.Serializable]
-public struct EvaluationSetupData
+public struct EvalData
 {
 	public string cnTitle;
 	public string animName;
@@ -36,9 +36,9 @@ public struct EvaluationSetupData
 [CreateAssetMenu(menuName="Data/Translation Data")]
 public class TranslationData : ScriptableObject
 {
-	public EvaluationSetupData[] infos;
+	public EvalData[] infos;
 
-	public EvaluationSetupData GetInfo(string _chineseName)
+	public EvalData GetInfo(string _chineseName)
 	{
 		foreach(var info in infos)
 		{

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class ConfigData
+public class EvalDataGroup
 {
-    public EvaluationSetupData[] infos;
+    public EvalData[] infos;
 }
 
 public class TGGameConfig : TGBaseBehaviour
@@ -15,8 +15,7 @@ public class TGGameConfig : TGBaseBehaviour
     public string fileName;
     public string sectionName;
     public string evaluationFileName;
-    public ConfigData configData;
-    public EvaluationSetupData evaluationSetupData;
+    public EvalData evalData;
 
     private INIParser m_iniParser;
 
@@ -25,12 +24,12 @@ public class TGGameConfig : TGBaseBehaviour
         InitParser();
         if (!string.IsNullOrEmpty(evaluationFileName))
         {
-            configData = m_controller.fileWriter.ReadJSON<ConfigData>(evaluationFileName);
+            var group = m_controller.fileWriter.ReadJSON<EvalDataGroup>(evaluationFileName);
 
-            if (configData != null)
+            if (group != null)
             {
                 string cnTitle = GetValue("体侧", string.Empty);
-                evaluationSetupData = GetConfigDataFromTitle(cnTitle);
+                evalData = GetConfigDataFromTitle(group, cnTitle);
             }
         }
         else
@@ -40,9 +39,9 @@ public class TGGameConfig : TGBaseBehaviour
 
         yield return 1;
     }
-    private EvaluationSetupData GetConfigDataFromTitle(string cnTitle)
+    private EvalData GetConfigDataFromTitle(EvalDataGroup group, string cnTitle)
     {
-        return configData.infos.FirstOrDefault(d => d.cnTitle == cnTitle);
+        return group.infos.FirstOrDefault(d => d.cnTitle == cnTitle);
     }
 
     public string GetValue(string key, string defaultValue)

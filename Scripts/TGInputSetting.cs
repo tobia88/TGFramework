@@ -51,7 +51,7 @@ public class TGInputSetting : TGBaseBehaviour
         if (!touchCtrl.enabled)
         {
             // FIXME: Temperory
-            if (KeyportData.type == "m7b" && m_gameConfig.evaluationSetupData.isFullAxis)
+            if (KeyportData.type == "m7b" && m_gameConfig.evalData.isFullAxis)
                 KeyportData.type += "2D";
 
             portInput = GetProperInput();
@@ -113,7 +113,7 @@ public class TGInputSetting : TGBaseBehaviour
         if (!IsPortActive)
             return Vector3.zero;
 
-        var data = m_gameConfig.evaluationSetupData;
+        var data = m_gameConfig.evalData;
         var valueAxis = data.valueAxis;
 
         Vector3 values = GetValues();
