@@ -6,7 +6,7 @@ public class TGResultMng : TGBaseBehaviour
 {
     public string saveFileName = "ret.txt";
     public bool isWrited = false;
-    public override IEnumerator StartRoutine()
+    public override IEnumerator SetupRoutine()
     {
         ForceWrite();
         isWrited = true;

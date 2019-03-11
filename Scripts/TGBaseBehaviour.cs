@@ -14,5 +14,5 @@ public abstract class TGBaseBehaviour : MonoBehaviour
         m_controller = _controller;
     }
 
-    public abstract IEnumerator StartRoutine();
+    public abstract IEnumerator SetupRoutine();
 }

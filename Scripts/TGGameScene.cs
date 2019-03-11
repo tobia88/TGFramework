@@ -234,15 +234,13 @@ public class TGGameScene : TGBaseScene
 
     protected virtual void OnUpdateGameOver()
     {
-        if (bgm.clip != null)
-            AudioMng.Instance.Fade(bgm, 0f, 1f);
-
         m_gameOverTimeRemaining -= Time.deltaTime;
 
-        uiRoot.gameOverPanel.SetCountdownTxt(Mathf.FloorToInt(m_gameOverTimeRemaining));
+        uiRoot.gameOverPanel.SetCountdownTxt(Mathf.FloorToInt(m_gameOverTimeRemaining) + 1);
 
         if (m_gameOverTimeRemaining <= 0f)
         {
+            uiRoot.gameOverPanel.SetCountdownTxt(0);
             GameState = GameStates.End;
         }
     }
@@ -263,7 +261,7 @@ public class TGGameScene : TGBaseScene
     {
         AudioMng.Instance.StopAll();
 
-        additionDataToSave.Add("分数", Score.ToString());
+        extraData.Add("分数", Score.ToString());
         base.ExitScene();
     }
 
@@ -274,6 +272,9 @@ public class TGGameScene : TGBaseScene
 
     public virtual void GameOver()
     {
+        if (bgm.clip != null)
+            AudioMng.Instance.Fade(bgm, 0f, 1f);
+
         uiRoot.gameOverPanel.SetScore(Score);
         uiRoot.gameOverPanel.Show();
 

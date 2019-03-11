@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
 
 [System.Serializable]
 public struct ScreenshotCropInfo
@@ -23,7 +23,7 @@ public class TGBaseScene : MonoBehaviour
 {
     protected float m_startTime;
     protected float m_timePassed;
-    public Dictionary<string, string> additionDataToSave = new Dictionary<string, string>();
+    public Dictionary<string, string> extraData = new Dictionary<string, string>();
 
     public TGController controller { get; private set; }
     public ScreenshotCropInfo screenshotCropInfo = new ScreenshotCropInfo(0, 0, 1920, 1080);
@@ -41,7 +41,7 @@ public class TGBaseScene : MonoBehaviour
 
     public bool isActive = false;
 
-    public virtual void Init() 
+    public virtual void Init()
     {
         controller = TGController.Instance;
     }
@@ -60,7 +60,7 @@ public class TGBaseScene : MonoBehaviour
     public virtual void OnUpdate()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
-        { 
+        {
             ExitScene();
             return;
         }
@@ -70,10 +70,11 @@ public class TGBaseScene : MonoBehaviour
 
     public virtual void ExitScene()
     {
-        if (!additionDataToSave.ContainsKey(MAIN_SCREENSHOT_KEY))
+        if (extraData.ContainsKey(MAIN_SCREENSHOT_KEY))
         {
-            additionDataToSave.Add(MAIN_SCREENSHOT_KEY, string.Empty);
+            extraData.Add(MAIN_SCREENSHOT_KEY, string.Empty);
         }
+
         isActive = false;
     }
 
@@ -133,13 +134,12 @@ public class TGBaseScene : MonoBehaviour
     {
         var raw = ScreenCapture.CaptureScreenshotAsTexture();
         Color[] c = raw.GetPixels(screenshotCropInfo.xPos,
-                                  screenshotCropInfo.yPos,
-                                  screenshotCropInfo.width,
-                                  screenshotCropInfo.height);
+            screenshotCropInfo.yPos,
+            screenshotCropInfo.width,
+            screenshotCropInfo.height);
         var tex = new Texture2D(screenshotCropInfo.width, screenshotCropInfo.height);
         tex.SetPixels(c);
         tex.Apply(false);
-
 
         string fileName = _dateStr + ".png";
         yield return StartCoroutine(SaveTexture(tex, fileName));
@@ -167,17 +167,15 @@ public class TGBaseScene : MonoBehaviour
 
     private void SaveScreenshotKey(string _key, string _fileName)
     {
-
-        if (additionDataToSave.ContainsKey(_key))
+        if (extraData.ContainsKey(_key))
         {
-            additionDataToSave[_key] += "|" + _fileName;
+            extraData[_key] += "|" + _fileName;
         }
         else
         {
-            additionDataToSave.Add(_key, _fileName);
+            extraData.Add(_key, _fileName);
         }
     }
-
 
     protected virtual void OnTimePassed(float _value)
     {

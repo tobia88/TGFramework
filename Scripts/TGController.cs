@@ -192,13 +192,22 @@ public class TGController : MonoBehaviour
     {
         startTime = DateTime.Now;
 
-        yield return StartCoroutine(gameConfig.StartRoutine());
-        yield return StartCoroutine(inputSetting.StartRoutine());
-        yield return StartCoroutine(mainGame.StartRoutine());
+        // TODO: 读取界面
+
+        yield return StartCoroutine(gameConfig.SetupRoutine());
+        yield return StartCoroutine(inputSetting.SetupRoutine());
+        yield return StartCoroutine(mainGame.SetupRoutine());
+        
+        // TODO: 释放读取界面
+        if (mainGame.CurrentScene != null)
+        {
+            yield return StartCoroutine(mainGame.GameRoutine());
+            yield return StartCoroutine(mainGame.UnloadScene());
+        }
 
         endTime = DateTime.Now;
 
-        yield return StartCoroutine(resultMng.StartRoutine());
+        yield return StartCoroutine(resultMng.SetupRoutine());
 
         Quit();
     }

@@ -11,7 +11,7 @@ public class TGMainGame : TGBaseBehaviour
     public Dictionary<string, string> extraData;
     public TGBaseScene CurrentScene {get; private set;}
 
-    public override IEnumerator StartRoutine()
+    public override IEnumerator SetupRoutine()
     {
         SceneName = m_controller.SceneName;
 
@@ -19,27 +19,34 @@ public class TGMainGame : TGBaseBehaviour
 
         if (!tmpScene.isLoaded)
         {
-            // FIXME: 插入读取场景
             yield return SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
-            // FIXME: 释放读取场景
         }
-
-        Debug.Log("Scene Loaded: " + SceneName);
 
         CurrentScene = SetSceneActive(SceneName);
 
-        if (CurrentScene != null)
-        {
-            yield return m_controller.StartCoroutine(GameRoutine(CurrentScene));
-            yield return m_controller.StartCoroutine(UnloadScene(CurrentScene));
-
-            Debug.Log("Main Game: Finished");
-        }
-        else
+        if (CurrentScene == null)
         {
             m_controller.ErrorQuit("TGBaseScene doesn't found on scene " + this.SceneName);
-            yield break;
         }
+    }
+
+    public IEnumerator GameRoutine()
+    {
+        CurrentScene.Init();
+        CurrentScene.OnStart();
+
+        while (CurrentScene.isActive)
+        {
+            CurrentScene.OnUpdate();
+            m_controller.inputSetting.OnUpdate();
+            yield return 1;
+        }
+    }
+
+    public IEnumerator UnloadScene()
+    {
+        extraData = CurrentScene.extraData;
+        yield return SceneManager.UnloadSceneAsync(SceneName);
     }
 
     private TGBaseScene SetSceneActive(string sceneName)
@@ -50,23 +57,4 @@ public class TGMainGame : TGBaseBehaviour
         return tmpScene.GetComponent<TGBaseScene>();
     }
 
-    private IEnumerator GameRoutine(TGBaseScene scene)
-    {
-        scene.Init();
-        scene.OnStart();
-
-        while (scene.isActive)
-        {
-            scene.OnUpdate();
-            m_controller.inputSetting.OnUpdate();
-            yield return 1;
-        }
-    }
-
-    private IEnumerator UnloadScene(TGBaseScene _scene)
-    {
-
-        extraData = _scene.additionDataToSave;
-        yield return SceneManager.UnloadSceneAsync(SceneName);
-    }
 }

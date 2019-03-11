@@ -30,7 +30,7 @@ public class TGInputSetting : TGBaseBehaviour
             portInput.Close();
     }
 
-    public override IEnumerator StartRoutine()
+    public override IEnumerator SetupRoutine()
     {
         touchCtrl = GetComponent<LMTouchCtrl>();
 

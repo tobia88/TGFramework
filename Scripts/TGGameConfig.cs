@@ -19,7 +19,7 @@ public class TGGameConfig : TGBaseBehaviour
 
     private INIParser m_iniParser;
 
-    public override IEnumerator StartRoutine()
+    public override IEnumerator SetupRoutine()
     {
         InitParser();
         if (!string.IsNullOrEmpty(evaluationFileName))
