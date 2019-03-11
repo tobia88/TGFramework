@@ -23,7 +23,6 @@ public enum GameTypes
 public class TGGameScene : TGBaseScene
 {
     protected float m_timeLeft;
-    protected float m_gameOverTimeRemaining;
     protected int m_score;
     protected int m_difficultyLv;
     protected GameStates m_gameState;
@@ -159,9 +158,6 @@ public class TGGameScene : TGBaseScene
 
         if (m_gameState == GameStates.Playing)
             OnUpdateGamePlaying();
-
-        if (m_gameState == GameStates.GameOver)
-            OnUpdateGameOver();
     }
 
     public virtual void OnEnterGameState(GameStates _gameState)
@@ -232,19 +228,6 @@ public class TGGameScene : TGBaseScene
         }
     }
 
-    protected virtual void OnUpdateGameOver()
-    {
-        m_gameOverTimeRemaining -= Time.deltaTime;
-
-        uiRoot.gameOverPanel.SetCountdownTxt(Mathf.FloorToInt(m_gameOverTimeRemaining) + 1);
-
-        if (m_gameOverTimeRemaining <= 0f)
-        {
-            uiRoot.gameOverPanel.SetCountdownTxt(0);
-            GameState = GameStates.End;
-        }
-    }
-
     protected virtual void OnStageLevelChanged(int _level)
     {
         m_stageLevel = _level;
@@ -278,8 +261,20 @@ public class TGGameScene : TGBaseScene
         uiRoot.gameOverPanel.SetScore(Score);
         uiRoot.gameOverPanel.Show();
 
-        m_gameOverTimeRemaining = 5f;
+        StartCoroutine(CountdownToQuitRoutine());
         StartCoroutine(CaptureDelay());
+    }
+
+    IEnumerator CountdownToQuitRoutine()
+    {
+        for (int i = 5; i > 0; i--)
+        {
+            uiRoot.gameOverPanel.SetCountdownTxt(i);
+            yield return new WaitForSeconds(1);
+        }
+
+        uiRoot.gameOverPanel.SetCountdownTxt(0);
+        GameState = GameStates.End;
     }
 
     IEnumerator CaptureDelay()
