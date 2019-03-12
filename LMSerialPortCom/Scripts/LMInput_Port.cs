@@ -33,9 +33,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 			throw new InvalidPortNumberException(portInfo.comName);
 		}
 
-		ConnectPort();
-
-		return true;
+		return ConnectPort();
 	}
 
 	public override void Write(byte[] bytes)
@@ -49,23 +47,20 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 	private IEnumerator PortWriteRoutine(byte[] bytes)
 	{
 		Port.Write(bytes, 0, bytes.Length);
-		IsPortWriting = true;
+
+		m_isFreeze = true;
 
 		yield return new WaitForSeconds(1f);
-		yield return new WaitUntil(() => m_bytes != null && m_bytes.Length > 0);
+		yield return new WaitUntil(() => HasData);
 
-		IsPortWriting = false;
+		m_isFreeze = false;
 	}
 
-	public void ConnectPort()
+	public bool ConnectPort()
 	{
-		TGController.Instance.DebugText("正在读取端口: " + portInfo.comName);
-		isPortActive = SerialPortCtrl.Open(portInfo, this, true);
 
-		if (!isPortActive)
-		{
-			ReconnectInFewSeconds();
-		}
+		m_controller.DebugText("正在读取端口: " + portInfo.comName);
+		return SerialPortCtrl.Open(portInfo, this, true);
 	}
 
 	public override void Close()
@@ -105,9 +100,16 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 
 	IEnumerator ReconnectDelay()
 	{
-		TGController.Instance.DebugText("正在重新链接串口...");
-		yield return new WaitForSeconds(5);
-		TGController.Instance.DebugText("连接串口中...");
-		ConnectPort();
+		bool result = false;
+
+		while (!result)
+		{
+			m_controller.DebugText("正在重新链接串口...");
+			yield return new WaitForSeconds(5);
+			m_controller.DebugText("连接串口中...");
+			result = ConnectPort();
+		}
+
+		m_isFreeze = false;
 	}
 }

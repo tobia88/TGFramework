@@ -70,6 +70,7 @@ public class LMInput_UDP : LMBasePortInput, IPortReceiver
 		m_receiveThread = new Thread(new ThreadStart(ReceiveData));
 		m_receiveThread.IsBackground = true;
 		m_receiveThread.Start();
+
 		return true;
 	}
 

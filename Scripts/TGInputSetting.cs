@@ -11,7 +11,7 @@ public class TGInputSetting : TGBaseBehaviour
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive
     {
-        get { return IsPortConnected && !portInput.IsPortWriting; }
+        get { return IsPortConnected && !portInput.HasData; }
     }
     
     public bool IsPortConnected
@@ -58,6 +58,8 @@ public class TGInputSetting : TGBaseBehaviour
 
             if (!portInput.OnStart(KeyportData))
             {
+                portInput.Close();
+
                 m_controller.DebugText(portInput.ErrorTxt);
                 touchCtrl.enabled = true;
             }

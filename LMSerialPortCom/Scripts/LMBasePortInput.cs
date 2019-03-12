@@ -33,9 +33,11 @@ public class LMBasePortInput
 	protected byte[] m_bytes;
 	protected float m_cdToReconnect;
 	protected int m_byteLength;
+	protected bool m_isFreeze;
     protected TGController m_controller;
 	public bool isPortActive = false;
-	public bool IsPortWriting { get; protected set; }
+	public bool HasData { get { return m_bytes != null && m_bytes.Length > 0 ;} }
+	// public bool IsPortWriting { get; protected set; }
 	public LMBasePortResolver CurrentResolver { get; protected set; }
 	public KeyPortData KeyportData { get; private set; }
 	public string ErrorTxt { get; protected set; }
@@ -48,6 +50,7 @@ public class LMBasePortInput
     public virtual bool OnStart(KeyPortData portData)
     {
 		KeyportData = portData;
+		isPortActive = true;
         return true;
     }
 
@@ -55,16 +58,18 @@ public class LMBasePortInput
     {
 		if (CurrentResolver != null)
 			CurrentResolver.Close();
+
+		isPortActive = false;
     }
 
 	private bool CountdownToReconnect()
 	{
-		return !IsPortWriting && m_cdToReconnect > 200000;
+		return !m_isFreeze && m_cdToReconnect > 200000;
 	}
 
 	public void OnUpdate()
 	{
-		if (!isPortActive)
+		if (!isPortActive || m_isFreeze)
 			return;
 
 		if (CountdownToReconnect())
@@ -73,9 +78,9 @@ public class LMBasePortInput
 			ReconnectInFewSeconds();
 		}
 
-		if (m_bytes != null)
+		if (m_bytes != null && m_bytes.Length > 0)
 		{
-			TGController.Instance.DebugText("连接成功，请重新打开数据面板");
+			m_controller.DebugText("连接成功，请重新打开数据面板");
 		}
 	}
 
@@ -88,9 +93,14 @@ public class LMBasePortInput
 
 	protected virtual void ReconnectInFewSeconds()
 	{
-		TGController.Instance.DebugText("连接断开，数秒后重新连接");
-		isPortActive = false;
+		m_controller.DebugText("连接断开，数秒后重新连接");
+		Reset();
+	}
+
+	protected void Reset()
+	{
 		m_isInit = false;
+		m_isFreeze = false;
 		m_cdToReconnect = 0f;
 	}
 
@@ -159,7 +169,8 @@ public class LMBasePortInput
 		}
 
 		m_cdToReconnect = 0f;
-		isPortActive = true;
+		m_isFreeze = false;
+		// isPortActive = true;
 
 		CurrentResolver.ResolveBytes(m_bytes);
 	}
