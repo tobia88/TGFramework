@@ -35,8 +35,8 @@ public class LMBasePortInput
 	protected int m_byteLength;
 	protected bool m_isFreeze;
     protected TGController m_controller;
-	public bool isPortActive = false;
-	public bool HasData { get { return m_bytes != null && m_bytes.Length > 0 ;} }
+	public bool IsPortActive { get; private set;}
+	public bool HasData { get { return !m_isFreeze;} }
 	// public bool IsPortWriting { get; protected set; }
 	public LMBasePortResolver CurrentResolver { get; protected set; }
 	public KeyPortData KeyportData { get; private set; }
@@ -50,7 +50,7 @@ public class LMBasePortInput
     public virtual bool OnStart(KeyPortData portData)
     {
 		KeyportData = portData;
-		isPortActive = true;
+		IsPortActive = true;
         return true;
     }
 
@@ -59,7 +59,7 @@ public class LMBasePortInput
 		if (CurrentResolver != null)
 			CurrentResolver.Close();
 
-		isPortActive = false;
+		IsPortActive = false;
     }
 
 	private bool CountdownToReconnect()
@@ -69,7 +69,7 @@ public class LMBasePortInput
 
 	public void OnUpdate()
 	{
-		if (!isPortActive || m_isFreeze)
+		if (!IsPortActive || m_isFreeze)
 			return;
 
 		if (CountdownToReconnect())

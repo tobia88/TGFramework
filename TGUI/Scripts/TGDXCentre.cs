@@ -43,7 +43,7 @@ public class TGDXCentre : TGDXBaseCentre
 	{
 		var currentPort = m_controller.inputSetting.portInput;
 
-		if (currentPort != null && currentPort.isPortActive)
+		if (currentPort != null && currentPort.IsPortActive)
 		{
 			SetupPortKeyTypesGraph(currentPort.CurrentResolver);
 		}

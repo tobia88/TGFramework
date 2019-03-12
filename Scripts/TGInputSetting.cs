@@ -11,12 +11,7 @@ public class TGInputSetting : TGBaseBehaviour
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive
     {
-        get { return IsPortConnected && !portInput.HasData; }
-    }
-    
-    public bool IsPortConnected
-    {
-        get { return (portInput == null) ? false : portInput.isPortActive; }
+        get { return (portInput == null ) ? false : portInput.IsPortActive && portInput.HasData; }
     }
 
     public string DeviceName { get; private set; }
