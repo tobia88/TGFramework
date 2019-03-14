@@ -88,6 +88,17 @@ public class TGBaseScene : MonoBehaviour
         controller.inputSetting.Recalibration();
     }
 
+    public void OnStartCoroutine(IEnumerator routine)
+    {
+        if (controller == null)
+        {
+            Debug.LogError("TGController is not found in actived scenes");
+            return;
+        }
+
+        controller.StartCoroutine(routine);
+    }
+
     public IEnumerator RecordFrame(string _dateStr)
     {
         yield return new WaitForEndOfFrame();

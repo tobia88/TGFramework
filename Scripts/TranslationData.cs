@@ -33,7 +33,7 @@ public struct EvalData
 	}
 }
 
-[CreateAssetMenu(menuName="Data/Translation Data")]
+[CreateAssetMenu(menuName="TGFramework/Data/Evaluate Translate")]
 public class TranslationData : ScriptableObject
 {
 	public EvalData[] infos;

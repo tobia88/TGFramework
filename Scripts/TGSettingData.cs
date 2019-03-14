@@ -10,7 +10,7 @@ public struct SceneMatchData
     public string sceneName;
 }
 
-[CreateAssetMenu(fileName = "Setting Data", menuName = "TG-FlyingBird/TGSettingData", order = 0)]
+[CreateAssetMenu(fileName = "SettingData", menuName = "TGFramework/SettingData", order = 0)]
 public class TGSettingData : ScriptableObject
 {
     public string gameNameCn;

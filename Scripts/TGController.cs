@@ -39,14 +39,6 @@ public class TGController : MonoBehaviour
 
     private void Awake()
     {
-        settingData = Resources.Load<TGSettingData>("SettingData");
-
-        if (settingData == null)
-        {
-            ErrorQuit("缺少Setting Data文件！务必确保Resources文件夹底下有SettingData");
-            return;
-        }
-
         Instance = this;
 
         gameConfig.Init(this);
@@ -57,6 +49,15 @@ public class TGController : MonoBehaviour
         dxCentre.OnInit(this);
         dxTextCentre.OnInit(this);
         dxHeatmapPanel.OnInit(this);
+
+        settingData = Resources.Load<TGSettingData>("SettingData");
+
+        if (settingData == null)
+        {
+            ErrorQuit("缺少Setting Data文件！务必确保Resources文件夹底下有SettingData");
+            return;
+        }
+
 
 #if UNITY_EDITOR
         RootPath = Application.dataPath + "/TGFramework/";
