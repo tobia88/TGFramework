@@ -17,7 +17,7 @@ public class TGUIRoot : MonoBehaviour
 	public Button recalibrationBtn;
 	public Button questionBtn;
 
-	public void CreateScorePrefab(int _score, Vector3 _pos)
+	public GetPointTextUI CreateScorePrefab(int _score, Vector3 _pos)
 	{
 		GetPointTextUI prefab = (_score > 0) ? getScorePrefab : lossScorePrefab;
 
@@ -27,5 +27,7 @@ public class TGUIRoot : MonoBehaviour
 
 		string sign = (_score > 0) ? "+" : string.Empty;
 		score.SetText(sign + _score);
+
+		return prefab;
 	}
 }

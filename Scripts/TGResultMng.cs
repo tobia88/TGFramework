@@ -29,7 +29,7 @@ public class TGResultMng : TGBaseBehaviour
         ini.Close();
 
 
-        Debug.Log("Finished Write");
+        Debug.Log("Writing Finished");
     }
 
     private void WriteExtraData(INIParser ini)

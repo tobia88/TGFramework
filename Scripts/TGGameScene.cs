@@ -138,12 +138,12 @@ public class TGGameScene : TGBaseScene
         GameState = GameStates.Start;
     }
 
-    public virtual void GetOrLossScore(int _score, Vector3 _position, bool _isScreenPos = false)
+    public GetPointTextUI GetOrLossScore(int _score, Vector3 _position, bool _isScreenPos = false)
     {
         Score += _score;
 
         var scnPos = (_isScreenPos) ? _position : Camera.main.WorldToScreenPoint(_position);
-        uiRoot.CreateScorePrefab(_score, scnPos);
+        return uiRoot.CreateScorePrefab(_score, scnPos);
     }
 
     protected virtual void OnDifficultyChanged(int _difficulty)
