@@ -51,6 +51,7 @@ public class TGMainGame : TGBaseBehaviour
 
     public IEnumerator UnloadScene()
     {
+        yield return m_controller.StartCoroutine(CurrentScene.PreUnloadScene());
         yield return SceneManager.UnloadSceneAsync(SceneName);
     }
 

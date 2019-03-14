@@ -119,6 +119,11 @@ public class TGBaseScene : MonoBehaviour
             onCaptureScreen(_dateStr);
     }
 
+    public IEnumerator PreUnloadScene()
+    {
+        yield return 1;
+    }
+
     private IEnumerator SaveHeatmapTex(string _dateStr)
     {
         if (controller.heatmapInput.enabled)
