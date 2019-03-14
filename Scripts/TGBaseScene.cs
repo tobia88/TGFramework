@@ -99,6 +99,17 @@ public class TGBaseScene : MonoBehaviour
         controller.StartCoroutine(routine);
     }
 
+    public void OnStopCoroutine(IEnumerator routine)
+    {
+        if (controller == null)
+        {
+            Debug.LogError("TGController is not found in actived scenes");
+            return;
+        }
+
+        controller.StopCoroutine(routine);
+    }
+
     public IEnumerator RecordFrame(string _dateStr)
     {
         yield return new WaitForEndOfFrame();
