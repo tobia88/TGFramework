@@ -19,7 +19,7 @@ public class TGGameConfig : TGBaseBehaviour
 
     private INIParser m_iniParser;
 
-    public override IEnumerator SetupRoutine()
+    public override IEnumerator StartRoutine()
     {
         InitParser();
         if (!string.IsNullOrEmpty(evaluationFileName))
@@ -39,6 +39,18 @@ public class TGGameConfig : TGBaseBehaviour
 
         yield return 1;
     }
+
+    public override void ForceClose() 
+    { 
+        Close();
+    }
+
+    public override IEnumerator EndRoutine()
+    {
+        Close();
+        yield return 1;
+    }
+
     private EvalData GetConfigDataFromTitle(EvalDataGroup group, string cnTitle)
     {
         return group.infos.FirstOrDefault(d => d.cnTitle == cnTitle);

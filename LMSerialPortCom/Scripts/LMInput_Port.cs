@@ -9,7 +9,6 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 {
 	public SerialPort Port { get; private set; }
 	public LMSerialPortCtrl SerialPortCtrl { get; private set; }
-
 	public PortInfo portInfo;
 
 	public void Init(TGController _controller, int _com, LMSerialPortCtrl _serialPortCtrl)

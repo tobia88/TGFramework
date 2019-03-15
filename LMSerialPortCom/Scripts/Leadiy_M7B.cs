@@ -7,6 +7,9 @@ using UnityEngine;
 public class Leadiy_M7B : LMBasePortResolver
 {
     private const string CODE_DETECTION = "A7 7A 72 ";
+    private const string CODE_RESET_DIRE = "D66D303000";
+    private const string CODE_WRITE_DIRE = "D66D3030";
+
     private string m_getString;
 
     private int m_checksum;
@@ -19,15 +22,18 @@ public class Leadiy_M7B : LMBasePortResolver
     {
         base.Init(_portInput);
 
-        var setupData = TGController.Instance.gameConfig.evalData;
-        var currentValue = values[(int)setupData.valueAxis];
-        currentValue.reverse = setupData.reverse;
+        SetupEvaluateData(TGController.Instance.gameConfig.evalData);
     }
 
     public override void Recalibration()
     {
         foreach (var v in values)
             v.Recalibration();
+    }
+
+    public override void Close()
+    {
+        Write(CODE_RESET_DIRE);
     }
 
     public override void ResolveBytes(byte[] _bytes)
@@ -73,6 +79,20 @@ public class Leadiy_M7B : LMBasePortResolver
                 m_getString = string.Empty;
             }
         }
+    }
+
+    private void SetupEvaluateData(EvalData setupData)
+    {
+        var currentValue = values[(int)setupData.valueAxis];
+        currentValue.reverse = setupData.reverse;
+        WriteDire(setupData.dire);
+    }
+
+    private void WriteDire(int index)
+    {
+        string fullCode = CODE_WRITE_DIRE + "0" + index;
+
+        Write(fullCode);
     }
 
     private int[] ConvertHexStringToInt16(string[] _split)

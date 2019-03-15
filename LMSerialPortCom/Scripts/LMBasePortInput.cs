@@ -42,6 +42,12 @@ public class LMBasePortInput
 	public KeyPortData KeyportData { get; private set; }
 	public string ErrorTxt { get; protected set; }
 
+
+	private bool CountdownToReconnect()
+	{
+		return !m_isFreeze && m_cdToReconnect > 200000;
+	}
+
     public void Init(TGController _controller)
     {
         m_controller = _controller;
@@ -62,10 +68,6 @@ public class LMBasePortInput
 		IsPortActive = false;
     }
 
-	private bool CountdownToReconnect()
-	{
-		return !m_isFreeze && m_cdToReconnect > 200000;
-	}
 
 	public void OnUpdate()
 	{
@@ -103,6 +105,8 @@ public class LMBasePortInput
 		m_isFreeze = false;
 		m_cdToReconnect = 0f;
 	}
+
+	public virtual void ForceClose() {}
 
 	public virtual float GetValue(int index)
 	{

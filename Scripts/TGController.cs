@@ -32,6 +32,8 @@ public class TGController : MonoBehaviour
     }
     public bool IsInit { get; private set; }
 
+    private bool m_onClearEnd;
+
     public string SceneName
     {
         get { return settingData.GetSceneNameByDeviceType(inputSetting.DeviceType); }
@@ -77,10 +79,25 @@ public class TGController : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        if (IsInit)
+        if (!m_onClearEnd)
         {
-            Flush();
+            ForceQuit();
         }
+        // if (IsInit)
+        // {
+        //     Flush();
+        // }
+    }
+
+    private void ForceQuit()
+    {
+        mainGame.ForceClose();
+        gameConfig.ForceClose();
+        inputSetting.ForceClose();
+
+        StopAllCoroutines();
+
+        Debug.Log("Game Quit Abnormally");
     }
 
     private void Start()
@@ -93,18 +110,9 @@ public class TGController : MonoBehaviour
 
     public void Quit()
     {
-        Debug.Log("Game Finished");
-        Flush();
-        Application.Quit();
-    }
-
-    private void Flush()
-    {
-        IsInit = false;
-        gameConfig.Close();
-        inputSetting.Close();
-        Debug.Log("Application Quit");
+        Debug.Log("Game Quit Normally");
         StopAllCoroutines();
+        Application.Quit();
     }
 
     public void DebugText(string _txt)
@@ -195,9 +203,9 @@ public class TGController : MonoBehaviour
 
         // TODO: 读取界面
 
-        yield return StartCoroutine(gameConfig.SetupRoutine());
-        yield return StartCoroutine(inputSetting.SetupRoutine());
-        yield return StartCoroutine(mainGame.SetupRoutine());
+        yield return StartCoroutine(gameConfig.StartRoutine());
+        yield return StartCoroutine(inputSetting.StartRoutine());
+        yield return StartCoroutine(mainGame.StartRoutine());
         
         // TODO: 释放读取界面
         if (mainGame.CurrentScene != null)
@@ -208,10 +216,16 @@ public class TGController : MonoBehaviour
             var dateStr = endTime.ToString("yyyy_MM_dd_HH_mm_ss");
 
             yield return StartCoroutine(mainGame.TakeScreenshot(dateStr));
-            yield return StartCoroutine(resultMng.SetupRoutine());
-            yield return StartCoroutine(mainGame.UnloadScene());
+            yield return StartCoroutine(resultMng.StartRoutine());
         }
 
+        yield return StartCoroutine(resultMng.EndRoutine());
+        yield return StartCoroutine(mainGame.EndRoutine());
+        yield return StartCoroutine(inputSetting.EndRoutine());
+        yield return StartCoroutine(gameConfig.EndRoutine());
+
         Quit();
+
+        m_onClearEnd = true;
     }
 }

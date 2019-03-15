@@ -6,7 +6,7 @@ public class TGResultMng : TGBaseBehaviour
 {
     public string saveFileName = "ret.txt";
     public bool isWrited = false;
-    public override IEnumerator SetupRoutine()
+    public override IEnumerator StartRoutine()
     {
         ForceWrite();
         isWrited = true;
@@ -26,10 +26,18 @@ public class TGResultMng : TGBaseBehaviour
         ini.WriteValue("ret", "开始时间", TGUtility.ParseDateTimeToString(m_controller.startTime));
         ini.WriteValue("ret", "结束时间", TGUtility.ParseDateTimeToString(m_controller.endTime));
         WriteExtraData(ini);
+
         ini.Close();
 
 
         Debug.Log("Writing Finished");
+    }
+
+    public override void ForceClose() {}
+
+    public override IEnumerator EndRoutine()
+    {
+        yield return 1;
     }
 
     private void WriteExtraData(INIParser ini)
