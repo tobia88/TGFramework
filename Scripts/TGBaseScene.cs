@@ -80,7 +80,7 @@ public class TGBaseScene : MonoBehaviour
 
     public void DelayCall(System.Action _func, float _delay)
     {
-        OnStartCoroutine(DelayCallRoutine(_func, _delay));
+        StartCoroutine(DelayCallRoutine(_func, _delay));
     }
 
     public virtual void Recalibration()
@@ -88,33 +88,11 @@ public class TGBaseScene : MonoBehaviour
         controller.inputSetting.Recalibration();
     }
 
-    public Coroutine OnStartCoroutine(IEnumerator routine)
-    {
-        if (controller == null)
-        {
-            Debug.LogError("TGController is not found in actived scenes");
-            return null;
-        }
-
-        return controller.StartCoroutine(routine);
-    }
-
-    public void OnStopCoroutine(IEnumerator routine)
-    {
-        if (controller == null)
-        {
-            Debug.LogError("TGController is not found in actived scenes");
-            return;
-        }
-
-        controller.StopCoroutine(routine);
-    }
-
     public IEnumerator RecordFrame(string _dateStr)
     {
         yield return new WaitForEndOfFrame();
-        yield return OnStartCoroutine(SaveMainScreenshot(_dateStr));
-        yield return OnStartCoroutine(SaveHeatmapTex(_dateStr));
+        yield return StartCoroutine(SaveMainScreenshot(_dateStr));
+        yield return StartCoroutine(SaveHeatmapTex(_dateStr));
         if (onCaptureScreen != null)
             onCaptureScreen(_dateStr);
     }
@@ -130,7 +108,7 @@ public class TGBaseScene : MonoBehaviour
         {
             string fileName = "heat_" + _dateStr + ".png";
             controller.heatmapInput.ApplyHeatmap();
-            yield return OnStartCoroutine(SaveTexture(controller.heatmapInput.outputTex, fileName));
+            yield return StartCoroutine(SaveTexture(controller.heatmapInput.outputTex, fileName));
             SaveScreenshotKey(MAIN_SCREENSHOT_KEY, fileName);
         }
 
@@ -149,7 +127,7 @@ public class TGBaseScene : MonoBehaviour
         tex.Apply(false);
 
         string fileName = _dateStr + ".png";
-        yield return OnStartCoroutine(SaveTexture(tex, fileName));
+        yield return StartCoroutine(SaveTexture(tex, fileName));
         SaveScreenshotKey(MAIN_SCREENSHOT_KEY, fileName);
     }
 
