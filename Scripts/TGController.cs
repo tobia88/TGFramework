@@ -45,6 +45,8 @@ public class TGController : MonoBehaviour
     }
     public bool IsInit { get; private set; }
 
+    private bool m_onClearEnd;
+
     public string SceneName
     {
         get { return settingData.GetSceneNameByDeviceType(inputSetting.DeviceType); }
@@ -52,14 +54,6 @@ public class TGController : MonoBehaviour
 
     private void Awake()
     {
-        settingData = Resources.Load<TGSettingData>("SettingData");
-
-        if (settingData == null)
-        {
-            ErrorQuit("缺少Setting Data文件！务必确保Resources文件夹底下有SettingData");
-            return;
-        }
-
         Instance = this;
 
         loadScene.Init(this);
@@ -74,6 +68,15 @@ public class TGController : MonoBehaviour
         dxCentre.OnInit(this);
         dxTextCentre.OnInit(this);
         dxHeatmapPanel.OnInit(this);
+
+        settingData = Resources.Load<TGSettingData>("SettingData");
+
+        if (settingData == null)
+        {
+            ErrorQuit("缺少Setting Data文件！务必确保Resources文件夹底下有SettingData");
+            return;
+        }
+
 
 #if UNITY_EDITOR
         RootPath = Application.dataPath + "/TGFramework/";
@@ -93,11 +96,27 @@ public class TGController : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        if (IsInit)
+        if (!m_onClearEnd)
         {
-            Flush();
+            ForceQuit();
         }
+        // if (IsInit)
+        // {
+        //     Flush();
+        // }
     }
+
+    private void ForceQuit()
+    {
+        mainGame.ForceClose();
+        gameConfig.ForceClose();
+        inputSetting.ForceClose();
+
+        StopAllCoroutines();
+
+        Debug.Log("Game Quit Abnormally");
+    }
+
     private void Start()
     {
         if (!IsInit)
@@ -108,18 +127,9 @@ public class TGController : MonoBehaviour
 
     public void Quit()
     {
-        Debug.Log("Game Finished");
-        Flush();
-        Application.Quit();
-    }
-
-    private void Flush()
-    {
-        IsInit = false;
-        gameConfig.Close();
-        inputSetting.Close();
-        Debug.Log("Application Quit");
+        Debug.Log("Game Quit Normally");
         StopAllCoroutines();
+        Application.Quit();
     }
 
     public void DebugText(string _txt)
@@ -215,10 +225,7 @@ public class TGController : MonoBehaviour
         yield return StartCoroutine(gameConfig.SetupRoutine());
         yield return StartCoroutine(inputSetting.SetupRoutine());
         yield return StartCoroutine(mainGame.SetupRoutine());
-
-        yield return StartCoroutine(loadScene.UnloadScene());
-       
-
+        
         // TODO: 释放读取界面
         if (mainGame.CurrentScene != null)
         {
@@ -226,12 +233,20 @@ public class TGController : MonoBehaviour
             yield return StartCoroutine(mainGame.GameRoutine());
             endTime = DateTime.Now;
             var dateStr = endTime.ToString("yyyy_MM_dd_HH_mm_ss");
+
             yield return StartCoroutine(mainGame.TakeScreenshot(dateStr));
             yield return StartCoroutine(resultMng.SetupRoutine());
             yield return StartCoroutine(mainGame.UnloadScene());
         }
 
+        yield return StartCoroutine(mainGame.EndRoutine());
+        yield return StartCoroutine(resultMng.EndRoutine());
+        yield return StartCoroutine(inputSetting.EndRoutine());
+        yield return StartCoroutine(gameConfig.EndRoutine());
+
         Quit();
+
+        m_onClearEnd = true;
     }
 
     private void OnMainGameProgressChanged(float progress)

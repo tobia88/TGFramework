@@ -42,6 +42,20 @@ public class TGGameConfig : TGBaseBehaviour
         yield return new WaitForSeconds(1f);
     }
 
+        yield return 1;
+    }
+
+    public override void ForceClose() 
+    { 
+        Close();
+    }
+
+    public override IEnumerator EndRoutine()
+    {
+        Close();
+        yield return 1;
+    }
+
     private EvalData GetConfigDataFromTitle(EvalDataGroup group, string cnTitle)
     {
         return group.infos.FirstOrDefault(d => d.cnTitle == cnTitle);

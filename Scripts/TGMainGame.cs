@@ -15,7 +15,7 @@ public class TGMainGame : TGBaseBehaviour
 
     public AsyncOperation asyncOperation;
 
-    public override IEnumerator SetupRoutine()
+    public override IEnumerator StartRoutine()
     {
         SceneName = m_controller.SceneName;
 
@@ -46,6 +46,8 @@ public class TGMainGame : TGBaseBehaviour
         }
     }
 
+    public override void ForceClose() {}
+
     public IEnumerator GameRoutine()
     {
         CurrentScene.Init();
@@ -60,13 +62,12 @@ public class TGMainGame : TGBaseBehaviour
         extraData = CurrentScene.extraData;
     }
 
-    public IEnumerator TakeScreenshot(string dateSpr)
+    public override IEnumerator EndRoutine()
     {
-        yield return StartCoroutine(CurrentScene.RecordFrame(dateSpr));
-    }
+        if (CurrentScene == null)
+            yield break;
 
-    public IEnumerator UnloadScene()
-    {
+        yield return StartCoroutine(CurrentScene.PreUnloadScene());
         yield return SceneManager.UnloadSceneAsync(SceneName);
     }
 

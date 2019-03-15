@@ -82,6 +82,9 @@ public class LMTouchCtrl : MonoBehaviour
     {
         Camera cam = Camera.main;
 
+        if (cam == null)
+            return;
+
         ScreenPosition = GetSingleInputPos();
 
         CurrentPosition = cam.ScreenToWorldPoint(ScreenPosition);

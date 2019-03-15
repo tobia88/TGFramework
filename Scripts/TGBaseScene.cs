@@ -97,6 +97,11 @@ public class TGBaseScene : MonoBehaviour
             onCaptureScreen(_dateStr);
     }
 
+    public virtual IEnumerator PreUnloadScene()
+    {
+        yield return 1;
+    }
+
     private IEnumerator SaveHeatmapTex(string _dateStr)
     {
         if (controller.heatmapInput.enabled)
@@ -137,6 +142,8 @@ public class TGBaseScene : MonoBehaviour
 
         byte[] bytes = _tex.EncodeToPNG();
         GameObject.Destroy(_tex);
+
+        Debug.Log("Write Texture: " + _name);
 
         controller.fileWriter.Write(_name, bytes);
 

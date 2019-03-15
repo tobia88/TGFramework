@@ -25,7 +25,7 @@ public class TGInputSetting : TGBaseBehaviour
             portInput.Close();
     }
 
-    public override IEnumerator SetupRoutine()
+    public override IEnumerator StartRoutine()
     {
         
         touchCtrl = GetComponent<LMTouchCtrl>();
@@ -52,19 +52,32 @@ public class TGInputSetting : TGBaseBehaviour
 
             portInput = GetProperInput();
 
-            if (!portInput.OnStart(KeyportData))
+            while(!portInput.IsConnected)
             {
-                portInput.Close();
+                yield return StartCoroutine(portInput.OnStart(KeyportData));
 
-                m_controller.DebugText(portInput.ErrorTxt);
-                touchCtrl.enabled = true;
-            }
+                if (!portInput.IsConnected)
+                {
+                    m_controller.DebugText(portInput.ErrorTxt);
+                    yield return new WaitForSeconds(5f);
+                    Debug.Log("重连");
+                }
+           }
+
+            // if (!portInput.OnStart(KeyportData))
+            // {
+            //     Debug.Log(KeyportData.type + " is failed to activate, switch to Touch Screen");
+            //     portInput.Close();
+
+            //     m_controller.DebugText(portInput.ErrorTxt);
+            //     touchCtrl.enabled = true;
+            // }
         }
 
         m_controller.SetHeatmapEnable(KeyportData.heatmap);
         Debug.Log("Input Setup Success");
-        m_controller.ProgressValue += 0.2f;
-        yield return new WaitForSeconds(1f);
+
+        yield return 1;
     }
 
     private LMBasePortInput GetProperInput()
