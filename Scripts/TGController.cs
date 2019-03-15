@@ -18,11 +18,24 @@ public class TGController : MonoBehaviour
     public TGInputSetting inputSetting;
     public HeatmapInput heatmapInput;
     public TGMainGame mainGame;
+    public TGLoadScene loadScene;
     public TGResultMng resultMng;
     [Header("Debug")]
     public TGDXCentre dxCentre;
     public TGDXTextCentre dxTextCentre;
     public TGDXHeatmapPanel dxHeatmapPanel;
+
+    private float m_progressValue;
+
+    public float ProgressValue
+    {
+        get { return m_progressValue; }
+        set
+        {
+            m_progressValue = value;
+            OnMainGameProgressChanged(m_progressValue);
+        }
+    }
 
     public LMFileWriter fileWriter;
     public string RootPath
@@ -49,9 +62,13 @@ public class TGController : MonoBehaviour
 
         Instance = this;
 
+        loadScene.Init(this);
         gameConfig.Init(this);
+        gameConfig.onProgressChanged += OnMainGameProgressChanged;
         inputSetting.Init(this);
+        inputSetting.onProgressChanged += OnMainGameProgressChanged;
         mainGame.Init(this);
+        mainGame.onProgressChanged += OnMainGameProgressChanged;
         resultMng.Init(this);
 
         dxCentre.OnInit(this);
@@ -81,7 +98,6 @@ public class TGController : MonoBehaviour
             Flush();
         }
     }
-
     private void Start()
     {
         if (!IsInit)
@@ -165,6 +181,7 @@ public class TGController : MonoBehaviour
         }
 
         DebugInputUpdate();
+        
     }
 
     private void DebugInputUpdate()
@@ -193,24 +210,33 @@ public class TGController : MonoBehaviour
         startTime = DateTime.Now;
 
         // TODO: 读取界面
+        yield return StartCoroutine(loadScene.SetupRoutine());
 
         yield return StartCoroutine(gameConfig.SetupRoutine());
         yield return StartCoroutine(inputSetting.SetupRoutine());
         yield return StartCoroutine(mainGame.SetupRoutine());
-        
+
+        yield return StartCoroutine(loadScene.UnloadScene());
+       
+
         // TODO: 释放读取界面
         if (mainGame.CurrentScene != null)
         {
-            yield return StartCoroutine(mainGame.GameRoutine());
 
+            yield return StartCoroutine(mainGame.GameRoutine());
             endTime = DateTime.Now;
             var dateStr = endTime.ToString("yyyy_MM_dd_HH_mm_ss");
-
             yield return StartCoroutine(mainGame.TakeScreenshot(dateStr));
             yield return StartCoroutine(resultMng.SetupRoutine());
             yield return StartCoroutine(mainGame.UnloadScene());
         }
 
         Quit();
+    }
+
+    private void OnMainGameProgressChanged(float progress)
+    {
+        loadScene.SetProgressValue(progress);
+
     }
 }

@@ -18,7 +18,7 @@ public class TGInputSetting : TGBaseBehaviour
 
     public string DeviceType { get { return (KeyportData == null) ? string.Empty : KeyportData.type; } }
     public KeyPortData KeyportData { get; private set; }
-
+    public System.Action<float> onProgressChanged;
     public void Close()
     {
         if (portInput != null)
@@ -27,6 +27,7 @@ public class TGInputSetting : TGBaseBehaviour
 
     public override IEnumerator SetupRoutine()
     {
+        
         touchCtrl = GetComponent<LMTouchCtrl>();
 
         keyInputConfig = TGUtility.ParseConfigFile(configFileName);
@@ -40,7 +41,7 @@ public class TGInputSetting : TGBaseBehaviour
             m_controller.ErrorQuit("训练器材 " + DeviceName + "不存在！");
             yield break;
         }
-
+        
         touchCtrl.enabled = KeyportData.type == "touch";
 
         if (!touchCtrl.enabled)
@@ -62,8 +63,8 @@ public class TGInputSetting : TGBaseBehaviour
 
         m_controller.SetHeatmapEnable(KeyportData.heatmap);
         Debug.Log("Input Setup Success");
-
-        yield return 1;
+        m_controller.ProgressValue += 0.2f;
+        yield return new WaitForSeconds(1f);
     }
 
     private LMBasePortInput GetProperInput()

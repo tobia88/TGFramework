@@ -10,6 +10,10 @@ public class TGMainGame : TGBaseBehaviour
     public string SceneName { get; private set; }
     public Dictionary<string, string> extraData;
     public TGBaseScene CurrentScene {get; private set;}
+    public System.Action<float> onProgressChanged;
+
+
+    public AsyncOperation asyncOperation;
 
     public override IEnumerator SetupRoutine()
     {
@@ -17,10 +21,22 @@ public class TGMainGame : TGBaseBehaviour
 
         Scene tmpScene = SceneManager.GetSceneByName(SceneName);
 
+
         if (!tmpScene.isLoaded)
         {
-            yield return SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
+            asyncOperation = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
+            while (!asyncOperation.isDone)
+            {
+                if (asyncOperation.progress >= 0.3f)
+                {
+                    float progress = asyncOperation.progress - 0.3f;
+                    m_controller.ProgressValue = progress + 0.3f;
+                }
+
+                yield return null;
+            }
         }
+
 
         CurrentScene = SetSceneActive(SceneName);
 

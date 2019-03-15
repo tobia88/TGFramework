@@ -18,10 +18,11 @@ public class TGGameConfig : TGBaseBehaviour
     public EvalData evalData;
 
     private INIParser m_iniParser;
-
+    public System.Action<float> onProgressChanged;
     public override IEnumerator SetupRoutine()
     {
         InitParser();
+        
         if (!string.IsNullOrEmpty(evaluationFileName))
         {
             var group = m_controller.fileWriter.ReadJSON<EvalDataGroup>(evaluationFileName);
@@ -30,15 +31,17 @@ public class TGGameConfig : TGBaseBehaviour
             {
                 string cnTitle = GetValue("体侧", string.Empty);
                 evalData = GetConfigDataFromTitle(group, cnTitle);
+               
             }
         }
         else
         {
             Debug.LogWarning(evaluationFileName + "Has not found");
         }
-
-        yield return 1;
+        m_controller.ProgressValue += 0.1f;
+        yield return new WaitForSeconds(1f);
     }
+
     private EvalData GetConfigDataFromTitle(EvalDataGroup group, string cnTitle)
     {
         return group.infos.FirstOrDefault(d => d.cnTitle == cnTitle);
