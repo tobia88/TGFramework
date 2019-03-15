@@ -53,9 +53,13 @@ public class TGMainGame : TGBaseBehaviour
 
     public override IEnumerator EndRoutine()
     {
+<<<<<<< HEAD
         if (CurrentScene == null)
             yield break;
 
+=======
+        yield return m_controller.StartCoroutine(CurrentScene.PreUnloadScene());
+>>>>>>> 6ebe208b2664d0be7d2a10b2da09269b390668d0
         yield return SceneManager.UnloadSceneAsync(SceneName);
     }
 

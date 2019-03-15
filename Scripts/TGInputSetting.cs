@@ -48,6 +48,7 @@ public class TGInputSetting : TGBaseBehaviour
 
             if (!portInput.OnStart(KeyportData))
             {
+                Debug.Log(KeyportData.type + " is failed to activate, switch to Touch Screen");
                 portInput.Close();
 
                 m_controller.DebugText(portInput.ErrorTxt);
