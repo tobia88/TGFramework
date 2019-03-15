@@ -143,6 +143,8 @@ public class TGBaseScene : MonoBehaviour
         byte[] bytes = _tex.EncodeToPNG();
         GameObject.Destroy(_tex);
 
+        Debug.Log("Write Texture: " + _name);
+
         controller.fileWriter.Write(_name, bytes);
 
         yield return null;

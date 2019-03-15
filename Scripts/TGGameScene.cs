@@ -261,6 +261,8 @@ public class TGGameScene : TGBaseScene
         uiRoot.gameOverPanel.SetScore(Score);
         uiRoot.gameOverPanel.Show();
 
+        Debug.Log("Game Over");
+
         StartCoroutine(CountdownToQuitRoutine());
         // StartCoroutine(CaptureDelay());
     }

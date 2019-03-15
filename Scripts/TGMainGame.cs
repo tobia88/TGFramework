@@ -48,7 +48,7 @@ public class TGMainGame : TGBaseBehaviour
 
     public IEnumerator TakeScreenshot(string dateSpr)
     {
-        yield return m_controller.StartCoroutine(CurrentScene.RecordFrame(dateSpr));
+        yield return StartCoroutine(CurrentScene.RecordFrame(dateSpr));
     }
 
     public override IEnumerator EndRoutine()
@@ -56,7 +56,7 @@ public class TGMainGame : TGBaseBehaviour
         if (CurrentScene == null)
             yield break;
 
-        yield return m_controller.StartCoroutine(CurrentScene.PreUnloadScene());
+        yield return StartCoroutine(CurrentScene.PreUnloadScene());
         yield return SceneManager.UnloadSceneAsync(SceneName);
     }
 
