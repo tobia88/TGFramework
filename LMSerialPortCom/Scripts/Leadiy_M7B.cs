@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -40,7 +41,7 @@ public class Leadiy_M7B : LMBasePortResolver
     {
         base.ResolveBytes(_bytes);
 
-        if (m_bytes.Length == 0)
+        if (m_bytes == null || m_bytes.Length == 0)
             return;
 
         for (int i = 0; i < m_bytes.Length; i++)

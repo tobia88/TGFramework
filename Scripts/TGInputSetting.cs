@@ -46,18 +46,30 @@ public class TGInputSetting : TGBaseBehaviour
 
             portInput = GetProperInput();
 
-            if (!portInput.OnStart(KeyportData))
+            while(!portInput.IsConnected)
             {
-                Debug.Log(KeyportData.type + " is failed to activate, switch to Touch Screen");
-                portInput.Close();
+                yield return StartCoroutine(portInput.OnStart(KeyportData));
 
-                m_controller.DebugText(portInput.ErrorTxt);
-                touchCtrl.enabled = true;
-            }
+                if (!portInput.IsConnected)
+                {
+                    m_controller.DebugText(portInput.ErrorTxt);
+                    yield return new WaitForSeconds(5f);
+                    Debug.Log("重连");
+                }
+           }
+
+            // if (!portInput.OnStart(KeyportData))
+            // {
+            //     Debug.Log(KeyportData.type + " is failed to activate, switch to Touch Screen");
+            //     portInput.Close();
+
+            //     m_controller.DebugText(portInput.ErrorTxt);
+            //     touchCtrl.enabled = true;
+            // }
         }
 
         m_controller.SetHeatmapEnable(KeyportData.heatmap);
-        Debug.Log("Input Setup Success");
+        // Debug.Log("Input Setup Success");
 
         yield return 1;
     }

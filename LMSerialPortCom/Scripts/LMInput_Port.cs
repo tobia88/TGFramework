@@ -23,23 +23,21 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		portInfo.baudRate = 115200;
 	}
 
-	public override bool OnStart(KeyPortData portData)
+	public override IEnumerator OnStart(KeyPortData portData)
 	{
-		base.OnStart(portData);
-
 		if (!SerialPortCtrl.CheckPortAvailable(portInfo.comName))
 		{
 			throw new InvalidPortNumberException(portInfo.comName);
-		}
 
-		return ConnectPort();
+		}
+		yield return controller.StartCoroutine(base.OnStart(portData));
 	}
 
 	public override void Write(byte[] bytes)
 	{
 		if (Port != null && Port.IsOpen)
 		{
-			m_controller.StartCoroutine(PortWriteRoutine(bytes));
+			controller.StartCoroutine(PortWriteRoutine(bytes));
 		}
 	}
 
@@ -55,10 +53,10 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		m_isFreeze = false;
 	}
 
-	public bool ConnectPort()
+	public override bool ConnectPort()
 	{
 
-		m_controller.DebugText("正在读取端口: " + portInfo.comName);
+		controller.DebugText("正在读取端口: " + portInfo.comName);
 		return SerialPortCtrl.Open(portInfo, this, true);
 	}
 
@@ -94,7 +92,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 	{
 		base.ReconnectInFewSeconds();
 		SerialPortCtrl.Close();
-		m_controller.StartCoroutine(ReconnectDelay());
+		controller.StartCoroutine(ReconnectDelay());
 	}
 
 	IEnumerator ReconnectDelay()
@@ -103,9 +101,9 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 
 		while (!result)
 		{
-			m_controller.DebugText("正在重新链接串口...");
+			controller.DebugText("正在重新链接串口...");
 			yield return new WaitForSeconds(5);
-			m_controller.DebugText("连接串口中...");
+			controller.DebugText("连接串口中...");
 			result = ConnectPort();
 		}
 

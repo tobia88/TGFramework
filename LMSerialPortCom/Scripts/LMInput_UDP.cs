@@ -51,10 +51,8 @@ public class LMInput_UDP : LMBasePortInput, IPortReceiver
 		}
 	}
 
-	public override bool OnStart(KeyPortData portData)
+	public override bool ConnectPort()
 	{
-		base.OnStart(portData);
-
 		try
 		{
 			m_endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), m_udp);

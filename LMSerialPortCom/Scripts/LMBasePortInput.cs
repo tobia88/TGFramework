@@ -26,22 +26,22 @@ public class KeyInputConfig
     }
 }
 
-public class LMBasePortInput
+public abstract class LMBasePortInput
 {
 	
-	protected bool m_isInit;
+	// protected bool m_isInit;
 	protected byte[] m_bytes;
 	protected float m_cdToReconnect;
 	protected int m_byteLength;
 	protected bool m_isFreeze;
-    protected TGController m_controller;
+    public TGController controller { get; private set; }
 	public bool IsPortActive { get; private set;}
-	public bool HasData { get { return !m_isFreeze;} }
+	public bool IsConnected { get; private set; }
+	public bool HasData { get{ return m_byteLength > 0; } }
 	// public bool IsPortWriting { get; protected set; }
 	public LMBasePortResolver CurrentResolver { get; protected set; }
 	public KeyPortData KeyportData { get; private set; }
 	public string ErrorTxt { get; protected set; }
-
 
 	private bool CountdownToReconnect()
 	{
@@ -50,14 +50,22 @@ public class LMBasePortInput
 
     public void Init(TGController _controller)
     {
-        m_controller = _controller;
+        controller = _controller;
     }
 
-    public virtual bool OnStart(KeyPortData portData)
+	public abstract bool ConnectPort();
+
+    public virtual IEnumerator OnStart(KeyPortData portData)
     {
 		KeyportData = portData;
 		IsPortActive = true;
-        return true;
+
+		if (!ConnectPort())
+			yield break;
+
+		CurrentResolver = GetProperResolver(KeyportData);
+		yield return new WaitUntil(() => IsConnected);
+		CurrentResolver.Init(this);
     }
 
     public virtual void Close()
@@ -67,7 +75,6 @@ public class LMBasePortInput
 
 		IsPortActive = false;
     }
-
 
 	public void OnUpdate()
 	{
@@ -82,31 +89,22 @@ public class LMBasePortInput
 
 		if (m_bytes != null && m_bytes.Length > 0)
 		{
-			m_controller.DebugText("连接成功，请重新打开数据面板");
+			controller.DebugText("连接成功，请重新打开数据面板");
 		}
-	}
-
-	protected void InitPortResolver()
-	{
-		CurrentResolver = GetProperResolver(KeyportData);
-		CurrentResolver.Init(this);
-		m_isInit = true;
 	}
 
 	protected virtual void ReconnectInFewSeconds()
 	{
-		m_controller.DebugText("连接断开，数秒后重新连接");
+		controller.DebugText("连接断开，数秒后重新连接");
 		Reset();
 	}
 
 	protected void Reset()
 	{
-		m_isInit = false;
+		// m_isInit = false;
 		m_isFreeze = false;
 		m_cdToReconnect = 0f;
 	}
-
-	public virtual void ForceClose() {}
 
 	public virtual float GetValue(int index)
 	{
@@ -135,6 +133,7 @@ public class LMBasePortInput
 		Debug.Log("Write Port: " + hex + ", Converted into: " + BitConverter.ToString(bytes));
 		Write(bytes);
 	}
+
 	public virtual void Write(byte[] bytes) { }
 
 	protected LMBasePortResolver GetProperResolver(KeyPortData portData)
@@ -161,22 +160,27 @@ public class LMBasePortInput
 
 	protected void ReadData(byte[] _bytes)
 	{
-		if (!m_isInit)
-			InitPortResolver();
+		// if (!m_isInit)
+		// 	InitPortResolver();
 
 		m_bytes = _bytes;
 
-		if (m_bytes == null || m_bytes.Length == 0)
+		IsConnected = m_bytes == null || m_bytes.Length == 0;
+
+		if (!IsConnected)
 		{
 			m_cdToReconnect++;
 			return;
 		}
 
 		m_cdToReconnect = 0f;
+
+		if (CurrentResolver != null)
+			CurrentResolver.ResolveBytes(m_bytes);
+
 		m_isFreeze = false;
 		// isPortActive = true;
 
-		CurrentResolver.ResolveBytes(m_bytes);
 	}
 
 }

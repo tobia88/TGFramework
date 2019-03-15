@@ -276,6 +276,11 @@ public class TGGameScene : TGBaseScene
         }
 
         uiRoot.gameOverPanel.SetCountdownTxt(0);
+
+        var dateStr = controller.endTime.ToString("yyyy_MM_dd_HH_mm_ss");
+
+        yield return StartCoroutine(RecordFrame(dateStr));
+
         GameState = GameStates.End;
     }
 

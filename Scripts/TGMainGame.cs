@@ -46,11 +46,6 @@ public class TGMainGame : TGBaseBehaviour
         extraData = CurrentScene.extraData;
     }
 
-    public IEnumerator TakeScreenshot(string dateSpr)
-    {
-        yield return StartCoroutine(CurrentScene.RecordFrame(dateSpr));
-    }
-
     public override IEnumerator EndRoutine()
     {
         if (CurrentScene == null)
