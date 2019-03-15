@@ -119,7 +119,7 @@ public class TGBaseScene : MonoBehaviour
             onCaptureScreen(_dateStr);
     }
 
-    public IEnumerator PreUnloadScene()
+    public virtual IEnumerator PreUnloadScene()
     {
         yield return 1;
     }
