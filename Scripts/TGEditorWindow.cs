@@ -34,10 +34,10 @@ public class TGEditorWindow : EditorWindow
         currScene.name = path;
         GameObject game = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TGFramework/Prefabs/TGController.prefab");
         PrefabUtility.InstantiatePrefab(game);
-        EditorSceneManager.SaveScene(currScene, "Assets/_Project/Scenes/"+ currScene.name+".unity");
+        EditorSceneManager.SaveScene(currScene, "Assets/_Project/Scenes/" + currScene.name + ".unity");
     }
-   
-    
+
+
 }
 
 
@@ -86,7 +86,7 @@ public class CreateAsset : EditorWindow
 }
 
 
-public class RevisePlayerSetting: EditorWindow
+public class RevisePlayerSetting : EditorWindow
 {
     string name;
     [MenuItem("Window/TGEditorWindow/RevisePlayerSetting")]
