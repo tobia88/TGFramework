@@ -44,7 +44,7 @@ public class TGInputSetting : TGBaseBehaviour
         touchCtrl.enabled = KeyportData.type == "touch";
 
         if (!touchCtrl.enabled)
-        { 
+        {
             yield return StartCoroutine(ConnectDeviceRoutine());
         }
     }
@@ -66,8 +66,12 @@ public class TGInputSetting : TGBaseBehaviour
             if (!portInput.IsPortActive)
             {
                 m_controller.DebugText(portInput.ErrorTxt);
+#if UNITY_EDITOR
+                touchCtrl.enabled = true;
+                yield break;
+#else
                 yield return new WaitForSeconds(5f);
-                Debug.Log("重连");
+#endif
             }
         }
 
