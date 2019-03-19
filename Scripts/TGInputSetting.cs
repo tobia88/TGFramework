@@ -11,14 +11,13 @@ public class TGInputSetting : TGBaseBehaviour
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive
     {
-        get { return (portInput == null ) ? false : portInput.IsPortActive && portInput.HasData; }
+        get { return (portInput == null) ? false : portInput.IsPortActive && portInput.HasData; }
     }
 
     public string DeviceName { get; private set; }
 
     public string DeviceType { get { return (KeyportData == null) ? string.Empty : KeyportData.type; } }
     public KeyPortData KeyportData { get; private set; }
-    public System.Action<float> onProgressChanged;
     public void Close()
     {
         if (portInput != null)
@@ -27,7 +26,7 @@ public class TGInputSetting : TGBaseBehaviour
 
     public override IEnumerator StartRoutine()
     {
-        
+
         touchCtrl = GetComponent<LMTouchCtrl>();
 
         keyInputConfig = TGUtility.ParseConfigFile(configFileName);
@@ -41,44 +40,44 @@ public class TGInputSetting : TGBaseBehaviour
             m_controller.ErrorQuit("训练器材 " + DeviceName + "不存在！");
             yield break;
         }
-        
+
         touchCtrl.enabled = KeyportData.type == "touch";
 
         if (!touchCtrl.enabled)
+        { 
+            yield return StartCoroutine(ConnectDeviceRoutine());
+        }
+    }
+
+    IEnumerator ConnectDeviceRoutine()
+    {
+        // FIXME: Temperory
+        if (KeyportData.type == "m7b" && m_gameConfig.evalData.isFullAxis)
         {
-            // FIXME: Temperory
-            if (KeyportData.type == "m7b" && m_gameConfig.evalData.isFullAxis)
-                KeyportData.type += "2D";
+            KeyportData.type += "2D";
+        }
 
-            portInput = GetProperInput();
+        portInput = GetProperInput();
 
-            while(!portInput.IsConnected)
+        while (!portInput.IsPortActive)
+        {
+            yield return StartCoroutine(portInput.OnStart(KeyportData));
+
+            if (!portInput.IsPortActive)
             {
-                yield return StartCoroutine(portInput.OnStart(KeyportData));
-
-                if (!portInput.IsConnected)
-                {
-                    m_controller.DebugText(portInput.ErrorTxt);
-                    yield return new WaitForSeconds(5f);
-                    Debug.Log("重连");
-                }
-           }
-
-            // if (!portInput.OnStart(KeyportData))
-            // {
-            //     Debug.Log(KeyportData.type + " is failed to activate, switch to Touch Screen");
-            //     portInput.Close();
-
-            //     m_controller.DebugText(portInput.ErrorTxt);
-            //     touchCtrl.enabled = true;
-            // }
+                m_controller.DebugText(portInput.ErrorTxt);
+                yield return new WaitForSeconds(5f);
+                Debug.Log("重连");
+            }
         }
 
         m_controller.SetHeatmapEnable(KeyportData.heatmap);
         Debug.Log("Input Setup Success");
-
-        yield return 1;
     }
+
+    public override IEnumerator EndRoutine() { yield return 1; }
+
+    public override void ForceClose() { }
 
     private LMBasePortInput GetProperInput()
     {
@@ -93,9 +92,9 @@ public class TGInputSetting : TGBaseBehaviour
         else
         {
             var retval = new LMInput_Port();
-            retval.Init(m_controller, 
-                        m_controller.gameConfig.GetValue("端口", -1),
-                        GetComponent<LMSerialPortCtrl>());
+            retval.Init(m_controller,
+                m_controller.gameConfig.GetValue("端口", -1),
+                GetComponent<LMSerialPortCtrl>());
             return retval;
         }
     }
@@ -170,7 +169,7 @@ public class TGInputSetting : TGBaseBehaviour
             retval.z = portInput.GetRawValue(2);
         }
 
-        return retval;  
+        return retval;
     }
 
     public void Recalibration()

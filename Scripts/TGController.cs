@@ -58,11 +58,8 @@ public class TGController : MonoBehaviour
 
         loadScene.Init(this);
         gameConfig.Init(this);
-        gameConfig.onProgressChanged += OnMainGameProgressChanged;
         inputSetting.Init(this);
-        inputSetting.onProgressChanged += OnMainGameProgressChanged;
         mainGame.Init(this);
-        mainGame.onProgressChanged += OnMainGameProgressChanged;
         resultMng.Init(this);
 
         dxCentre.OnInit(this);
@@ -100,10 +97,6 @@ public class TGController : MonoBehaviour
         {
             ForceQuit();
         }
-        // if (IsInit)
-        // {
-        //     Flush();
-        // }
     }
 
     private void ForceQuit()
@@ -220,23 +213,21 @@ public class TGController : MonoBehaviour
         startTime = DateTime.Now;
 
         // TODO: 读取界面
-        yield return StartCoroutine(loadScene.SetupRoutine());
+        // yield return StartCoroutine(loadScene.StartRoutine());
+        yield return StartCoroutine(gameConfig.StartRoutine());
+        yield return StartCoroutine(inputSetting.StartRoutine());
+        yield return StartCoroutine(mainGame.StartRoutine());
+        // yield return StartCoroutine(loadScene.EndRoutine());
 
-        yield return StartCoroutine(gameConfig.SetupRoutine());
-        yield return StartCoroutine(inputSetting.SetupRoutine());
-        yield return StartCoroutine(mainGame.SetupRoutine());
-        
         // TODO: 释放读取界面
         if (mainGame.CurrentScene != null)
         {
-
             yield return StartCoroutine(mainGame.GameRoutine());
-            endTime = DateTime.Now;
-            var dateStr = endTime.ToString("yyyy_MM_dd_HH_mm_ss");
 
-            yield return StartCoroutine(mainGame.TakeScreenshot(dateStr));
-            yield return StartCoroutine(resultMng.SetupRoutine());
-            yield return StartCoroutine(mainGame.UnloadScene());
+            endTime = DateTime.Now;
+
+            yield return StartCoroutine(mainGame.EndRoutine());
+            yield return StartCoroutine(resultMng.StartRoutine());
         }
 
         yield return StartCoroutine(mainGame.EndRoutine());

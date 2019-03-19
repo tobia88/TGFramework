@@ -31,13 +31,13 @@ public abstract class LMBasePortInput
 	
 	// protected bool m_isInit;
 	protected byte[] m_bytes;
-	protected float m_cdToReconnect;
+	protected float m_cdTick;
 	protected int m_byteLength;
 	protected bool m_isFreeze;
     public TGController controller { get; private set; }
 	public bool IsPortActive { get; private set;}
 	public bool IsConnected { get; private set; }
-	public bool HasData { get{ return m_byteLength > 0; } }
+	public bool HasData { get{ return m_bytes != null && m_byteLength > 0; } }
 	// public bool IsPortWriting { get; protected set; }
 	public LMBasePortResolver CurrentResolver { get; protected set; }
 	public KeyPortData KeyportData { get; private set; }
@@ -45,7 +45,7 @@ public abstract class LMBasePortInput
 
 	private bool CountdownToReconnect()
 	{
-		return !m_isFreeze && m_cdToReconnect > 200000;
+		return !m_isFreeze && m_cdTick > 200000;
 	}
 
     public void Init(TGController _controller)
@@ -53,19 +53,23 @@ public abstract class LMBasePortInput
         controller = _controller;
     }
 
-	public abstract bool ConnectPort();
+	public abstract bool OpenPort();
 
     public virtual IEnumerator OnStart(KeyPortData portData)
     {
 		KeyportData = portData;
-		IsPortActive = true;
 
-		if (!ConnectPort())
+		if (!OpenPort())
 			yield break;
 
-		CurrentResolver = GetProperResolver(KeyportData);
+		Debug.Log("Port Active, receiving data");
+
 		yield return new WaitUntil(() => IsConnected);
+
+		CurrentResolver = GetProperResolver(KeyportData);
 		CurrentResolver.Init(this);
+
+		IsPortActive = true;
     }
 
     public virtual void Close()
@@ -103,7 +107,8 @@ public abstract class LMBasePortInput
 	{
 		// m_isInit = false;
 		m_isFreeze = false;
-		m_cdToReconnect = 0f;
+		m_cdTick = 0f;
+		IsConnected = false;
 	}
 
 	public virtual float GetValue(int index)
@@ -158,29 +163,23 @@ public abstract class LMBasePortInput
 		return retval;
 	}
 
-	protected void ReadData(byte[] _bytes)
+	protected void ResolveData(Byte[] bytes)
 	{
-		// if (!m_isInit)
-		// 	InitPortResolver();
+		m_bytes = bytes;
 
-		m_bytes = _bytes;
-
-		IsConnected = m_bytes == null || m_bytes.Length == 0;
-
-		if (!IsConnected)
+		if (m_bytes == null || m_bytes.Length == 0)
 		{
-			m_cdToReconnect++;
+			m_cdTick++;
 			return;
 		}
 
-		m_cdToReconnect = 0f;
+		// Reset tick if received any data
+		m_cdTick = 0f;
+		IsConnected = true;
+		m_isFreeze = false;
 
 		if (CurrentResolver != null)
 			CurrentResolver.ResolveBytes(m_bytes);
-
-		m_isFreeze = false;
-		// isPortActive = true;
-
 	}
 
 }

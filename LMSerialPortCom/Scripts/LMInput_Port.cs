@@ -41,6 +41,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		}
 	}
 
+
 	private IEnumerator PortWriteRoutine(byte[] bytes)
 	{
 		Port.Write(bytes, 0, bytes.Length);
@@ -53,7 +54,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		m_isFreeze = false;
 	}
 
-	public override bool ConnectPort()
+	public override bool OpenPort()
 	{
 
 		controller.DebugText("正在读取端口: " + portInfo.comName);
@@ -84,8 +85,8 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 				Port.Read(tmpBytes, 0, m_byteLength);
 			}
 		}
-
-		ReadData(tmpBytes);
+		
+		ResolveData(tmpBytes);
 	}
 
 	protected override void ReconnectInFewSeconds()
@@ -104,7 +105,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 			controller.DebugText("正在重新链接串口...");
 			yield return new WaitForSeconds(5);
 			controller.DebugText("连接串口中...");
-			result = ConnectPort();
+			result = OpenPort();
 		}
 
 		m_isFreeze = false;

@@ -207,21 +207,19 @@ public class LMKeyResolver : LMBasePortResolver
 
     public override void ResolveBytes(byte[] _bytes)
     {
-        base.ResolveBytes(_bytes);
-
-        if (m_bytes.Length == 0)
+        if (_bytes == null || _bytes.Length == 0)
             return;
 
-        m_bytes = LMUtility.RemoveSpacing(m_bytes);
+        _bytes = LMUtility.RemoveSpacing(_bytes);
 
-        FilterIds();
+        FilterIds(_bytes);
     }
 
-    protected void FilterIds()
+    protected void FilterIds(byte[] _bytes)
     {
         try
         {
-            m_getString += Encoding.UTF8.GetString(m_bytes);
+            m_getString += Encoding.UTF8.GetString(_bytes);
 
             for (int i = 0; i < inputs.Length; i++)
             {

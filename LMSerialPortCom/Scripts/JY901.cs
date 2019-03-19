@@ -30,14 +30,12 @@ public class JY901 : LMBasePortResolver
 
     public override void ResolveBytes(byte[] _bytes)
     {
-        base.ResolveBytes(_bytes);
-
-        if (m_bytes.Length == 0)
+        if (_bytes == null || _bytes.Length == 0)
             return;
 
-        for (int i = 0; i < m_bytes.Length; i++)
+        for (int i = 0; i < _bytes.Length; i++)
         {
-            m_getString += m_bytes[i].ToString("X").PadLeft(2, '0') + " ";
+            m_getString += _bytes[i].ToString("X").PadLeft(2, '0') + " ";
         }
 
         int accIndex = m_getString.IndexOf("55 51 ");

@@ -10,7 +10,6 @@ public class TGMainGame : TGBaseBehaviour
     public string SceneName { get; private set; }
     public Dictionary<string, string> extraData;
     public TGBaseScene CurrentScene {get; private set;}
-    public System.Action<float> onProgressChanged;
 
 
     public AsyncOperation asyncOperation;
@@ -59,6 +58,7 @@ public class TGMainGame : TGBaseBehaviour
             m_controller.inputSetting.OnUpdate();
             yield return 1;
         }
+
         extraData = CurrentScene.extraData;
     }
 

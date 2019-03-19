@@ -51,7 +51,7 @@ public class LMInput_UDP : LMBasePortInput, IPortReceiver
 		}
 	}
 
-	public override bool ConnectPort()
+	public override bool OpenPort()
 	{
 		try
 		{
@@ -101,14 +101,14 @@ public class LMInput_UDP : LMBasePortInput, IPortReceiver
 			try
 			{
 				m_bytes = m_client.Receive(ref m_endPoint);
-				ReadData(m_bytes);
+				ResolveData(m_bytes);
 			}
 			catch (ArgumentNullException e)
 			{
 				if (TGController.Instance != null)
 					TGController.Instance.DebugText(e.Message);
 
-				m_cdToReconnect++;
+				m_cdTick++;
 			}
 		}
 	}

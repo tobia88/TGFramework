@@ -7,15 +7,16 @@ using UnityEngine.UI;
 public class TGLoadScene : TGBaseBehaviour
 {
     public int _currProgross = 0;
-    public Load_SceneMng load_Scene;
-    public override IEnumerator SetupRoutine()
+    // public Load_SceneMng load_Scene;
+    public override IEnumerator StartRoutine()
     {
         yield return SceneManager.LoadSceneAsync("Load_Scene", LoadSceneMode.Additive);
         var tmpScene = SceneManager.GetSceneByName("Load_Scene");
         SceneManager.SetActiveScene(tmpScene);
-        load_Scene = tmpScene.GetComponent<Load_SceneMng>();
+        // load_Scene = tmpScene.GetComponent<Load_SceneMng>();
     }
-    public IEnumerator UnloadScene()
+    public override void ForceClose() {}
+    public override IEnumerator EndRoutine()
     {
         yield return SceneManager.UnloadSceneAsync("Load_Scene");
     }
@@ -30,6 +31,6 @@ public class TGLoadScene : TGBaseBehaviour
 
     public void SetProgressValue(float valua)
     {
-        load_Scene.slider.value = valua;
+        // load_Scene.slider.value = valua;
     }
 }

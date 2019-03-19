@@ -19,10 +19,10 @@ public class Leadiy_M7B : LMBasePortResolver
     private int m_length;
 
     public int[] byteValues; 
+
     public override void Init(LMBasePortInput _portInput)
     {
         base.Init(_portInput);
-
         SetupEvaluateData(TGController.Instance.gameConfig.evalData);
     }
 
@@ -39,14 +39,12 @@ public class Leadiy_M7B : LMBasePortResolver
 
     public override void ResolveBytes(byte[] _bytes)
     {
-        base.ResolveBytes(_bytes);
-
-        if (m_bytes == null || m_bytes.Length == 0)
+        if (_bytes == null || _bytes.Length == 0)
             return;
 
-        for (int i = 0; i < m_bytes.Length; i++)
+        for (int i = 0; i < _bytes.Length; i++)
         {
-            m_getString += m_bytes[i].ToString("X").PadLeft(2, '0') + " ";
+            m_getString += _bytes[i].ToString("X").PadLeft(2, '0') + " ";
         }
 
         int keyIndex = m_getString.IndexOf(CODE_DETECTION);
