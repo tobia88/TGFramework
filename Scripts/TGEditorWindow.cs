@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class TGEditorWindow : EditorWindow
 {
+
+
     string path;
     [MenuItem("Window/TGEditorWindow/CreateContollerScene")]
     static void SceneInit()
