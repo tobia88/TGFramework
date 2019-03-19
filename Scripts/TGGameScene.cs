@@ -138,12 +138,12 @@ public class TGGameScene : TGBaseScene
         GameState = GameStates.Start;
     }
 
-    public virtual void GetOrLossScore(int _score, Vector3 _position, bool _isScreenPos = false)
+    public GetPointTextUI GetOrLossScore(int _score, Vector3 _position, bool _isScreenPos = false)
     {
         Score += _score;
 
         var scnPos = (_isScreenPos) ? _position : Camera.main.WorldToScreenPoint(_position);
-        uiRoot.CreateScorePrefab(_score, scnPos);
+        return uiRoot.CreateScorePrefab(_score, scnPos);
     }
 
     protected virtual void OnDifficultyChanged(int _difficulty)
@@ -261,6 +261,8 @@ public class TGGameScene : TGBaseScene
         uiRoot.gameOverPanel.SetScore(Score);
         uiRoot.gameOverPanel.Show();
 
+        Debug.Log("Game Over");
+
         StartCoroutine(CountdownToQuitRoutine());
         // StartCoroutine(CaptureDelay());
     }
@@ -274,6 +276,11 @@ public class TGGameScene : TGBaseScene
         }
 
         uiRoot.gameOverPanel.SetCountdownTxt(0);
+
+        var dateStr = controller.endTime.ToString("yyyy_MM_dd_HH_mm_ss");
+
+        yield return StartCoroutine(RecordFrame(dateStr));
+
         GameState = GameStates.End;
     }
 

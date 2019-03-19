@@ -18,8 +18,7 @@ public class TGGameConfig : TGBaseBehaviour
     public EvalData evalData;
 
     private INIParser m_iniParser;
-    public System.Action<float> onProgressChanged;
-    public override IEnumerator SetupRoutine()
+    public override IEnumerator StartRoutine()
     {
         InitParser();
         
@@ -40,6 +39,17 @@ public class TGGameConfig : TGBaseBehaviour
         }
         m_controller.ProgressValue += 0.1f;
         yield return new WaitForSeconds(1f);
+    }
+
+    public override void ForceClose() 
+    { 
+        Close();
+    }
+
+    public override IEnumerator EndRoutine()
+    {
+        Close();
+        yield return 1;
     }
 
     private EvalData GetConfigDataFromTitle(EvalDataGroup group, string cnTitle)
@@ -64,7 +74,8 @@ public class TGGameConfig : TGBaseBehaviour
 
     public void Close()
     {
-        m_iniParser.Close();
+        if (m_iniParser != null)
+            m_iniParser.Close();
     }
 
     private void InitParser()

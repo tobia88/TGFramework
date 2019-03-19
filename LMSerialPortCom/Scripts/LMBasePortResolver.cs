@@ -1,13 +1,14 @@
+using System.Collections;
 using TG;
 
 public abstract class LMBasePortResolver
 {
-    protected byte[] m_bytes;
+    // protected byte[] m_bytes;
     protected LMBasePortInput m_portInput;
     protected TGExpressionParser m_solver;
 
-    public string deviceType;
-    public KeyPortData PortData { get; private set; }
+    public string deviceType { get { return PortData.type; } }
+    public KeyPortData PortData { get { return m_portInput.KeyportData; } }
     public KeyResolveValue[] values;
     public KeyResolveInput[] inputs;
 
@@ -43,18 +44,11 @@ public abstract class LMBasePortResolver
 
         m_portInput = _portInput;
 
-        PortData = m_portInput.KeyportData;
-
-        deviceType = PortData.type;
-
         InitInputs(PortData.input);
         InitValues(PortData.value);
     }
 
-    public virtual void ResolveBytes(byte[] _bytes)
-    {
-        m_bytes = _bytes;
-    }
+    public abstract void ResolveBytes(byte[] _bytes);
 
     public abstract void Recalibration();
 
