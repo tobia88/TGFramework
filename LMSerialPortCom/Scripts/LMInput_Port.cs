@@ -27,9 +27,11 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 	{
 		if (!SerialPortCtrl.CheckPortAvailable(portInfo.comName))
 		{
-			throw new InvalidPortNumberException(portInfo.comName);
-
+			ErrorTxt = portInfo.comName + "不存在，请修改正确的COM再重试";
+			yield break;
+			// throw new InvalidPortNumberException(portInfo.comName);
 		}
+
 		yield return controller.StartCoroutine(base.OnStart(portData));
 	}
 
@@ -62,7 +64,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		bool retval = SerialPortCtrl.Open(portInfo, this, true);
 
 		if (!retval)
-			ErrorTxt = portInfo.comName + "不存在，重连中";
+			ErrorTxt = portInfo.comName + "无法打开，重连中";
 
 		return retval;
 	}

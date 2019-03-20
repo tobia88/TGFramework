@@ -18,7 +18,7 @@ public class Leadiy_M7B : LMBasePortResolver
 
     private int m_length;
 
-    public int[] byteValues; 
+    public int[] byteValues;
 
     public override void Init(LMBasePortInput _portInput)
     {
@@ -141,8 +141,16 @@ public class Leadiy_M7B : LMBasePortResolver
         if (values == null)
             return;
 
-        if (values.Length > 0) values[0].SetValue(m_angle.x);
-        if (values.Length > 1) values[1].SetValue(m_angle.y);
-        if (values.Length > 2) values[2].SetValue(m_angle.z);
+        try
+        {
+            if (values.Length > 0)values[0].SetValue(m_angle.x);
+            if (values.Length > 1)values[1].SetValue(m_angle.y);
+            if (values.Length > 2)values[2].SetValue(m_angle.z);
+        }
+        catch(Exception e)
+        {
+            Debug.LogWarning(e);
+            Debug.Log("Values Length: " + values.Length);
+        }
     }
 }
