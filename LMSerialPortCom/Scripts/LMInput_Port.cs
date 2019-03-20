@@ -56,9 +56,13 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 
 	public override bool OpenPort()
 	{
-
 		controller.DebugText("正在读取端口: " + portInfo.comName);
-		return SerialPortCtrl.Open(portInfo, this, true);
+		bool retval = SerialPortCtrl.Open(portInfo, this, true);
+
+		if (!retval)
+			ErrorTxt = portInfo.comName + "不存在，请退出游戏并设置正确的COM";
+
+		return retval;
 	}
 
 	public override void Close()

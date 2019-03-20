@@ -11,7 +11,7 @@ public class TGInputSetting : TGBaseBehaviour
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive
     {
-        get { return (portInput == null) ? false : portInput.IsPortActive && portInput.HasData; }
+        get { return (portInput == null) ? false : portInput.IsPortActive && portInput.IsConnected; }
     }
 
     public string DeviceName { get; private set; }
@@ -65,7 +65,8 @@ public class TGInputSetting : TGBaseBehaviour
 
             if (!portInput.IsPortActive)
             {
-                m_controller.DebugText(portInput.ErrorTxt);
+                m_controller.ShowPopupError(portInput.ErrorTxt);
+                // m_controller.DebugText(portInput.ErrorTxt);
 #if UNITY_EDITOR
                 touchCtrl.enabled = true;
                 yield break;

@@ -24,6 +24,7 @@ public class TGController : MonoBehaviour
     public TGDXCentre dxCentre;
     public TGDXTextCentre dxTextCentre;
     public TGDXHeatmapPanel dxHeatmapPanel;
+    public TGDXErrorPopup dxErrorPopup;
 
     private float m_progressValue;
 
@@ -65,6 +66,7 @@ public class TGController : MonoBehaviour
         dxCentre.OnInit(this);
         dxTextCentre.OnInit(this);
         dxHeatmapPanel.OnInit(this);
+        dxErrorPopup.OnInit(this);
 
         settingData = Resources.Load<TGSettingData>("SettingData");
 
@@ -128,6 +130,19 @@ public class TGController : MonoBehaviour
     public void DebugText(string _txt)
     {
         dxCentre.DebugText(_txt);
+    }
+
+    public void ShowPopupError(string error)
+    {
+        dxErrorPopup.SetActive(true);
+        dxErrorPopup.warningTxt.text = error;
+        Time.timeScale = 0;
+    }
+
+    public void ClosePopupError()
+    {
+        dxErrorPopup.SetActive(false);
+        Time.timeScale = 1;
     }
 
     public void SetHeatmapEnable(bool _enable)
