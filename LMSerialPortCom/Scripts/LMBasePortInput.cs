@@ -6,57 +6,58 @@ using UnityEngine;
 
 public interface IPortReceiver
 {
-    void OnReceivePort(SerialPort port);
+	void OnReceivePort(SerialPort port);
 }
 
 [System.Serializable]
 public class KeyInputConfig
 {
-    public KeyPortData[] keys;
+	public KeyPortData[] keys;
 
-    public KeyPortData GetKeyportData(string keyName)
-    {
-        foreach (KeyPortData k in keys)
-        {
-            if (k.name.FirstOrDefault(n => n == keyName) != null)
-                return k;
-        }
+	public KeyPortData GetKeyportData(string keyName)
+	{
+		foreach (KeyPortData k in keys)
+		{
+			if (k.name.FirstOrDefault(n => n == keyName) != null)
+				return k;
+		}
 
-        return null;
-    }
+		return null;
+	}
 }
 
 public abstract class LMBasePortInput
 {
-	
+
 	// protected bool m_isInit;
 	protected byte[] m_bytes;
 	protected float m_cdTick;
 	protected int m_byteLength;
-	protected bool m_isFreeze;
-    public TGController controller { get; private set; }
-	public bool IsPortActive { get; private set;}
-	public bool IsConnected { get; private set; }
-	public bool HasData { get{ return m_bytes != null && m_byteLength > 0; } }
-	// public bool IsPortWriting { get; protected set; }
+	protected bool m_isConnected;
+
+	public TGController controller { get; private set; }
+	public bool IsPortActive { get; protected set; }
+	public bool IsConnected { get { return IsPortActive && !m_isPortWriting && m_isConnected; } }
+	public bool m_isPortWriting { get; protected set; }
 	public LMBasePortResolver CurrentResolver { get; protected set; }
 	public KeyPortData KeyportData { get; private set; }
 	public string ErrorTxt { get; protected set; }
+	public bool HasData { get; protected set; }
 
 	private bool CountdownToReconnect()
 	{
-		return !m_isFreeze && m_cdTick > 200000;
+		return m_cdTick > 200000;
 	}
 
-    public void Init(TGController _controller)
-    {
-        controller = _controller;
-    }
+	public void Init(TGController _controller)
+	{
+		controller = _controller;
+	}
 
 	public abstract bool OpenPort();
 
-    public virtual IEnumerator OnStart(KeyPortData portData)
-    {
+	public virtual IEnumerator OnStart(KeyPortData portData)
+	{
 		KeyportData = portData;
 
 		if (!OpenPort())
@@ -64,25 +65,25 @@ public abstract class LMBasePortInput
 
 		Debug.Log("Port Active, receiving data");
 
+		IsPortActive = true;
+
 		yield return new WaitUntil(() => IsConnected);
 
 		CurrentResolver = GetProperResolver(KeyportData);
 		CurrentResolver.Init(this);
+	}
 
-		IsPortActive = true;
-    }
-
-    public virtual void Close()
-    {
+	public virtual void Close()
+	{
 		if (CurrentResolver != null)
 			CurrentResolver.Close();
 
 		IsPortActive = false;
-    }
+	}
 
 	public void OnUpdate()
 	{
-		if (!IsPortActive || m_isFreeze)
+		if (!IsPortActive || m_isPortWriting)
 			return;
 
 		if (CountdownToReconnect())
@@ -106,9 +107,9 @@ public abstract class LMBasePortInput
 	protected void Reset()
 	{
 		// m_isInit = false;
-		m_isFreeze = false;
 		m_cdTick = 0f;
-		IsConnected = false;
+		m_isPortWriting = false;
+		m_isConnected = false;
 	}
 
 	public virtual float GetValue(int index)
@@ -132,14 +133,14 @@ public abstract class LMBasePortInput
 		CurrentResolver.Recalibration();
 	}
 
-	public void Write(string hex) 
+	public void Write(string hex)
 	{
 		byte[] bytes = TGUtility.StringToByteArray(hex);
 		Debug.Log("Write Port: " + hex + ", Converted into: " + BitConverter.ToString(bytes));
 		Write(bytes);
 	}
 
-	public virtual void Write(byte[] bytes) { }
+	public abstract void Write(byte[] bytes);
 
 	protected LMBasePortResolver GetProperResolver(KeyPortData portData)
 	{
@@ -167,19 +168,22 @@ public abstract class LMBasePortInput
 	{
 		m_bytes = bytes;
 
-		if (m_bytes == null || m_bytes.Length == 0)
+		HasData = m_bytes != null && m_bytes.Length > 0;
+
+		if (!HasData)
 		{
+			if (m_isPortWriting)
+				return;
+
 			m_cdTick++;
-			return;
 		}
+		else
+		{
+			m_cdTick = 0f;
+			m_isConnected = true;
 
-		// Reset tick if received any data
-		m_cdTick = 0f;
-		IsConnected = true;
-		m_isFreeze = false;
-
-		if (CurrentResolver != null)
-			CurrentResolver.ResolveBytes(m_bytes);
+			if (CurrentResolver != null)
+				CurrentResolver.ResolveBytes(m_bytes);
+		}
 	}
-
 }

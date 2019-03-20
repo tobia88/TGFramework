@@ -37,6 +37,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 	{
 		if (Port != null && Port.IsOpen)
 		{
+			// Port.Write(bytes, 0, bytes.Length);
 			controller.StartCoroutine(PortWriteRoutine(bytes));
 		}
 	}
@@ -46,12 +47,13 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 	{
 		Port.Write(bytes, 0, bytes.Length);
 
-		m_isFreeze = true;
+		m_isPortWriting = true;
 
 		yield return new WaitForSeconds(1f);
 		yield return new WaitUntil(() => HasData);
 
-		m_isFreeze = false;
+		Debug.Log("Write Finished");
+		m_isPortWriting = false;
 	}
 
 	public override bool OpenPort()
@@ -60,7 +62,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		bool retval = SerialPortCtrl.Open(portInfo, this, true);
 
 		if (!retval)
-			ErrorTxt = portInfo.comName + "不存在，请退出游戏并设置正确的COM";
+			ErrorTxt = portInfo.comName + "不存在，重连中";
 
 		return retval;
 	}
@@ -112,6 +114,6 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 			result = OpenPort();
 		}
 
-		m_isFreeze = false;
+		// m_isFreeze = false;
 	}
 }

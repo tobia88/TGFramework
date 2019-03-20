@@ -1,7 +1,10 @@
-﻿using System.Collections;
+﻿// #define USE_TOUCH_IF_DISCONNECT
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
 
 public class TGInputSetting : TGBaseBehaviour
 {
@@ -11,7 +14,7 @@ public class TGInputSetting : TGBaseBehaviour
     public KeyInputConfig keyInputConfig;
     public bool IsPortActive
     {
-        get { return (portInput == null) ? false : portInput.IsPortActive && portInput.IsConnected; }
+        get { return (portInput == null) ? false : portInput.IsConnected; }
     }
 
     public string DeviceName { get; private set; }
@@ -65,18 +68,35 @@ public class TGInputSetting : TGBaseBehaviour
 
             if (!portInput.IsPortActive)
             {
-                m_controller.ShowPopupError(portInput.ErrorTxt);
                 // m_controller.DebugText(portInput.ErrorTxt);
-#if UNITY_EDITOR
+#if UNITY_EDITOR && USE_TOUCH_IF_DISCONNECT
                 touchCtrl.enabled = true;
                 yield break;
 #else
-                yield return new WaitForSeconds(5f);
+                int result = -1;
+
+                m_controller.dxErrorPopup.PopupWithBtns(portInput.ErrorTxt, i => result = i);
+
+                print(result);
+
+                yield return new WaitUntil(() => result >= 0);
+
+                if (result == 0)
+                {
+                    m_controller.Quit();
+                    yield break;
+                }
+
+                m_controller.dxErrorPopup.PopupMessage("重连中");
+
+                yield return new WaitForSecondsRealtime(0.1f);
 #endif
             }
         }
 
+        m_controller.dxErrorPopup.SetActive(false);
         m_controller.SetHeatmapEnable(KeyportData.heatmap);
+
         Debug.Log("Input Setup Success");
     }
 
