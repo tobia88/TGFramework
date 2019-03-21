@@ -34,6 +34,7 @@ public class TGController : MonoBehaviour
         set
         {
             m_progressValue = value;
+            Debug.Log("Progress: " + m_progressValue);
             OnMainGameProgressChanged(m_progressValue);
         }
     }
@@ -225,14 +226,19 @@ public class TGController : MonoBehaviour
     {
         startTime = DateTime.Now;
 
-        // TODO: 读取界面
+        dxLoadingPanel.SetActive(true);
         yield return StartCoroutine(gameConfig.StartRoutine());
         yield return StartCoroutine(inputSetting.StartRoutine());
         yield return StartCoroutine(mainGame.StartRoutine());
 
-        // TODO: 释放读取界面
         if (mainGame.CurrentScene != null)
         {
+            ProgressValue = 1f;
+
+            yield return new WaitForSeconds(2f);
+
+            dxLoadingPanel.SetActive(false);
+
             yield return StartCoroutine(mainGame.GameRoutine());
 
             endTime = DateTime.Now;
@@ -254,11 +260,5 @@ public class TGController : MonoBehaviour
     private void OnMainGameProgressChanged(float progress)
     {
         dxLoadingPanel.image.fillAmount = progress;
-
-        if (progress>= 1)
-        { 
-            dxLoadingPanel.SetActive(false);
-        }
-       
     }
 }

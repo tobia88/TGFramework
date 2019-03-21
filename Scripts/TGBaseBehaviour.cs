@@ -8,7 +8,6 @@ public abstract class TGBaseBehaviour : MonoBehaviour
     protected TGGameConfig m_gameConfig { get { return m_controller.gameConfig; } }
     protected TGInputSetting m_inputSetting { get { return m_controller.inputSetting; } }
     protected TGMainGame m_mainGame { get { return m_controller.mainGame; } }
-    
 
     public void Init(TGController _controller)
     {

@@ -1,4 +1,4 @@
-﻿// #define USE_TOUCH_IF_DISCONNECT
+﻿#define USE_TOUCH_IF_DISCONNECT
 
 using System.Collections;
 using System.Collections.Generic;
@@ -18,9 +18,9 @@ public class TGInputSetting : TGBaseBehaviour
     }
 
     public string DeviceName { get; private set; }
-
     public string DeviceType { get { return (KeyportData == null) ? string.Empty : KeyportData.type; } }
     public KeyPortData KeyportData { get; private set; }
+
     public void Close()
     {
         if (portInput != null)
@@ -50,6 +50,8 @@ public class TGInputSetting : TGBaseBehaviour
         {
             yield return StartCoroutine(ConnectDeviceRoutine());
         }
+
+        m_controller.ProgressValue += 0.1f;
     }
 
     IEnumerator ConnectDeviceRoutine()
@@ -71,7 +73,7 @@ public class TGInputSetting : TGBaseBehaviour
                 // m_controller.DebugText(portInput.ErrorTxt);
 #if UNITY_EDITOR && USE_TOUCH_IF_DISCONNECT
                 touchCtrl.enabled = true;
-                yield break;
+                break;
 #else
                 int result = -1;
 

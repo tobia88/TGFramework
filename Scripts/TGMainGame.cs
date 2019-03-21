@@ -4,13 +4,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class TGMainGame : TGBaseBehaviour
 {
     public string SceneName { get; private set; }
     public Dictionary<string, string> extraData;
-    public TGBaseScene CurrentScene {get; private set;}
-
+    public TGBaseScene CurrentScene { get; private set; }
 
     public AsyncOperation asyncOperation;
 
@@ -20,22 +18,10 @@ public class TGMainGame : TGBaseBehaviour
 
         Scene tmpScene = SceneManager.GetSceneByName(SceneName);
 
-
         if (!tmpScene.isLoaded)
-        {
-            asyncOperation = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
-            while (!asyncOperation.isDone)
-            {
-                if (asyncOperation.progress >= 0.3f)
-                {
-                    float progress = asyncOperation.progress - 0.3f;
-                    m_controller.ProgressValue = progress + 0.4f;
-                }
-
-                yield return null;
-            }
+        { 
+            yield return StartCoroutine(LoadSceneRoutine());
         }
-
 
         CurrentScene = SetSceneActive(SceneName);
 
@@ -45,7 +31,22 @@ public class TGMainGame : TGBaseBehaviour
         }
     }
 
-    public override void ForceClose() {}
+    private IEnumerator LoadSceneRoutine()
+    {
+        asyncOperation = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
+
+        float remainProg = 1f - m_controller.ProgressValue;
+
+        while (!asyncOperation.isDone)
+        {
+            float progress = asyncOperation.progress * remainProg;
+            m_controller.ProgressValue += progress;
+
+            yield return null;
+        }
+    }
+
+    public override void ForceClose() { }
 
     public IEnumerator GameRoutine()
     {
@@ -70,7 +71,6 @@ public class TGMainGame : TGBaseBehaviour
         yield return StartCoroutine(CurrentScene.PreUnloadScene());
         yield return SceneManager.UnloadSceneAsync(SceneName);
     }
-
 
     private TGBaseScene SetSceneActive(string sceneName)
     {
