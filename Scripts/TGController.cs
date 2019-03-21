@@ -18,13 +18,13 @@ public class TGController : MonoBehaviour
     public TGInputSetting inputSetting;
     public HeatmapInput heatmapInput;
     public TGMainGame mainGame;
-    public TGLoadScene loadScene;
     public TGResultMng resultMng;
     [Header("Debug")]
     public TGDXCentre dxCentre;
     public TGDXTextCentre dxTextCentre;
     public TGDXHeatmapPanel dxHeatmapPanel;
     public TGDXErrorPopup dxErrorPopup;
+    public TGDXLoadingPanel dxLoadingPanel;
 
     private float m_progressValue;
 
@@ -56,8 +56,6 @@ public class TGController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
-        loadScene.Init(this);
         gameConfig.Init(this);
         inputSetting.Init(this);
         mainGame.Init(this);
@@ -67,6 +65,7 @@ public class TGController : MonoBehaviour
         dxTextCentre.OnInit(this);
         dxHeatmapPanel.OnInit(this);
         dxErrorPopup.OnInit(this);
+        dxLoadingPanel.OnInit(this);
 
         settingData = Resources.Load<TGSettingData>("SettingData");
 
@@ -199,7 +198,6 @@ public class TGController : MonoBehaviour
         }
 
         DebugInputUpdate();
-        
     }
 
     private void DebugInputUpdate()
@@ -228,11 +226,9 @@ public class TGController : MonoBehaviour
         startTime = DateTime.Now;
 
         // TODO: 读取界面
-        // yield return StartCoroutine(loadScene.StartRoutine());
         yield return StartCoroutine(gameConfig.StartRoutine());
         yield return StartCoroutine(inputSetting.StartRoutine());
         yield return StartCoroutine(mainGame.StartRoutine());
-        // yield return StartCoroutine(loadScene.EndRoutine());
 
         // TODO: 释放读取界面
         if (mainGame.CurrentScene != null)
@@ -257,7 +253,12 @@ public class TGController : MonoBehaviour
 
     private void OnMainGameProgressChanged(float progress)
     {
-        loadScene.SetProgressValue(progress);
+        dxLoadingPanel.image.fillAmount = progress;
 
+        if (progress>= 1)
+        { 
+            dxLoadingPanel.SetActive(false);
+        }
+       
     }
 }

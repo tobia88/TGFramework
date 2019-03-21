@@ -29,7 +29,7 @@ public class TGMainGame : TGBaseBehaviour
                 if (asyncOperation.progress >= 0.3f)
                 {
                     float progress = asyncOperation.progress - 0.3f;
-                    m_controller.ProgressValue = progress + 0.3f;
+                    m_controller.ProgressValue = progress + 0.4f;
                 }
 
                 yield return null;
