@@ -67,10 +67,10 @@ public abstract class LMBasePortInput
 
 		IsPortActive = true;
 
-		yield return new WaitUntil(() => IsConnected);
-
 		CurrentResolver = GetProperResolver(KeyportData);
 		CurrentResolver.Init(this);
+
+		yield return new WaitUntil(() => IsConnected);
 	}
 
 	public virtual void Close()
