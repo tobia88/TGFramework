@@ -77,8 +77,6 @@ public class TGInputSetting : TGBaseBehaviour
 
                 m_controller.dxErrorPopup.PopupWithBtns(portInput.ErrorTxt, i => result = i);
 
-                print(result);
-
                 yield return new WaitUntil(() => result >= 0);
 
                 if (result == 0)
