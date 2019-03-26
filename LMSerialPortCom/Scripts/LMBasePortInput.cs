@@ -101,6 +101,7 @@ public abstract class LMBasePortInput
 			CurrentResolver.Close();
 
 		IsPortActive = false;
+		Reset();
 	}
 
 	public void OnUpdate()
