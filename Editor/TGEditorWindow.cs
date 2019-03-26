@@ -52,10 +52,11 @@ public class TGEditorWindow : EditorWindow
         {
             EditorSceneManager.SaveScene(currScene, "Assets/_Project/Scenes/" + currScene.name + ".unity");
         }
-        
+        Selection.activeObject = AssetDatabase.LoadAssetAtPath("Assets/_Project/Scenes/" + currScene.name + ".unity",typeof(SceneAsset));
     }
     void CloseWindow()
     {
+       
         Debug.Log("操作**CreateContollerScene**成功");
         myEditor.Close();
     }
@@ -86,7 +87,7 @@ public class CreateAsset : EditorWindow
         string projectPath = Application.dataPath + "/_Project/Resources";
         if (Directory.Exists(projectPath))
         {
-            if (AssetDatabase.FindAssets("Assets/_Project/Resources/SettingData.asset") == null)
+            if (AssetDatabase.LoadAssetAtPath("Assets/_Project/Resources/SettingData.asset",typeof(TGSettingData)) == null)
             {
                 TGSettingData data = ScriptableObject.CreateInstance<TGSettingData>();
                 AssetDatabase.CreateAsset(data, "Assets/_Project/Resources/SettingData.asset");
@@ -106,12 +107,15 @@ public class CreateAsset : EditorWindow
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        Selection.activeObject = AssetDatabase.LoadAssetAtPath("Assets/_Project/Resources/SettingData.asset", typeof(TGSettingData));
     }
     void CloseWindow()
     {
+        
         Debug.Log("操作**CreateSettingData**成功");
         myEditor.Close();
     }
+    
 }
 
 
