@@ -15,13 +15,11 @@ public class LMInput_UDP_Server : IPortReceiver
     private LMSerialPortCtrl m_serialPortCtrl;
     private byte[] m_bytes;
 
-    public void Init(int _udp)
-    {
-        m_udp = _udp;
-        m_serialPortCtrl = GameObject.FindObjectOfType<LMSerialPortCtrl>();
+    public System.Action<byte[]> onSendBytes;
 
-        m_endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), m_udp);
-        m_client = new UdpClient(m_endPoint);
+    public void Init()
+    {
+        m_serialPortCtrl = GameObject.FindObjectOfType<LMSerialPortCtrl>();
     }
 
     public void Close()
@@ -33,10 +31,13 @@ public class LMInput_UDP_Server : IPortReceiver
             m_serialPortCtrl.Close();
     }
 
-	public void Open()
+	public void Open(int udp, int port)
 	{
+        m_endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), udp);
+        m_client = new UdpClient(m_endPoint);
+
 		PortInfo portInfo = new PortInfo();
-		portInfo.comName = "COM3";
+		portInfo.comName = "COM" + port;
 		portInfo.baudRate = 115200;
 
 		m_serialPortCtrl.Open(portInfo, this);
@@ -67,7 +68,8 @@ public class LMInput_UDP_Server : IPortReceiver
             if (m_bytes != null && m_bytes.Length > 0)
             {
                 m_client.Send(m_bytes, m_bytes.Length, m_endPoint);
-                Debug.Log("Sending bytes: " + m_bytes);
+                if (onSendBytes != null)
+                    onSendBytes(m_bytes);
             }
         }
     }

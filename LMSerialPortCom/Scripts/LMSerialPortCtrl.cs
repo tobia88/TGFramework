@@ -56,7 +56,6 @@ public class LMSerialPortCtrl : MonoBehaviour
         }
         catch (Exception _ex)
         {
-            TGController.Instance.DebugText(_ex.Message);
             Debug.LogWarning(_ex.Message);
         }
 

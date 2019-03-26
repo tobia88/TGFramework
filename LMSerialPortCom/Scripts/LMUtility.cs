@@ -52,4 +52,14 @@ public static class LMUtility
 
         return retval;
     }
+
+    public static string ByteToStr(byte[] _bytes)
+    {
+        string retval = string.Empty;
+        for (int i = 0; i < _bytes.Length; i++)
+        {
+            retval += _bytes[i].ToString("X").PadLeft(2, '0') + " ";
+        }
+        return retval;
+    }
 }

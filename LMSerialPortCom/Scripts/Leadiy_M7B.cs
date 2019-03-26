@@ -44,7 +44,7 @@ public class Leadiy_M7B : LMBasePortResolver
 
         for (int i = 0; i < _bytes.Length; i++)
         {
-            m_getString += _bytes[i].ToString("X").PadLeft(2, '0') + " ";
+            m_getString += LMUtility.ByteToStr(_bytes);
         }
 
         int keyIndex = m_getString.IndexOf(CODE_DETECTION);
