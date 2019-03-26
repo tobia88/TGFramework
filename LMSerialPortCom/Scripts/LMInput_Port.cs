@@ -51,8 +51,10 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 
 		m_isPortWriting = true;
 
-		yield return new WaitForSeconds(1f);
-		yield return new WaitUntil(() => HasData);
+		yield return new WaitForSeconds(0.1f);
+
+		m_isConnected = false;
+		yield return new WaitUntil(() => m_isConnected);
 
 		Debug.Log("Write Finished");
 		m_isPortWriting = false;

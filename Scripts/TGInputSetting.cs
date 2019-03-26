@@ -1,4 +1,4 @@
-﻿#define USE_TOUCH_IF_DISCONNECT
+﻿// #define USE_TOUCH_IF_DISCONNECT
 
 using System.Collections;
 using System.Collections.Generic;

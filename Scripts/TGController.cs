@@ -203,17 +203,17 @@ public class TGController : MonoBehaviour
 
     private void DebugInputUpdate()
     {
-        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.BackQuote))
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Q))
         {
             dxCentre.SetActive(!dxCentre.isActive);
         }
 
-        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.W))
         {
             dxTextCentre.SetActive(!dxTextCentre.isActive);
         }
 
-        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.E))
         {
             dxHeatmapPanel.SetActive(!dxHeatmapPanel.isActive);
         }

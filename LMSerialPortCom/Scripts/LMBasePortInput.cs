@@ -65,12 +65,34 @@ public abstract class LMBasePortInput
 
 		Debug.Log("Port Active, receiving data");
 
-		IsPortActive = true;
+		// IsPortActive = true;
 
 		CurrentResolver = GetProperResolver(KeyportData);
 		CurrentResolver.Init(this);
 
-		yield return new WaitUntil(() => IsConnected);
+		// yield return new WaitUntil(() => IsConnected);
+		yield return controller.StartCoroutine(TestConnect());
+
+		if (!IsConnected)
+		{
+			Close();
+			ErrorTxt = "连接失败，请检查设备是否正确连接";
+		}
+
+		Debug.Log("Failed to Receive Data");
+	}
+
+	private IEnumerator TestConnect()
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			yield return new WaitForSeconds(1f);
+
+			IsPortActive = m_isConnected && !m_isPortWriting;
+
+			if (IsPortActive)
+				yield break;
+		}
 	}
 
 	public virtual void Close()

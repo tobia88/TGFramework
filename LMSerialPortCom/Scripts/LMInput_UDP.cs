@@ -34,7 +34,6 @@ public class LMInput_UDP : LMBasePortInput, IPortReceiver
 		portInfo.baudRate = 115200;
 
 		m_serialPortCtrl.Open(portInfo, this);
-
 	}
 
 	public void OnReceivePort(SerialPort port)
@@ -63,7 +62,7 @@ public class LMInput_UDP : LMBasePortInput, IPortReceiver
 			ErrorTxt = e.Message;
 			return false;
 		}
-
+	
 		TGController.Instance.DebugText("正在读取UDP");
 		m_receiveThread = new Thread(new ThreadStart(ReceiveData));
 		m_receiveThread.IsBackground = true;
@@ -91,7 +90,23 @@ public class LMInput_UDP : LMBasePortInput, IPortReceiver
 		if (m_client == null)
 			return;
 
+		controller.StartCoroutine(PortWriteRoutine(bytes));
+		// m_client.Send(bytes, bytes.Length, m_endPoint);
+	}
+
+	private IEnumerator PortWriteRoutine(byte[] bytes)
+	{
 		m_client.Send(bytes, bytes.Length, m_endPoint);
+
+		m_isPortWriting = true;
+
+		yield return new WaitForSeconds(0.1f);
+
+		m_isConnected = false;
+		yield return new WaitUntil(() => m_isConnected);
+
+		Debug.Log("Write Finished");
+		m_isPortWriting = false;
 	}
 
 	private void ReceiveData()
