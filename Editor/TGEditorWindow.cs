@@ -11,10 +11,13 @@ public class TGEditorWindow : EditorWindow
 
 
     string path;
+    static TGEditorWindow myEditor;
     [MenuItem("Window/TGEditorWindow/CreateContollerScene")]
+
     static void SceneInit()
     {
-        EditorWindow.GetWindow(typeof(TGEditorWindow));
+        myEditor = (TGEditorWindow)EditorWindow.GetWindow(typeof(TGEditorWindow));
+        myEditor.Show();
     }
     private void OnGUI()
     {
@@ -27,28 +30,46 @@ public class TGEditorWindow : EditorWindow
         if (GUILayout.Button("Create"))
         {
             CreatPrebaf();
+            CloseWindow();
         }
         GUILayout.EndVertical();
+        GUIUtility.ExitGUI();
     }
+   
     void CreatPrebaf()
     {
         Scene currScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         currScene.name = path;
         GameObject game = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TGFramework/Prefabs/TGController.prefab");
         PrefabUtility.InstantiatePrefab(game);
-        EditorSceneManager.SaveScene(currScene, "Assets/_Project/Scenes/" + currScene.name + ".unity");
+        string sceneAssetPath = "Assets/_Project/Scenes";
+        if (!Directory.Exists(sceneAssetPath))
+        {
+            Directory.CreateDirectory(sceneAssetPath);
+            EditorSceneManager.SaveScene(currScene, sceneAssetPath+"/" + currScene.name + ".unity");
+        }
+        else
+        {
+            EditorSceneManager.SaveScene(currScene, "Assets/_Project/Scenes/" + currScene.name + ".unity");
+        }
+        
     }
-
+    void CloseWindow()
+    {
+        Debug.Log("操作**CreateContollerScene**成功");
+        myEditor.Close();
+    }
 
 }
 
 
 public class CreateAsset : EditorWindow
 {
+    static CreateAsset myEditor;
     [MenuItem("Window/TGEditorWindow/CreateSettingData")]
     static void DataInit()
     {
-        EditorWindow.GetWindow(typeof(CreateAsset));
+        myEditor=(CreateAsset)EditorWindow.GetWindow(typeof(CreateAsset));
     }
     private void OnGUI()
     {
@@ -56,13 +77,14 @@ public class CreateAsset : EditorWindow
         if (GUILayout.Button("Create"))
         {
             CreateSettingData();
+            CloseWindow();
         }
         GUILayout.EndVertical();
     }
     void CreateSettingData()
     {
         string projectPath = Application.dataPath + "/_Project/Resources";
-        if (!Directory.Exists(projectPath))
+        if (Directory.Exists(projectPath))
         {
             if (AssetDatabase.FindAssets("Assets/_Project/Resources/SettingData.asset") == null)
             {
@@ -85,16 +107,23 @@ public class CreateAsset : EditorWindow
             AssetDatabase.Refresh();
         }
     }
+    void CloseWindow()
+    {
+        Debug.Log("操作**CreateSettingData**成功");
+        myEditor.Close();
+    }
 }
 
 
 public class RevisePlayerSetting : EditorWindow
 {
-    string name;
+    string ProductName;
+    static RevisePlayerSetting myEditor;
+
     [MenuItem("Window/TGEditorWindow/RevisePlayerSetting")]
     static void Init()
     {
-        EditorWindow.GetWindow(typeof(RevisePlayerSetting));
+        myEditor=(RevisePlayerSetting)EditorWindow.GetWindow(typeof(RevisePlayerSetting));
     }
     private void OnGUI()
     {
@@ -103,17 +132,23 @@ public class RevisePlayerSetting : EditorWindow
         GUI.skin.label.fontSize = 24;
         EditorGUILayout.LabelField("Product Name", EditorStyles.boldLabel);
         Rect rect = EditorGUILayout.GetControlRect(GUILayout.Width(300));
-        name = EditorGUI.TextField(rect, name);
+        ProductName = EditorGUI.TextField(rect, ProductName);
         if (GUILayout.Button("Revise"))
         {
             ReviseValue();
+            CloseWindow();
         }
         GUILayout.EndVertical();
     }
     private void ReviseValue()
     {
         PlayerSettings.companyName = "Tuo Guan Technology";
-        PlayerSettings.productName = name;
+        PlayerSettings.productName = ProductName;
         PlayerSettings.displayResolutionDialog = ResolutionDialogSetting.HiddenByDefault;
+    }
+    void CloseWindow()
+    {
+        Debug.Log("操作**RevisePlayerSetting**成功");
+        myEditor.Close();
     }
 }
