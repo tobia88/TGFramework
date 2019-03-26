@@ -28,6 +28,7 @@ public class TGEditorWindow : EditorWindow
         {
             CreatPrebaf();
         }
+        //FIXME: 提示EndLayoutGroup: BeginLayoutGroup must be called first.
         GUILayout.EndVertical();
     }
     void CreatPrebaf()
@@ -36,6 +37,7 @@ public class TGEditorWindow : EditorWindow
         currScene.name = path;
         GameObject game = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TGFramework/Prefabs/TGController.prefab");
         PrefabUtility.InstantiatePrefab(game);
+        //TODO: 如果文件夹不存在，要自动创建
         EditorSceneManager.SaveScene(currScene, "Assets/_Project/Scenes/" + currScene.name + ".unity");
     }
 
