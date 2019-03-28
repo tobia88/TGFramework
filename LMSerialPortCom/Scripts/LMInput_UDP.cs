@@ -14,8 +14,6 @@ public class LMInput_UDP : LMBasePortInput
 	private Thread m_receiveThread;
 	private UdpClient m_client;
 	private IPEndPoint m_endPoint;
-	// Test
-	// private LMSerialPortCtrl m_serialPortCtrl;
 	private int m_udp;
 
 	public void Init(TGController _controller, int _udp)
@@ -44,9 +42,6 @@ public class LMInput_UDP : LMBasePortInput
 
 		if (m_receiveThread != null && m_receiveThread.IsAlive)
 			m_receiveThread.Abort();
-
-		// if (m_serialPortCtrl != null)
-		// 	m_serialPortCtrl.Close();
 
 		if (m_client != null)
 			m_client.Close();

@@ -78,8 +78,6 @@ public abstract class LMBasePortInput
 			Close();
 			ErrorTxt = "连接失败，请检查设备是否正确连接";
 		}
-
-		Debug.Log("Failed to Receive Data");
 	}
 
 	private IEnumerator TestConnect()

@@ -21,6 +21,8 @@ public struct ScreenshotCropInfo
 
 public class TGBaseScene : MonoBehaviour
 {
+    private const string MAIN_SCREENSHOT_KEY = "图片";
+
     protected float m_startTime;
     protected float m_timePassed;
     public Dictionary<string, string> extraData = new Dictionary<string, string>();
@@ -70,7 +72,8 @@ public class TGBaseScene : MonoBehaviour
 
     public virtual void ExitScene()
     {
-        if (extraData.ContainsKey(MAIN_SCREENSHOT_KEY))
+        // Compensate screenshot key if it doesn't existed
+        if (!extraData.ContainsKey(MAIN_SCREENSHOT_KEY))
         {
             extraData.Add(MAIN_SCREENSHOT_KEY, string.Empty);
         }
@@ -150,7 +153,6 @@ public class TGBaseScene : MonoBehaviour
         yield return null;
     }
 
-    private const string MAIN_SCREENSHOT_KEY = "图片";
 
     private void SaveScreenshotKey(string _key, string _fileName)
     {

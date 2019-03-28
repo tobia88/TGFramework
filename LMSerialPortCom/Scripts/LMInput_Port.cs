@@ -95,7 +95,6 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 				Port.Read(tmpBytes, 0, m_byteLength);
 			}
 		}
-		
 		ResolveData(tmpBytes);
 	}
 
