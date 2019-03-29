@@ -126,7 +126,7 @@ public class TGBaseScene : MonoBehaviour
         int width = 700;
         int height = Mathf.RoundToInt(width / ratio);
 
-        _tex = TextureScaler.ResizeTexture(_tex, TextureScaler.ImageFilterMode.Bilinear, width, height);
+        _tex = TextureScaler.ResizeTexture(_tex, width, height);
 
         byte[] bytes = _tex.EncodeToPNG();
         GameObject.Destroy(_tex);
