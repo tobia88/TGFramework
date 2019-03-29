@@ -51,7 +51,12 @@ public class TGInputSetting : TGBaseBehaviour
             yield return StartCoroutine(ConnectDeviceRoutine());
         }
 
+        m_controller.dxErrorPopup.SetActive(false);
+        m_controller.SetHeatmapEnable(KeyportData.heatmap);
+
         m_controller.ProgressValue += 0.1f;
+
+        Debug.Log("Input Setup Success");
     }
 
     IEnumerator ConnectDeviceRoutine()
@@ -93,11 +98,6 @@ public class TGInputSetting : TGBaseBehaviour
 #endif
             }
         }
-
-        m_controller.dxErrorPopup.SetActive(false);
-        m_controller.SetHeatmapEnable(KeyportData.heatmap);
-
-        Debug.Log("Input Setup Success");
     }
 
     public override IEnumerator EndRoutine() { yield return 1; }
