@@ -48,11 +48,16 @@ public class TGBaseScene : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            ExitScene();
+            OnPressExit();
             return;
         }
 
         TimePassed += Time.deltaTime;
+    }
+
+    protected virtual void OnPressExit()
+    {
+        ExitScene();
     }
 
     public virtual void ExitScene()
@@ -137,7 +142,6 @@ public class TGBaseScene : MonoBehaviour
 
         yield return null;
     }
-
 
     private void SaveScreenshotKey(string _key, string _fileName)
     {

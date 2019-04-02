@@ -107,7 +107,7 @@ public class TGGameScene : TGBaseScene
         base.Init();
 
         uiRoot.gameObject.SetActive(true);
-        uiRoot.exitBtn.onClick.AddListener(() => GameState = GameStates.FreezeToExitGame);
+        uiRoot.exitBtn.onClick.AddListener(OnPressExitGame);
         uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
         uiRoot.questionBtn.onClick.AddListener(() => GameState = GameStates.Tutorial);
 
@@ -123,6 +123,18 @@ public class TGGameScene : TGBaseScene
 
         Duration = config.GetValue("训练时长", -1) * 60;
         DifficultyLv = config.GetValue("难度等级", -1);
+    }
+
+    protected override void OnPressExit()
+    {
+        OnPressExitGame();
+    }
+
+    private void OnPressExitGame()
+    {
+        TimeLeft = 0f;
+        if (m_timePassed <= 15f && Score == 0)
+            ExitScene();
     }
 
     public override void OnStart()
