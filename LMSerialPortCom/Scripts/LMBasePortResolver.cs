@@ -48,6 +48,8 @@ public abstract class LMBasePortResolver
         InitValues(PortData.value);
     }
 
+    public virtual void Start() {}
+
     public abstract void ResolveBytes(byte[] _bytes);
 
     public abstract void Recalibration();

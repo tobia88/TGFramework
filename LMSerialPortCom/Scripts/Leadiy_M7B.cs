@@ -20,9 +20,8 @@ public class Leadiy_M7B : LMBasePortResolver
 
     public int[] byteValues;
 
-    public override void Init(LMBasePortInput _portInput)
+    public override void Start()
     {
-        base.Init(_portInput);
         SetupEvaluateData(TGController.Instance.gameConfig.evalData);
     }
 

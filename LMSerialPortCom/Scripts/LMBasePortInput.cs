@@ -72,6 +72,7 @@ public abstract class LMBasePortInput
 
 		// yield return new WaitUntil(() => IsConnected);
 		yield return controller.StartCoroutine(TestConnect());
+		yield return controller.StartCoroutine(OnStartResolver());
 
 		if (!IsConnected)
 		{
@@ -93,9 +94,21 @@ public abstract class LMBasePortInput
 		}
 	}
 
+	private IEnumerator OnStartResolver()
+	{
+		if (!IsConnected)
+			yield break;
+
+		Debug.Log(IsConnected);
+
+		CurrentResolver.Start();
+
+		yield return controller.StartCoroutine(TestConnect());
+	}
+
 	public virtual void Close()
 	{
-		if (CurrentResolver != null)
+		if (CurrentResolver != null && IsPortActive)
 			CurrentResolver.Close();
 
 		IsPortActive = false;
