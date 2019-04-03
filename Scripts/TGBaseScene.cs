@@ -128,10 +128,13 @@ public class TGBaseScene : MonoBehaviour
     {
         float ratio = (float)_tex.width / _tex.height;
 
-        int width = 700;
-        int height = Mathf.RoundToInt(width / ratio);
+        if (ratio > 1f)
+        {
+            int width = 700;
+            int height = Mathf.RoundToInt(width / ratio);
 
-        _tex = TextureScaler.ResizeTexture(_tex, width, height);
+            _tex = TextureScaler.ResizeTexture(_tex, width, height);
+        }
 
         byte[] bytes = _tex.EncodeToPNG();
         GameObject.Destroy(_tex);

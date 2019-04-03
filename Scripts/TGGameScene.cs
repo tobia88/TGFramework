@@ -133,7 +133,7 @@ public class TGGameScene : TGBaseScene
     private void OnPressExitGame()
     {
         TimeLeft = 0f;
-        if (m_timePassed <= 15f && Score == 0)
+        if (m_timePassed <= 15f)
             ExitScene();
     }
 
