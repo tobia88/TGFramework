@@ -127,14 +127,20 @@ public class TGBaseScene : MonoBehaviour
     private IEnumerator SaveTexture(Texture2D _tex, string _name)
     {
         float ratio = (float)_tex.width / _tex.height;
+        int width = 0, height = 0;
 
         if (ratio > 1f)
         {
-            int width = 700;
-            int height = Mathf.RoundToInt(width / ratio);
-
-            _tex = TextureScaler.ResizeTexture(_tex, width, height);
+            width = 700;
+            height = Mathf.RoundToInt(width / ratio);
         }
+        else
+        {
+            height = 590;
+            width = Mathf.RoundToInt(height * ratio);
+        }
+
+        _tex = TextureScaler.ResizeTexture(_tex, width, height);
 
         byte[] bytes = _tex.EncodeToPNG();
         GameObject.Destroy(_tex);
