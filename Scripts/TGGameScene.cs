@@ -236,6 +236,11 @@ public class TGGameScene : TGBaseScene
             GameState = GameStates.GameOver;
         }
 
+        if (Input.GetKey(KeyCode.Equals))
+        {
+            Score += 10;
+        }
+
         if (gameType == GameTypes.TimeLimit)
         {
             if (TimeLeft <= 0f)
@@ -281,7 +286,6 @@ public class TGGameScene : TGBaseScene
         Debug.Log("Game Over");
 
         StartCoroutine(CountdownToQuitRoutine());
-        // StartCoroutine(CaptureDelay());
     }
 
     IEnumerator CountdownToQuitRoutine()
