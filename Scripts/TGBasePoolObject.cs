@@ -6,8 +6,14 @@ public class TGBasePoolObject : MonoBehaviour, IPoolObject
 {
     public bool IsActive { get { return gameObject.activeSelf; } }
     public string PoolName { get { return gameObject.name; } }
+    public TGObjectPool OwnPool { get; private set;}
 
-    public virtual void Init() {}
+    public virtual void Init(TGObjectPool pool) 
+    {
+        OwnPool = pool;
+        Debug.Log(OwnPool);
+    }
+
     public virtual void Spawn(Vector3 pos, Quaternion rotation)
     {
         transform.position = pos;
@@ -16,6 +22,7 @@ public class TGBasePoolObject : MonoBehaviour, IPoolObject
 
     public virtual void Destroy() 
     {
+        transform.SetParent(OwnPool.transform);
         gameObject.SetActive(false);
     }
 

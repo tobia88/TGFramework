@@ -5,9 +5,12 @@ using UnityEngine;
 
 public interface IPoolObject
 {
+    TGObjectPool OwnPool { get; }
     bool IsActive { get; }
     string PoolName { get; }
     void Spawn(Vector3 position, Quaternion rotation);
+    void Init(TGObjectPool pool);
+    void Destroy();
 }
 
 public class TGObjectPool : MonoBehaviour
@@ -108,6 +111,7 @@ public class TGObjectPool : MonoBehaviour
         comp.transform.SetParent(transform);
 
         var retval = (IPoolObject)comp;
+        retval.Init(this);
         retval.Spawn(pos, rotation);
 
         poolObjects[m_curIndex] = retval;
