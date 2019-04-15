@@ -129,16 +129,19 @@ public class TGBaseScene : MonoBehaviour
         float ratio = (float)_tex.width / _tex.height;
         int width = 0, height = 0;
 
-        if (ratio > 1.39f)
-        {
-            width = 700;
-            height = Mathf.RoundToInt(width / ratio);
-        }
-        else
+        if (ratio <= 1.39f)
         {
             height = 590;
             width = Mathf.RoundToInt(height * ratio);
         }
+
+        if (width > 700)
+        {
+            width = 700;
+            height = Mathf.RoundToInt(width / ratio);
+        }
+
+        Debug.Log("Saved Texture Size: " + width + ", " + height);
 
         _tex = TextureScaler.ResizeTexture(_tex, width, height);
 
