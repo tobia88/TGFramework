@@ -17,7 +17,7 @@ public class PortInfo
     public StopBits stopBits = StopBits.One;
 }
 
-public class LMSerialPortCtrl : MonoBehaviour
+public class LMSerialPortCtrl
 {
     private SerialPort m_port;
     private Thread m_thread;
@@ -56,15 +56,10 @@ public class LMSerialPortCtrl : MonoBehaviour
         }
         catch (Exception _ex)
         {
-            Debug.LogWarning(_ex.Message);
+            Debug.LogWarning(_ex.Message + "\tCom = " + _info.comName);
         }
 
         return false;
-    }
-
-    private void OnDestroy()
-    {
-        Close();
     }
 
     public void Close()

@@ -65,8 +65,6 @@ public class Leadiy_M7B : LMBasePortResolver
                 if (byteValues == null)
                     return;
 
-                // Debug.Log(byteValues.ToArrayString());
-
                 if (!CheckSum(m_checksum, byteValues))
                     return;
 

@@ -149,8 +149,6 @@ public class TGController : MonoBehaviour
     {
         heatmapInput.enabled = settingData.outputHeatmap && _enable;
 
-        Debug.Log(heatmapInput.enabled);
-
         if (_enable)
         {
             heatmapInput.Init(Screen.width, Screen.height);

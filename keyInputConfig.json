@@ -253,6 +253,13 @@
             ],
             "type": "touch",
             "heatmap": true
+        },
+        {
+            "name": [
+                "磨砂桌"
+            ],
+            "type": "CASMB",
+            "heatmap": true
         }
     ]
 }

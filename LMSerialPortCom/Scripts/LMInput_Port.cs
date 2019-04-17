@@ -11,11 +11,22 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 	public LMSerialPortCtrl SerialPortCtrl { get; private set; }
 	public PortInfo portInfo;
 
-	public void Init(TGController _controller, int _com, LMSerialPortCtrl _serialPortCtrl)
+	public override bool OpenPort()
+	{
+		controller.DebugText("正在读取端口: " + portInfo.comName);
+		bool retval = SerialPortCtrl.Open(portInfo, this, true);
+
+		if (!retval)
+			ErrorTxt = portInfo.comName + "无法打开，重连中";
+
+		return retval;
+	}
+
+	public void Init(TGController _controller, int _com)
 	{
 		base.Init(_controller);
 
-		SerialPortCtrl = _serialPortCtrl;
+		SerialPortCtrl = new LMSerialPortCtrl();
 
 		portInfo = new PortInfo();
 
@@ -60,17 +71,6 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		m_isPortWriting = false;
 	}
 
-	public override bool OpenPort()
-	{
-		controller.DebugText("正在读取端口: " + portInfo.comName);
-		bool retval = SerialPortCtrl.Open(portInfo, this, true);
-
-		if (!retval)
-			ErrorTxt = portInfo.comName + "无法打开，重连中";
-
-		return retval;
-	}
-
 	public override void Close()
 	{
 		base.Close();
@@ -89,12 +89,15 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		{
 			m_byteLength = Port.BytesToRead;
 
+			Debug.Log("Byte Length: " + m_byteLength);
+
 			if (m_byteLength > 0)
 			{
 				tmpBytes = new byte[m_byteLength];
 				Port.Read(tmpBytes, 0, m_byteLength);
 			}
 		}
+
 		ResolveData(tmpBytes);
 	}
 

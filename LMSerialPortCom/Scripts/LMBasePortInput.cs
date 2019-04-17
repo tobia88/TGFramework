@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO.Ports;
 using System.Linq;
 using UnityEngine;
+using System.Text;
 
 public interface IPortReceiver
 {
@@ -54,8 +55,6 @@ public abstract class LMBasePortInput
 		controller = _controller;
 	}
 
-	public abstract bool OpenPort();
-
 	public virtual IEnumerator OnStart(KeyPortData portData)
 	{
 		KeyportData = portData;
@@ -65,12 +64,9 @@ public abstract class LMBasePortInput
 
 		Debug.Log("Port Active, receiving data");
 
-		// IsPortActive = true;
-
 		CurrentResolver = GetProperResolver(KeyportData);
 		CurrentResolver.Init(this);
 
-		// yield return new WaitUntil(() => IsConnected);
 		yield return controller.StartCoroutine(TestConnect());
 		yield return controller.StartCoroutine(OnStartResolver());
 
@@ -81,29 +77,19 @@ public abstract class LMBasePortInput
 		}
 	}
 
-	private IEnumerator TestConnect()
+	public abstract bool OpenPort();
+	public abstract void Write(byte[] bytes);
+
+	public virtual void Recalibration()
 	{
-		for (int i = 0; i < 5; i++)
-		{
-			yield return new WaitForSeconds(1f);
-
-			IsPortActive = m_isConnected && !m_isPortWriting;
-
-			if (IsPortActive)
-				yield break;
-		}
+		CurrentResolver.Recalibration();
 	}
 
-	private IEnumerator OnStartResolver()
+	public void Write(string code, bool isHex = true)
 	{
-		if (!IsConnected)
-			yield break;
-
-		Debug.Log(IsConnected);
-
-		CurrentResolver.Start();
-
-		yield return controller.StartCoroutine(TestConnect());
+		byte[] bytes = (isHex) ? TGUtility.HexToByteArray(code) : Encoding.ASCII.GetBytes(code);
+		Debug.Log("Write Port: " + code + ", Converted into: " + BitConverter.ToString(bytes));
+		Write(bytes);
 	}
 
 	public virtual void Close()
@@ -132,20 +118,6 @@ public abstract class LMBasePortInput
 		}
 	}
 
-	protected virtual void ReconnectInFewSeconds()
-	{
-		controller.DebugText("连接断开，数秒后重新连接");
-		Reset();
-	}
-
-	protected void Reset()
-	{
-		// m_isInit = false;
-		m_cdTick = 0f;
-		m_isPortWriting = false;
-		m_isConnected = false;
-	}
-
 	public virtual float GetValue(int index)
 	{
 		if (CurrentResolver == null)
@@ -162,19 +134,45 @@ public abstract class LMBasePortInput
 		return CurrentResolver.GetRawValue(index);
 	}
 
-	public virtual void Recalibration()
+
+	public virtual IEnumerator TestConnect()
 	{
-		CurrentResolver.Recalibration();
+		for (int i = 0; i < 5; i++)
+		{
+			yield return new WaitForSeconds(1f);
+
+			IsPortActive = m_isConnected && !m_isPortWriting;
+
+			if (IsPortActive)
+				yield break;
+		}
 	}
 
-	public void Write(string hex)
+	private IEnumerator OnStartResolver()
 	{
-		byte[] bytes = TGUtility.StringToByteArray(hex);
-		Debug.Log("Write Port: " + hex + ", Converted into: " + BitConverter.ToString(bytes));
-		Write(bytes);
+		if (!IsConnected)
+			yield break;
+
+		CurrentResolver.Start();
+
+		yield return controller.StartCoroutine(TestConnect());
 	}
 
-	public abstract void Write(byte[] bytes);
+
+	protected virtual void ReconnectInFewSeconds()
+	{
+		controller.DebugText("连接断开，数秒后重新连接");
+		Reset();
+	}
+
+	protected void Reset()
+	{
+		// m_isInit = false;
+		m_cdTick = 0f;
+		m_isPortWriting = false;
+		m_isConnected = false;
+	}
+
 
 	protected LMBasePortResolver GetProperResolver(KeyPortData portData)
 	{
@@ -190,6 +188,10 @@ public abstract class LMBasePortInput
 		{
 			retval = new Leadiy_M7B();
 		}
+		else if (portData.type == "CASMB")
+		{
+			retval = new GrindTableResolver();
+		}
 		else
 		{
 			retval = new LMKeyResolver();
@@ -198,7 +200,7 @@ public abstract class LMBasePortInput
 		return retval;
 	}
 
-	protected void ResolveData(Byte[] bytes)
+	protected virtual void ResolveData(Byte[] bytes)
 	{
 		m_bytes = bytes;
 

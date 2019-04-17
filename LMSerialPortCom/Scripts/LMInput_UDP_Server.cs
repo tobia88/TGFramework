@@ -17,11 +17,6 @@ public class LMInput_UDP_Server : IPortReceiver
 
     public System.Action<byte[]> onSendBytes;
 
-    public void Init()
-    {
-        m_serialPortCtrl = GameObject.FindObjectOfType<LMSerialPortCtrl>();
-    }
-
     public void Close()
     {
         if (m_sendThread != null && m_sendThread.IsAlive)

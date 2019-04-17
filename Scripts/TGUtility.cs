@@ -110,7 +110,7 @@ public static class TGUtility
         heatmap.DrawPos(pos, value);
     }
 
-    public static byte[] StringToByteArray(string hex)
+    public static byte[] HexToByteArray(string hex)
     {
         hex.Replace(" ", "");
         if ((hex.Length % 2) != 0)
@@ -122,6 +122,36 @@ public static class TGUtility
         for (int i = 0; i < retval.Length; i++)
         {
             retval[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+        }
+        return retval;
+    }
+
+    public static Vector2 WorldPosToVectorXZ(this Vector3 pos)
+    {
+        return new Vector2(pos.x, pos.z);
+    }
+
+    public static Vector3 VectorXZToWorldPos(this Vector2 posXz)
+    {
+        return new Vector3(posXz.x, 0f, posXz.y);
+    }
+
+    public static Vector2[] WorldPosToVectorXZ(this Vector3[] pos)
+    {
+        Vector2[] retval = new Vector2[pos.Length];
+        for (int i = 0; i < retval.Length; i++)
+        {
+            retval[i] = WorldPosToVectorXZ(pos[i]);
+        }
+        return retval;  
+    }
+
+    public static Vector3[] VectorXZToWorldPos(this Vector2[] posXz)
+    {
+        Vector3[] retval = new Vector3[posXz.Length];
+        for (int i = 0; i < retval.Length; i++)
+        {
+            retval[i] = WorldPosToVectorXZ(posXz[i]);
         }
         return retval;
     }
