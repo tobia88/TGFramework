@@ -5,6 +5,18 @@ using System.Text;
 
 public class LMGrindTable : LMInput_Port
 {
+    public struct GrindEvent
+    {
+        public string key;
+        public string value;
+
+        public GrindEvent(string key, string value)
+        {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
     public Leadiy_M7B m7bResolver;
     public LMBasePortInput m7bPort;
 
@@ -20,6 +32,7 @@ public class LMGrindTable : LMInput_Port
     public System.Action onTestFinished;
     public System.Action onTestStarted;
     public System.Action<Vector2> onTurnOffLight;
+    public Queue<GrindEvent> eventQueue = new Queue<GrindEvent>();
 
     public override bool OpenPort()
     {
@@ -41,6 +54,48 @@ public class LMGrindTable : LMInput_Port
             return true;
         }
         return false;
+    }
+
+    public override bool OnUpdate()
+    {
+        if (base.OnUpdate())
+        {
+            if (eventQueue.Count > 0)
+            {
+                var evt = eventQueue.Dequeue();
+                TriggerEvent(evt);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void TriggerEvent(GrindEvent evt)
+    {
+        switch(evt.key)
+        {
+            case "CJ":
+                Debug.Log("Test Started");
+
+                if (onTestStarted != null)
+                    onTestStarted();
+
+                break;
+
+            case "CB":
+                Debug.Log("Test Ended");
+
+                if (onTestFinished != null)
+                    onTestFinished();
+                break;
+
+            case "CC":
+                Debug.Log("On Turn Off Light: " + m_currentValue);
+
+                if (onTurnOffLight != null)
+                    onTurnOffLight(CodeToVector(m_currentValue));
+                break;
+        }
     }
 
     public const string PATH_FORMAT = "Y{0}Z";
@@ -93,6 +148,7 @@ public class LMGrindTable : LMInput_Port
 
     private Vector2 CodeToVector(string code)
     {
+        Debug.Log("Code To Vector: " + code);
         code = code.ToUpper();
 
         float ratioX = ((float) code[0] - 65) / (COLUMN_COUNT - 1);
@@ -180,29 +236,6 @@ public class LMGrindTable : LMInput_Port
         m_currentKey = key;
         m_currentValue = value;
 
-        switch(key)
-        {
-            case "CJ":
-                Debug.Log("Test Started");
-
-                if (onTestStarted != null)
-                    onTestStarted();
-
-                break;
-
-            case "CB":
-                Debug.Log("Test Ended");
-
-                if (onTestFinished != null)
-                    onTestFinished();
-                break;
-
-            case "CC":
-                Debug.Log("On Turn Off Light: " + m_currentValue);
-
-                if (onTurnOffLight != null)
-                    onTurnOffLight(CodeToVector(m_currentValue));
-                break;
-        }
+        eventQueue.Enqueue(new GrindEvent(m_currentKey, m_currentKey));
     }
 }

@@ -10,8 +10,10 @@ namespace LiangMad.AI
         public int gridWidth;
         public int gridHeight;
 
+        public bool showGizmos = false;
+
         private Vector2 m_spacing;
-        private Node[] m_nodes;
+        public Node[] Nodes { get; private set; }
         private Vector3 m_localOrigin;
         private Vector3 m_worldOrigin;
 
@@ -23,7 +25,7 @@ namespace LiangMad.AI
             m_spacing.x = worldSize.x / (gridWidth - 1);
             m_spacing.y = worldSize.y / (gridHeight - 1);
 
-            m_nodes = new Node[gridWidth * gridHeight];
+            Nodes = new Node[gridWidth * gridHeight];
 
             m_localOrigin = -worldSize * 0.5f;
             m_worldOrigin = transform.position + transform.TransformVector(m_localOrigin);
@@ -36,12 +38,10 @@ namespace LiangMad.AI
                     var finalPos = m_worldOrigin + transform.TransformVector(pos);
 
                     int index = y * gridWidth + x;
-                    m_nodes[index] = new Node(index, x, y, finalPos);
+                    Nodes[index] = new Node(index, x, y, finalPos);
                 }
             }
         }
-
-        private List<Vector3> path;
 
         public Node WorldPosToNode(Vector3 pos)
         {
@@ -157,10 +157,10 @@ namespace LiangMad.AI
 
         public Node GetNode(int x, int y)
         {
-            if (m_nodes == null)
+            if (Nodes == null)
                 return null;
 
-            return m_nodes[y * gridWidth + x];
+            return Nodes[y * gridWidth + x];
         }
 
         public List<Node> GetNeighbours(Node node)
@@ -192,8 +192,19 @@ namespace LiangMad.AI
 
         void OnDrawGizmos()
         {
+            if (!showGizmos)
+                return;
+
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(transform.position, transform.TransformVector(worldSize));
+
+            if (Nodes != null)
+            {
+                foreach (var n in Nodes)
+                {
+                    Gizmos.DrawSphere(n.worldPosition, 0.2f);
+                }
+            }
         }
     }
 }

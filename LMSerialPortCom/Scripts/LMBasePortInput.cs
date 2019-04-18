@@ -107,10 +107,10 @@ public abstract class LMBasePortInput
 		Reset();
 	}
 
-	public void OnUpdate()
+	public virtual bool OnUpdate()
 	{
 		if (!IsPortActive || m_isPortWriting)
-			return;
+			return false;
 
 		if (CountdownToReconnect())
 		{
@@ -122,6 +122,8 @@ public abstract class LMBasePortInput
 		{
 			controller.DebugText("连接成功，请重新打开数据面板");
 		}
+
+		return true;
 	}
 
 	public virtual float GetValue(int index)
