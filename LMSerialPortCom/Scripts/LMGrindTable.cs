@@ -20,8 +20,8 @@ public class LMGrindTable : LMInput_Port
     public Leadiy_M7B m7bResolver;
     public LMBasePortInput m7bPort;
 
-    public const int COLUMN_COUNT = 4;
-    public const int ROW_COUNT = 12;
+    public int ColumnCount { get; private set; }
+    public int RowCount { get; private set; }
     public const string CLEAR_PATH = "CB01FD";
 
     private string m_currentKey;
@@ -137,8 +137,8 @@ public class LMGrindTable : LMInput_Port
         float ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
         float ratioY = 1f - ((p.y - m_worldBound.y) / (m_worldBound.height));
 
-        int colIndex = 65 + Mathf.RoundToInt(ratioX * (COLUMN_COUNT - 1));
-        int rowIndex = 65 + Mathf.RoundToInt(ratioY * (ROW_COUNT - 1));
+        int colIndex = 65 + Mathf.RoundToInt(ratioX * (ColumnCount - 1));
+        int rowIndex = 65 + Mathf.RoundToInt(ratioY * (RowCount - 1));
 
         char colChar = (char)colIndex;
         char rowChar = (char)rowIndex;
@@ -151,8 +151,8 @@ public class LMGrindTable : LMInput_Port
         Debug.Log("Code To Vector: " + code);
         code = code.ToUpper();
 
-        float ratioX = ((float) code[0] - 65) / (COLUMN_COUNT - 1);
-        float ratioY = 1f - ((float) code[1] - 65) / (ROW_COUNT - 1);
+        float ratioX = ((float) code[0] - 65) / (ColumnCount - 1);
+        float ratioY = 1f - ((float) code[1] - 65) / (RowCount - 1);
 
         Debug.Log(string.Format("Rx: {0}. Ry: {1}", ratioX, ratioY));
 
@@ -163,6 +163,9 @@ public class LMGrindTable : LMInput_Port
     public override IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
     {
         yield return controller.StartCoroutine(base.OnStart(portData, resolver));
+
+        ColumnCount = portData.width;
+        RowCount = portData.height;
 
         if (string.IsNullOrEmpty(ErrorTxt) && m7bPort != null)
         {

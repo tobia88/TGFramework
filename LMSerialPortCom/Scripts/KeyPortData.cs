@@ -24,6 +24,8 @@ public class KeyPortData
 {
     public string[] name;
     public string type = "key";
+    public int width;
+    public int height;
     public bool isDegree;
     public bool raw;
     public bool heatmap;

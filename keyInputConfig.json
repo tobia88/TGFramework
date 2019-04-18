@@ -278,6 +278,8 @@
                     "origin": -1
                 }
             ],
+            "width": 24,
+            "height": 16,
             "type": "CASMB",
             "heatmap": true
         }

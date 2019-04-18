@@ -15,7 +15,10 @@ public class Leadiy_M7B : LMBasePortResolver
     private string m_getString;
 
     private Vector3 m_angle;
+    private Vector3 m_initAcceleration;
     private Vector3 m_acceleration;
+    private Vector3 m_lastRawAccel;
+    private Vector3 m_rawAccel;
 
     public Vector3 Acceleration { get { return m_acceleration; } }
     public Vector3 Angles { get { return m_angle; } }
@@ -121,11 +124,30 @@ public class Leadiy_M7B : LMBasePortResolver
         return retval;
     }
 
+    private DateTime m_timeStart;
     private void UpdateAcceleration(int[] byteValues)
     {
-        m_acceleration.x = LMUtility.ConvertBitwiseToInt16(byteValues[1] << 8 | byteValues[0]);
-        m_acceleration.y = LMUtility.ConvertBitwiseToInt16(byteValues[3] << 8 | byteValues[2]);
-        m_acceleration.z = LMUtility.ConvertBitwiseToInt16(byteValues[5] << 8 | byteValues[4]);
+        var na = new Vector3();
+
+        na.x = LMUtility.ConvertBitwiseToInt16(byteValues[1] << 8 | byteValues[0]);
+        na.y = LMUtility.ConvertBitwiseToInt16(byteValues[3] << 8 | byteValues[2]);
+        na.z = LMUtility.ConvertBitwiseToInt16(byteValues[5] << 8 | byteValues[4]);
+
+        if (m_initAcceleration == Vector3.zero)
+        {
+            m_initAcceleration = m_rawAccel = m_lastRawAccel = na;
+            Debug.Log(m_initAcceleration);
+            m_timeStart = DateTime.Now;
+            return;
+        }
+
+        var span = DateTime.Now.Subtract(m_timeStart);
+        m_timeStart = DateTime.Now;
+
+        m_lastRawAccel = m_rawAccel;
+        m_rawAccel = na;
+
+        m_acceleration += (m_rawAccel - m_lastRawAccel) * (float)span.TotalSeconds;
     }
 
     private void UpdateAngles(int[] byteValues)
