@@ -78,7 +78,7 @@ public class LMInput_UDP : LMBasePortInput
 			try
 			{
 				m_bytes = m_client.Receive(ref m_endPoint);
-				ResolveData(m_bytes);
+				OnHandleData(m_bytes);
 			}
 			catch (ArgumentNullException e)
 			{

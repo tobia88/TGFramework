@@ -39,6 +39,21 @@ public static class LMUtility
         return (Int16)ui;
     }
 
+    public static bool CheckSum(int _checkSum, int[] _byteValues)
+    {
+        if (_byteValues == null)
+            return false;
+
+        int compare = 0;
+
+        for (int i = 0; i < _byteValues.Length; i++)
+        {
+            compare ^= _byteValues[i];
+        }
+
+        return _checkSum == compare;
+    }
+
     public static byte[] RemoveSpacing(byte[] _bytes)
     {
         int i = _bytes.Length - 1;

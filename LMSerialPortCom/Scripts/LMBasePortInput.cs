@@ -2,8 +2,8 @@
 using System.Collections;
 using System.IO.Ports;
 using System.Linq;
-using UnityEngine;
 using System.Text;
+using UnityEngine;
 
 public interface IPortReceiver
 {
@@ -44,10 +44,12 @@ public abstract class LMBasePortInput
 	public KeyPortData KeyportData { get; private set; }
 	public string ErrorTxt { get; protected set; }
 	public bool HasData { get; protected set; }
+	public float ConnectLimit { get { return 5f; } }
 
 	private bool CountdownToReconnect()
 	{
-		return m_cdTick > 200000;
+		m_cdTick += Time.deltaTime;
+		return m_cdTick >= ConnectLimit;
 	}
 
 	public void Init(TGController _controller)
@@ -55,7 +57,7 @@ public abstract class LMBasePortInput
 		controller = _controller;
 	}
 
-	public virtual IEnumerator OnStart(KeyPortData portData)
+	public virtual IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
 	{
 		KeyportData = portData;
 
@@ -64,11 +66,15 @@ public abstract class LMBasePortInput
 
 		Debug.Log("Port Active, receiving data");
 
-		CurrentResolver = GetProperResolver(KeyportData);
-		CurrentResolver.Init(this);
+		CurrentResolver = (resolver != null) ? resolver : GetProperResolver(KeyportData);
+
+		if (CurrentResolver != null)
+			CurrentResolver.Init(this);
 
 		yield return controller.StartCoroutine(TestConnect());
-		yield return controller.StartCoroutine(OnStartResolver());
+
+		if (CurrentResolver != null)
+			yield return controller.StartCoroutine(OnStartResolver());
 
 		if (!IsConnected)
 		{
@@ -108,7 +114,7 @@ public abstract class LMBasePortInput
 
 		if (CountdownToReconnect())
 		{
-			Debug.Log("重连");
+			Debug.LogWarning("Time over than limit: " + ConnectLimit + ", prepare for reconnection");;
 			ReconnectInFewSeconds();
 		}
 
@@ -134,7 +140,6 @@ public abstract class LMBasePortInput
 		return CurrentResolver.GetRawValue(index);
 	}
 
-
 	public virtual IEnumerator TestConnect()
 	{
 		for (int i = 0; i < 5; i++)
@@ -158,7 +163,6 @@ public abstract class LMBasePortInput
 		yield return controller.StartCoroutine(TestConnect());
 	}
 
-
 	protected virtual void ReconnectInFewSeconds()
 	{
 		controller.DebugText("连接断开，数秒后重新连接");
@@ -172,7 +176,6 @@ public abstract class LMBasePortInput
 		m_isPortWriting = false;
 		m_isConnected = false;
 	}
-
 
 	protected LMBasePortResolver GetProperResolver(KeyPortData portData)
 	{
@@ -188,11 +191,7 @@ public abstract class LMBasePortInput
 		{
 			retval = new Leadiy_M7B();
 		}
-		else if (portData.type == "CASMB")
-		{
-			retval = new GrindTableResolver();
-		}
-		else
+		else if (portData.type == "key" || portData.type == "key2D")
 		{
 			retval = new LMKeyResolver();
 		}
@@ -200,26 +199,23 @@ public abstract class LMBasePortInput
 		return retval;
 	}
 
-	protected virtual void ResolveData(Byte[] bytes)
+	protected virtual void OnHandleData(Byte[] bytes)
 	{
 		m_bytes = bytes;
 
 		HasData = m_bytes != null && m_bytes.Length > 0;
 
 		if (!HasData)
-		{
-			if (m_isPortWriting)
-				return;
+			return;
 
-			m_cdTick++;
-		}
-		else
-		{
-			m_cdTick = 0f;
-			m_isConnected = true;
+		m_cdTick = 0f;
+		m_isConnected = true;
+		ResolveBytes(m_bytes);
+	}
 
-			if (CurrentResolver != null)
-				CurrentResolver.ResolveBytes(m_bytes);
-		}
+	protected virtual void ResolveBytes(Byte[] bytes)
+	{
+		if (CurrentResolver != null)
+			CurrentResolver.ResolveBytes(bytes);
 	}
 }

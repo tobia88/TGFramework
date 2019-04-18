@@ -34,7 +34,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		portInfo.baudRate = 115200;
 	}
 
-	public override IEnumerator OnStart(KeyPortData portData)
+	public override IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
 	{
 		if (!SerialPortCtrl.CheckPortAvailable(portInfo.comName))
 		{
@@ -43,7 +43,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 			// throw new InvalidPortNumberException(portInfo.comName);
 		}
 
-		yield return controller.StartCoroutine(base.OnStart(portData));
+		yield return controller.StartCoroutine(base.OnStart(portData, resolver));
 	}
 
 	public override void Write(byte[] bytes)
@@ -89,8 +89,6 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		{
 			m_byteLength = Port.BytesToRead;
 
-			Debug.Log("Byte Length: " + m_byteLength);
-
 			if (m_byteLength > 0)
 			{
 				tmpBytes = new byte[m_byteLength];
@@ -98,7 +96,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 			}
 		}
 
-		ResolveData(tmpBytes);
+		OnHandleData(tmpBytes);
 	}
 
 	protected override void ReconnectInFewSeconds()

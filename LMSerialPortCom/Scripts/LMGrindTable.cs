@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text;
 
 public class LMGrindTable : LMInput_Port
 {
@@ -9,6 +10,16 @@ public class LMGrindTable : LMInput_Port
 
     public const int COLUMN_COUNT = 4;
     public const int ROW_COUNT = 12;
+    public const string CLEAR_PATH = "CB01FD";
+
+    private string m_currentKey;
+    private string m_currentValue;
+
+    private Rect m_worldBound;
+
+    public System.Action onTestFinished;
+    public System.Action onTestStarted;
+    public System.Action<Vector2> onTurnOffLight;
 
     public override bool OpenPort()
     {
@@ -27,12 +38,6 @@ public class LMGrindTable : LMInput_Port
                 (m7bPort as LMInput_Port).Init(controller,
                                                controller.gameConfig.GetValue("端口2", -1));
             }
-
-            if (!m7bPort.OpenPort())
-            {
-                Debug.Log(m7bPort.ErrorTxt);
-            }
-
             return true;
         }
         return false;
@@ -40,7 +45,7 @@ public class LMGrindTable : LMInput_Port
 
     public const string PATH_FORMAT = "Y{0}Z";
 
-    public void Write(Vector2[] path, Rect world)
+    public void Write(Vector2[] path)
     {
         string content = string.Empty;
         string lastCode = string.Empty;
@@ -48,7 +53,7 @@ public class LMGrindTable : LMInput_Port
 
         foreach (var p in path)
         {
-            newCode = PathToCode(p, world);
+            newCode = VectorToCode(p);
 
             if (lastCode == newCode)
                 continue;
@@ -60,18 +65,25 @@ public class LMGrindTable : LMInput_Port
         Write(string.Format(PATH_FORMAT, content), false);
     }
 
-    private string PathToCode(Vector2 p, Rect world)
+    public void SetWorldBound(Rect rect)
     {
-        float ratioX = (p.x - world.x) / (world.width);
-        float ratioY = 1f - ((p.y - world.y) / (world.height));
+        m_worldBound = rect;
+    }
 
+    public override void Close()
+    {
+        Write(CLEAR_PATH, false);
+        if (m7bPort != null)
+            m7bPort.Close();
+    }
+
+    private string VectorToCode(Vector2 p)
+    {
+        float ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
+        float ratioY = 1f - ((p.y - m_worldBound.y) / (m_worldBound.height));
 
         int colIndex = 65 + Mathf.RoundToInt(ratioX * (COLUMN_COUNT - 1));
         int rowIndex = 65 + Mathf.RoundToInt(ratioY * (ROW_COUNT - 1));
-
-        // Debug.Log("Position: " + p);
-        // Debug.Log(string.Format("Rx: {0}, Ry: {1}", ratioX, ratioY));
-        // Debug.Log(string.Format("Col: {0}, Row: {1}", colIndex, rowIndex));
 
         char colChar = (char)colIndex;
         char rowChar = (char)rowIndex;
@@ -79,16 +91,39 @@ public class LMGrindTable : LMInput_Port
         return colChar.ToString().ToLower() + rowChar;
     }
 
-    public override IEnumerator OnStart(KeyPortData portData)
+    private Vector2 CodeToVector(string code)
     {
-        yield return controller.StartCoroutine(base.OnStart(portData));
+        code = code.ToUpper();
+
+        float ratioX = ((float) code[0] - 65) / (COLUMN_COUNT - 1);
+        float ratioY = 1f - ((float) code[1] - 65) / (ROW_COUNT - 1);
+
+        Debug.Log(string.Format("Rx: {0}. Ry: {1}", ratioX, ratioY));
+
+        return new Vector2(ratioX * m_worldBound.width + m_worldBound.x,
+                           ratioY * m_worldBound.height + m_worldBound.y);
+    }
+
+    public override IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
+    {
+        yield return controller.StartCoroutine(base.OnStart(portData, resolver));
 
         if (string.IsNullOrEmpty(ErrorTxt) && m7bPort != null)
         {
-            yield return controller.StartCoroutine(m7bPort.OnStart(portData));
+            Debug.Log("m7b is started");
+            m7bResolver = new Leadiy_M7B();
+            yield return controller.StartCoroutine(m7bPort.OnStart(portData, m7bResolver));
             ErrorTxt = m7bPort.ErrorTxt;
         }
         
+    }
+
+    public Vector3 GetAccelerations()
+    {
+        if (m7bResolver == null)
+            return Vector3.zero;
+
+        return m7bResolver.Acceleration;
     }
 
     public override float GetValue(int index)
@@ -107,52 +142,67 @@ public class LMGrindTable : LMInput_Port
         return m7bResolver.GetRawValue(index);
     }
 
-    // public override IEnumerator TestConnect()
-    // {
-    //     IsPortActive = true;
-    //     yield break;
-	// 	// for (int i = 0; i < 5; i++)
-	// 	// {
-	// 	// 	yield return new WaitForSeconds(1f);
+    private string m_getString;
 
-    //     //     yield return controller.StartCoroutine(m7bPort.TestConnect());
+    protected override void ResolveBytes(byte[] bytes)
+    {
+        bytes = LMUtility.RemoveSpacing(bytes);
 
-	// 	// 	if (!m7bPort.IsPortActive)
-	// 	// 		continue;
-	// 	// }
-    // }
+        m_getString += Encoding.UTF8.GetString(bytes);
 
-//     protected override void ResolveData(byte[] bytes)
-//     {
+        if (m_getString.IndexOf(';') >= 0)
+        {
+            string[] split = m_getString.Split(';');
 
-// 		m_bytes = bytes;
+            for (int i = split.Length - 1; i >= 0; i--)
+            {
+                if (split[i].Length != 7 || split[i].IndexOf(':') < -1)
+                    continue;
 
-// 		HasData = m_bytes != null && m_bytes.Length > 0;
+                split = split[i].Split(':');
 
-//         m_isConnected = true;
+                string key = split[0];
+                string value = split[1].TrimStart('0');
 
-//         ConsoleProDebug.Watch("Has Data", HasData.ToString());
+                SetValue(key, value);
 
-//         if (HasData)
-//         {
-//             if (CurrentResolver != null)
-//                 CurrentResolver.ResolveBytes(m_bytes);
-//         }
+                m_getString = string.Empty;
+                break;
+            }
+        }
+    }
 
-// 		// if (!HasData)
-// 		// {
-// 		// 	if (m_isPortWriting)
-// 		// 		return;
+    private void SetValue(string key, string value)
+    {
+        if (m_currentKey == key && m_currentValue == value)
+            return;
 
-// 		// 	m_cdTick++;
-// 		// }
-// 		// else
-// 		// {
-// 		// 	m_cdTick = 0f;
-// 		// 	m_isConnected = true;
+        m_currentKey = key;
+        m_currentValue = value;
 
-// 		// 	if (CurrentResolver != null)
-// 		// 		CurrentResolver.ResolveBytes(m_bytes);
-// 		// }
-//     }
+        switch(key)
+        {
+            case "CJ":
+                Debug.Log("Test Started");
+
+                if (onTestStarted != null)
+                    onTestStarted();
+
+                break;
+
+            case "CB":
+                Debug.Log("Test Ended");
+
+                if (onTestFinished != null)
+                    onTestFinished();
+                break;
+
+            case "CC":
+                Debug.Log("On Turn Off Light: " + m_currentValue);
+
+                if (onTurnOffLight != null)
+                    onTurnOffLight(CodeToVector(m_currentValue));
+                break;
+        }
+    }
 }
