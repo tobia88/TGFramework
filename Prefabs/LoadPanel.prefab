@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2853360145899874535}
   - component: {fileID: 2853360145899874521}
   - component: {fileID: 2853360145899874534}
-  - component: {fileID: 864402697753978446}
   m_Layer: 5
   m_Name: LoadPanel
   m_TagString: Untagged
@@ -76,19 +75,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &864402697753978446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2853360145899874532}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19da97a58a8e776408a0e159a6878033, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slider: {fileID: 2853360145341214716}
 --- !u!1001 &8641269220924576705
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -224,15 +210,3 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8641269220924576705}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2853360145341214716 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5796941400606522429, guid: d6f07594e324d444d98a99e45b868978,
-    type: 3}
-  m_PrefabInstance: {fileID: 8641269220924576705}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -113659843, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
