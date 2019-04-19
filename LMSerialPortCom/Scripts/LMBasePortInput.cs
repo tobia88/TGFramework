@@ -38,10 +38,10 @@ public abstract class LMBasePortInput
 
 	public TGController controller { get; private set; }
 	public bool IsPortActive { get; protected set; }
-	public bool IsConnected { get { return IsPortActive && !m_isPortWriting && m_isConnected; } }
+	public virtual bool IsConnected { get { return IsPortActive && !m_isPortWriting && m_isConnected; } }
 	public bool m_isPortWriting { get; protected set; }
 	public LMBasePortResolver CurrentResolver { get; protected set; }
-	public KeyPortData KeyportData { get; private set; }
+	public KeyPortData KeyportData { get; protected set; }
 	public string ErrorTxt { get; protected set; }
 	public bool HasData { get; protected set; }
 	public float ConnectLimit { get { return 5f; } }
@@ -155,7 +155,7 @@ public abstract class LMBasePortInput
 		}
 	}
 
-	private IEnumerator OnStartResolver()
+	protected virtual IEnumerator OnStartResolver()
 	{
 		if (!IsConnected)
 			yield break;
@@ -212,6 +212,7 @@ public abstract class LMBasePortInput
 
 		m_cdTick = 0f;
 		m_isConnected = true;
+
 		ResolveBytes(m_bytes);
 	}
 

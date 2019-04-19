@@ -140,19 +140,29 @@ public class LMGrindTable : LMInput_Port
         int colIndex = 65 + Mathf.RoundToInt(ratioX * (ColumnCount - 1));
         int rowIndex = 65 + Mathf.RoundToInt(ratioY * (RowCount - 1));
 
+        // YZ has been used for head and tail, so just skip it
+        if (colIndex >= 89) colIndex += 2;
+        if (rowIndex >= 89) rowIndex += 2;
+
         char colChar = (char)colIndex;
         char rowChar = (char)rowIndex;
 
-        return colChar.ToString().ToLower() + rowChar;
+        return colChar.ToString() + rowChar.ToString();
     }
 
     private Vector2 CodeToVector(string code)
     {
         Debug.Log("Code To Vector: " + code);
-        code = code.ToUpper();
 
-        float ratioX = ((float) code[0] - 65) / (ColumnCount - 1);
-        float ratioY = 1f - ((float) code[1] - 65) / (RowCount - 1);
+        int colIndex = (int) code[0];
+        int rowIndex = (int) code[1];
+
+        // YZ has been used for head and tail, so just skip it
+        if (colIndex >= 89) colIndex -= 2;
+        if (rowIndex >= 89) rowIndex -= 2;
+
+        float ratioX = ((float) colIndex - 65) / (ColumnCount - 1);
+        float ratioY = 1f - ((float) rowIndex - 65) / (RowCount - 1);
 
         Debug.Log(string.Format("Rx: {0}. Ry: {1}", ratioX, ratioY));
 

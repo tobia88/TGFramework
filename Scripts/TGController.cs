@@ -76,7 +76,6 @@ public class TGController : MonoBehaviour
             return;
         }
 
-
 #if UNITY_EDITOR
         RootPath = Application.dataPath + "/TGFramework/";
 #else

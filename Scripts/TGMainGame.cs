@@ -37,10 +37,13 @@ public class TGMainGame : TGBaseBehaviour
 
         float remainProg = 1f - m_controller.ProgressValue;
 
+        float lastProgress = 0f;
+
         while (!asyncOperation.isDone)
         {
-            float progress = asyncOperation.progress * remainProg;
-            m_controller.ProgressValue += progress;
+            float d = asyncOperation.progress - lastProgress;
+            m_controller.ProgressValue += d * remainProg;
+            lastProgress = asyncOperation.progress;
 
             yield return null;
         }

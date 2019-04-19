@@ -120,6 +120,7 @@ public class TGInputSetting : TGBaseBehaviour
         {
             var retval = new LMInput_UDP();
             retval.Init(m_controller, udp);
+            Debug.Log("Getting UDP On");
             return retval;
         }
         else
@@ -127,6 +128,7 @@ public class TGInputSetting : TGBaseBehaviour
             var retval = new LMInput_Port();
             retval.Init(m_controller,
                         m_controller.gameConfig.GetValue("端口", -1));
+            Debug.Log("Getting Por On");
             return retval;
         }
     } 

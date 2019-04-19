@@ -104,7 +104,6 @@ public class TGGameScene : TGBaseScene
     public override void Init()
     {
         base.Init();
-
         uiRoot.gameObject.SetActive(true);
         uiRoot.exitBtn.onClick.AddListener(OnPressExitGame);
         uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
