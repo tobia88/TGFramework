@@ -36,6 +36,8 @@ public class TGInputSetting : TGBaseBehaviour
 
         DeviceName = m_controller.gameConfig.GetValue("训练器材", string.Empty);
 
+        Debug.Log("Current Device Name: " + DeviceName);
+
         KeyportData = keyInputConfig.GetKeyportData(DeviceName);
 
         if (KeyportData == null)

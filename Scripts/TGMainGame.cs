@@ -33,6 +33,7 @@ public class TGMainGame : TGBaseBehaviour
 
     private IEnumerator LoadSceneRoutine()
     {
+        Debug.Log("Loading Scene: " + SceneName);
         asyncOperation = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
 
         float remainProg = 1f - m_controller.ProgressValue;
