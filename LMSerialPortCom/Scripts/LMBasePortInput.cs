@@ -31,11 +31,11 @@ public abstract class LMBasePortInput
 {
 
 	// protected bool m_isInit;
-	protected byte[] m_bytes;
 	protected float m_cdTick;
 	protected int m_byteLength;
 	protected bool m_isConnected;
 
+	public byte[] Bytes { get; protected set; }
 	public TGController controller { get; private set; }
 	public bool IsPortActive { get; protected set; }
 	public virtual bool IsConnected { get { return IsPortActive && !m_isPortWriting && m_isConnected; } }
@@ -45,6 +45,8 @@ public abstract class LMBasePortInput
 	public string ErrorTxt { get; protected set; }
 	public bool HasData { get; protected set; }
 	public float ConnectLimit { get { return 5f; } }
+
+	public System.Action<byte[]> onReceiveDataCallback;
 
 	private bool CountdownToReconnect()
 	{
@@ -118,7 +120,7 @@ public abstract class LMBasePortInput
 			ReconnectInFewSeconds();
 		}
 
-		if (m_bytes != null && m_bytes.Length > 0)
+		if (Bytes != null && Bytes.Length > 0)
 		{
 			controller.DebugText("连接成功，请重新打开数据面板");
 		}
@@ -203,9 +205,12 @@ public abstract class LMBasePortInput
 
 	protected virtual void OnHandleData(Byte[] bytes)
 	{
-		m_bytes = bytes;
+		if (onReceiveDataCallback != null)
+			onReceiveDataCallback(bytes);
 
-		HasData = m_bytes != null && m_bytes.Length > 0;
+		Bytes = bytes;
+
+		HasData = Bytes != null && Bytes.Length > 0;
 
 		if (!HasData)
 			return;
@@ -213,7 +218,7 @@ public abstract class LMBasePortInput
 		m_cdTick = 0f;
 		m_isConnected = true;
 
-		ResolveBytes(m_bytes);
+		ResolveBytes(Bytes);
 	}
 
 	protected virtual void ResolveBytes(Byte[] bytes)
