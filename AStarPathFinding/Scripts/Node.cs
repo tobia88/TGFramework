@@ -16,13 +16,13 @@ namespace LiangMad.AI
         public int y;
         public Vector3 worldPosition;
 
-        public Node(int id, int x, int y, Vector3 worldPosition)
+        public Node(int id, int x, int y, Vector3 worldPosition, bool isWalkable = true)
         {
             this.id = id;
             this.x = x;
             this.y = y;
             this.worldPosition = worldPosition;
-            this.isWalkable = true;
+            this.isWalkable = isWalkable;
         }
     }
 

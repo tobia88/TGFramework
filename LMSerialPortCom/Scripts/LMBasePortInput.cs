@@ -31,20 +31,22 @@ public abstract class LMBasePortInput
 {
 
 	// protected bool m_isInit;
-	protected byte[] m_bytes;
 	protected float m_cdTick;
 	protected int m_byteLength;
 	protected bool m_isConnected;
 
+	public byte[] Bytes { get; protected set; }
 	public TGController controller { get; private set; }
 	public bool IsPortActive { get; protected set; }
-	public bool IsConnected { get { return IsPortActive && !m_isPortWriting && m_isConnected; } }
+	public virtual bool IsConnected { get { return IsPortActive && !m_isPortWriting && m_isConnected; } }
 	public bool m_isPortWriting { get; protected set; }
 	public LMBasePortResolver CurrentResolver { get; protected set; }
-	public KeyPortData KeyportData { get; private set; }
+	public KeyPortData KeyportData { get; protected set; }
 	public string ErrorTxt { get; protected set; }
 	public bool HasData { get; protected set; }
 	public float ConnectLimit { get { return 5f; } }
+
+	public System.Action<byte[]> onReceiveDataCallback;
 
 	private bool CountdownToReconnect()
 	{
@@ -107,10 +109,10 @@ public abstract class LMBasePortInput
 		Reset();
 	}
 
-	public void OnUpdate()
+	public virtual bool OnUpdate()
 	{
 		if (!IsPortActive || m_isPortWriting)
-			return;
+			return false;
 
 		if (CountdownToReconnect())
 		{
@@ -118,10 +120,12 @@ public abstract class LMBasePortInput
 			ReconnectInFewSeconds();
 		}
 
-		if (m_bytes != null && m_bytes.Length > 0)
+		if (Bytes != null && Bytes.Length > 0)
 		{
 			controller.DebugText("连接成功，请重新打开数据面板");
 		}
+
+		return true;
 	}
 
 	public virtual float GetValue(int index)
@@ -153,7 +157,7 @@ public abstract class LMBasePortInput
 		}
 	}
 
-	private IEnumerator OnStartResolver()
+	protected virtual IEnumerator OnStartResolver()
 	{
 		if (!IsConnected)
 			yield break;
@@ -201,16 +205,20 @@ public abstract class LMBasePortInput
 
 	protected virtual void OnHandleData(Byte[] bytes)
 	{
-		m_bytes = bytes;
+		if (onReceiveDataCallback != null)
+			onReceiveDataCallback(bytes);
 
-		HasData = m_bytes != null && m_bytes.Length > 0;
+		Bytes = bytes;
+
+		HasData = Bytes != null && Bytes.Length > 0;
 
 		if (!HasData)
 			return;
 
 		m_cdTick = 0f;
 		m_isConnected = true;
-		ResolveBytes(m_bytes);
+
+		ResolveBytes(Bytes);
 	}
 
 	protected virtual void ResolveBytes(Byte[] bytes)

@@ -38,6 +38,8 @@ public class TGInputSetting : TGBaseBehaviour
 
         DeviceName = m_controller.gameConfig.GetValue("训练器材", string.Empty);
 
+        Debug.Log("Current Device Name: " + DeviceName);
+
         KeyportData = keyInputConfig.GetKeyportData(DeviceName);
 
         if (KeyportData == null)
@@ -124,6 +126,7 @@ public class TGInputSetting : TGBaseBehaviour
         {
             var retval = new LMInput_UDP();
             retval.Init(m_controller, udp);
+            Debug.Log("Getting UDP On");
             return retval;
         }
         else
@@ -131,6 +134,7 @@ public class TGInputSetting : TGBaseBehaviour
             var retval = new LMInput_Port();
             retval.Init(m_controller,
                         m_controller.gameConfig.GetValue("端口", -1));
+            Debug.Log("Getting Por On");
             return retval;
         }
     } 

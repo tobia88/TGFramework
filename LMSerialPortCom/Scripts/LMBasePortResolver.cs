@@ -14,6 +14,7 @@ public abstract class LMBasePortResolver
 
     public void Write(string hex)
     {
+        UnityEngine.Debug.Log("Write Hex: " + hex);
         if (m_portInput != null)
             m_portInput.Write(hex);
     }

@@ -164,6 +164,13 @@
       "valueAxis": 2,
       "reverse": false,
       "isFullAxis": true
+    },
+    {
+      "cnTitle": "磨砂桌",
+      "animName": "WristJointPronationAndSupination_R",
+      "valueAxis": 1,
+      "reverse": false,
+      "isFullAxis": true
     }
   ]
 }

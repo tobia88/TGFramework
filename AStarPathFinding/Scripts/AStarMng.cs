@@ -10,8 +10,11 @@ namespace LiangMad.AI
         public int gridWidth;
         public int gridHeight;
 
+        public bool showGizmos = false;
+        public LayerMask blockLayerMask;
+
         private Vector2 m_spacing;
-        private Node[] m_nodes;
+        public Node[] Nodes { get; private set; }
         private Vector3 m_localOrigin;
         private Vector3 m_worldOrigin;
 
@@ -23,7 +26,7 @@ namespace LiangMad.AI
             m_spacing.x = worldSize.x / (gridWidth - 1);
             m_spacing.y = worldSize.y / (gridHeight - 1);
 
-            m_nodes = new Node[gridWidth * gridHeight];
+            Nodes = new Node[gridWidth * gridHeight];
 
             m_localOrigin = -worldSize * 0.5f;
             m_worldOrigin = transform.position + transform.TransformVector(m_localOrigin);
@@ -35,13 +38,14 @@ namespace LiangMad.AI
                     var pos = new Vector3(x * m_spacing.x, y * m_spacing.y);
                     var finalPos = m_worldOrigin + transform.TransformVector(pos);
 
+                    var colliders = Physics.OverlapSphere(finalPos, 0.1f, blockLayerMask);
+                    bool isWalkable = colliders.Length == 0;
+
                     int index = y * gridWidth + x;
-                    m_nodes[index] = new Node(index, x, y, finalPos);
+                    Nodes[index] = new Node(index, x, y, finalPos, isWalkable);
                 }
             }
         }
-
-        private List<Vector3> path;
 
         public Node WorldPosToNode(Vector3 pos)
         {
@@ -63,7 +67,6 @@ namespace LiangMad.AI
         {
             List<Node> open = new List<Node>();
             List<Node> close = new List<Node>();
-
             Node startNode = WorldPosToNode(from);
             Node endNode = WorldPosToNode(to);
 
@@ -87,7 +90,7 @@ namespace LiangMad.AI
                 {
                     if (!n.isWalkable || close.Contains(n))
                         continue;
-                    
+
                     var newGC = current.gCost + GetDistance(current, n);
 
                     if (newGC < n.gCost || !open.Contains(n))
@@ -157,22 +160,35 @@ namespace LiangMad.AI
 
         public Node GetNode(int x, int y)
         {
-            if (m_nodes == null)
+            if (Nodes == null)
                 return null;
 
-            return m_nodes[y * gridWidth + x];
+            return Nodes[y * gridWidth + x];
         }
 
-        public List<Node> GetNeighbours(Node node)
+        public Node[] GetNeighbours(Vector3 pos, int amount = 1, bool onlyStroke = false)
+        {
+            var center = WorldPosToNode(pos);
+            return GetNeighbours(center, amount, onlyStroke);
+        }
+
+        public Node[] GetNeighbours(Node node, int amount = 1, bool onlyStroke = false)
         {
             List<Node> retval = new List<Node>();
-
-            for (int x = -1; x <= 1; x++)
+            
+            for (int x = -amount; x <= amount; x++)
             {
-                for (int y = -1; y <= 1; y++)
+                for (int y = -amount; y <= amount; y++)
                 {
                     if (x == 0 && y == 0)
                         continue;
+
+                    if (onlyStroke)
+                    {
+                        if (x != -amount || x != amount || 
+                            y != -amount || y != amount)
+                            continue;
+                    } 
 
                     int xIndex = node.x + x;
                     int yIndex = node.y + y;
@@ -187,13 +203,25 @@ namespace LiangMad.AI
                 }
             }
 
-            return retval;
+            return retval.ToArray();
         }
 
         void OnDrawGizmos()
         {
+            if (!showGizmos)
+                return;
+
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(transform.position, transform.TransformVector(worldSize));
+
+            if (Nodes != null)
+            {
+                foreach (var n in Nodes)
+                {
+                    Gizmos.color = (n.isWalkable) ? Color.cyan : Color.red;
+                    Gizmos.DrawSphere(n.worldPosition, 0.2f);
+                }
+            }
         }
     }
 }
