@@ -131,7 +131,7 @@ public class LMGrindTable : LMInput_Port
         m_worldBound = rect;
     }
 
-    private void DrawLine(Vector2 from, Vector2 to)
+    public void DrawLine(Vector2 from, Vector2 to)
     {
         Vector2 n = (from - to).normalized;
         
@@ -145,6 +145,24 @@ public class LMGrindTable : LMInput_Port
         }
 
         list.Add(to);
+
+        Write(list.ToArray());
+    }
+
+    public void DrawArc(Vector2 center, float radius, int fromDeg, int toDeg)
+    {
+        var list = new List<Vector2>();
+
+        for (int i = fromDeg; i <= toDeg; i++)
+        {
+            var np = new Vector2();
+            var rad = i * Mathf.Deg2Rad;
+
+            np.x = Mathf.Cos(rad) * radius + center.x;
+            np.y = Mathf.Sin(rad) * radius + center.y;
+
+            list.Add(np);
+        }
 
         Write(list.ToArray());
     }
