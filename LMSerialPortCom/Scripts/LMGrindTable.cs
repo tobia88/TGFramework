@@ -17,6 +17,12 @@ public class LMGrindTable : LMInput_Port
         }
     }
 
+    public struct Node
+    {
+        public int x;
+        public int y;
+    }
+
     public Leadiy_M7B m7bResolver;
     public LMBasePortInput m7bPort;
 
@@ -125,6 +131,24 @@ public class LMGrindTable : LMInput_Port
         m_worldBound = rect;
     }
 
+    private void DrawLine(Vector2 from, Vector2 to)
+    {
+        Vector2 n = (from - to).normalized;
+        
+        var list = new List<Vector2>();
+
+        list.Add(from);
+
+        for (float i = 0f, step = 0.05f; i < 1f; i += step)
+        {
+            list.Add(Vector3.Lerp(from, to, i));
+        }
+
+        list.Add(to);
+
+        Write(list.ToArray());
+    }
+
     public override void Close()
     {
         Write(CLEAR_PATH, false);
@@ -134,11 +158,10 @@ public class LMGrindTable : LMInput_Port
 
     private string VectorToCode(Vector2 p)
     {
-        float ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
-        float ratioY = 1f - ((p.y - m_worldBound.y) / (m_worldBound.height));
+        var node = GetNode(p);
 
-        int colIndex = 65 + Mathf.RoundToInt(ratioX * (ColumnCount - 1));
-        int rowIndex = 65 + Mathf.RoundToInt(ratioY * (RowCount - 1));
+        int colIndex = 65 + node.x;
+        int rowIndex = 65 + node.y;
 
         // YZ has been used for head and tail, so just skip it
         if (colIndex >= 89) colIndex += 2;
@@ -148,6 +171,18 @@ public class LMGrindTable : LMInput_Port
         char rowChar = (char)rowIndex;
 
         return colChar.ToString() + rowChar.ToString();
+    }
+
+    private Node GetNode(Vector2 p)
+    {
+        float ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
+        float ratioY = 1f - ((p.y - m_worldBound.y) / (m_worldBound.height));
+
+        Node n = new Node();
+        n.x = Mathf.RoundToInt(ratioX * (ColumnCount - 1));
+        n.y = Mathf.RoundToInt(ratioY * (RowCount - 1));
+
+        return n;
     }
 
     private Vector2 CodeToVector(string code)
