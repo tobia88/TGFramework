@@ -17,6 +17,8 @@ public class TGInputSetting : TGBaseBehaviour
         get { return (portInput == null) ? false : portInput.IsConnected; }
     }
 
+    public bool IsTesting { get; private set; }
+
     public string DeviceName { get; private set; }
     public string DeviceType { get { return (KeyportData == null) ? string.Empty : KeyportData.type; } }
     public KeyPortData KeyportData { get; private set; }
@@ -46,7 +48,9 @@ public class TGInputSetting : TGBaseBehaviour
 
         touchCtrl.enabled = KeyportData.type == "touch";
 
-        if (!touchCtrl.enabled)
+        IsTesting = m_controller.gameConfig.GetValue("测试", 0) == 1;
+
+        if (!touchCtrl.enabled && !IsTesting)
         {
             yield return StartCoroutine(ConnectDeviceRoutine());
         }

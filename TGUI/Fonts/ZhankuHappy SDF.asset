@@ -3,8 +3,9 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -14,7 +15,417 @@ MonoBehaviour:
   hashCode: -885520254
   material: {fileID: 21039580682055706}
   materialHashCode: 965365449
-  fontAssetType: 1
+  m_Version: 1.1.0
+  m_SourceFontFileGUID: 174376faa1c68f64a8ae1344bad3868f
+  m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 174376faa1c68f64a8ae1344bad3868f,
+    type: 3}
+  m_SourceFontFile: {fileID: 12800000, guid: 174376faa1c68f64a8ae1344bad3868f, type: 3}
+  m_AtlasPopulationMode: 0
+  m_FaceInfo:
+    m_FamilyName: HappyZcool-2016
+    m_StyleName: 
+    m_PointSize: 255
+    m_Scale: 1
+    m_LineHeight: 290.9375
+    m_AscentLine: 219.0625
+    m_CapLine: 0
+    m_MeanLine: 0
+    m_Baseline: 0
+    m_DescentLine: -35.9375
+    m_SuperscriptOffset: 219.0625
+    m_SuperscriptSize: 0.5
+    m_SubscriptOffset: -27.54
+    m_SubscriptSize: 0.5
+    m_UnderlineOffset: -27.54
+    m_UnderlineThickness: 11.730001
+    m_StrikethroughOffset: 66.59091
+    m_StrikethroughThickness: 11.730001
+    m_TabWidth: 637.5
+  m_GlyphTable:
+  - m_Index: 17
+    m_Metrics:
+      m_Width: 138.9375
+      m_Height: 182.625
+      m_HorizontalBearingX: 5.0625
+      m_HorizontalBearingY: 183.125
+      m_HorizontalAdvance: 149.4375
+    m_GlyphRect:
+      m_X: 862
+      m_Y: 665
+      m_Width: 139
+      m_Height: 183
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 18
+    m_Metrics:
+      m_Width: 80.0625
+      m_Height: 193.0625
+      m_HorizontalBearingX: 5.0625
+      m_HorizontalBearingY: 188.25
+      m_HorizontalAdvance: 90.25
+    m_GlyphRect:
+      m_X: 936
+      m_Y: 244
+      m_Width: 80
+      m_Height: 193
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 19
+    m_Metrics:
+      m_Width: 151.75
+      m_Height: 197.375
+      m_HorizontalBearingX: 5.0625
+      m_HorizontalBearingY: 190
+      m_HorizontalAdvance: 161.9375
+    m_GlyphRect:
+      m_X: 186
+      m_Y: 683
+      m_Width: 152
+      m_Height: 197
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 20
+    m_Metrics:
+      m_Width: 160.375
+      m_Height: 192.75
+      m_HorizontalBearingX: 5.0625
+      m_HorizontalBearingY: 188.25
+      m_HorizontalAdvance: 170.625
+    m_GlyphRect:
+      m_X: 349
+      m_Y: 682
+      m_Width: 160
+      m_Height: 193
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 21
+    m_Metrics:
+      m_Width: 172.375
+      m_Height: 193.0625
+      m_HorizontalBearingX: 5.0625
+      m_HorizontalBearingY: 188.25
+      m_HorizontalAdvance: 183.0625
+    m_GlyphRect:
+      m_X: 6
+      m_Y: 467
+      m_Width: 172
+      m_Height: 193
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 22
+    m_Metrics:
+      m_Width: 168.3125
+      m_Height: 190
+      m_HorizontalBearingX: 5.0625
+      m_HorizontalBearingY: 186.9375
+      m_HorizontalAdvance: 178.5
+    m_GlyphRect:
+      m_X: 6
+      m_Y: 671
+      m_Width: 168
+      m_Height: 190
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 23
+    m_Metrics:
+      m_Width: 164.1875
+      m_Height: 191.25
+      m_HorizontalBearingX: 5.0625
+      m_HorizontalBearingY: 187.5
+      m_HorizontalAdvance: 174.4375
+    m_GlyphRect:
+      m_X: 686
+      m_Y: 465
+      m_Width: 164
+      m_Height: 191
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 24
+    m_Metrics:
+      m_Width: 134.125
+      m_Height: 178.75
+      m_HorizontalBearingX: 5.0625
+      m_HorizontalBearingY: 181.125
+      m_HorizontalAdvance: 144.3125
+    m_GlyphRect:
+      m_X: 692
+      m_Y: 667
+      m_Width: 134
+      m_Height: 179
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 25
+    m_Metrics:
+      m_Width: 159.375
+      m_Height: 192.75
+      m_HorizontalBearingX: 5.125
+      m_HorizontalBearingY: 188.25
+      m_HorizontalAdvance: 169.875
+    m_GlyphRect:
+      m_X: 521
+      m_Y: 672
+      m_Width: 159
+      m_Height: 193
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 26
+    m_Metrics:
+      m_Width: 150.4375
+      m_Height: 190
+      m_HorizontalBearingX: 5.0625
+      m_HorizontalBearingY: 187
+      m_HorizontalAdvance: 160.625
+    m_GlyphRect:
+      m_X: 862
+      m_Y: 464
+      m_Width: 150
+      m_Height: 190
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 1347
+    m_Metrics:
+      m_Width: 230.5
+      m_Height: 212.4375
+      m_HorizontalBearingX: 12.1875
+      m_HorizontalBearingY: 197.9375
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 249
+      m_Y: 7
+      m_Width: 231
+      m_Height: 212
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 2132
+    m_Metrics:
+      m_Width: 223.125
+      m_Height: 207.3125
+      m_HorizontalBearingX: 15.75
+      m_HorizontalBearingY: 195.375
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 491
+      m_Y: 7
+      m_Width: 223
+      m_Height: 207
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 2559
+    m_Metrics:
+      m_Width: 208.0625
+      m_Height: 209.125
+      m_HorizontalBearingX: 23.4375
+      m_HorizontalBearingY: 196.375
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 716
+      m_Y: 244
+      m_Width: 208
+      m_Height: 209
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 2845
+    m_Metrics:
+      m_Width: 212.375
+      m_Height: 218
+      m_HorizontalBearingX: 21.375
+      m_HorizontalBearingY: 200.9375
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 249
+      m_Y: 230
+      m_Width: 212
+      m_Height: 218
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 3188
+    m_Metrics:
+      m_Width: 219.3125
+      m_Height: 225.625
+      m_HorizontalBearingX: 17.8125
+      m_HorizontalBearingY: 204.8125
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 726
+      m_Y: 6
+      m_Width: 219
+      m_Height: 226
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 3211
+    m_Metrics:
+      m_Width: 208.8125
+      m_Height: 217.25
+      m_HorizontalBearingX: 23.125
+      m_HorizontalBearingY: 200.5
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 6
+      m_Y: 238
+      m_Width: 209
+      m_Height: 217
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 3363
+    m_Metrics:
+      m_Width: 201.75
+      m_Height: 209.875
+      m_HorizontalBearingX: 26.5
+      m_HorizontalBearingY: 196.625
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 473
+      m_Y: 451
+      m_Width: 202
+      m_Height: 210
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 3963
+    m_Metrics:
+      m_Width: 231.75
+      m_Height: 219.8125
+      m_HorizontalBearingX: 11.6875
+      m_HorizontalBearingY: 201.75
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 6
+      m_Y: 6
+      m_Width: 232
+      m_Height: 220
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 5150
+    m_Metrics:
+      m_Width: 213.6875
+      m_Height: 214.6875
+      m_HorizontalBearingX: 20.625
+      m_HorizontalBearingY: 199.1875
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 491
+      m_Y: 225
+      m_Width: 214
+      m_Height: 215
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 6831
+    m_Metrics:
+      m_Width: 197.625
+      m_Height: 211.625
+      m_HorizontalBearingX: 28.5
+      m_HorizontalBearingY: 197.6875
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 226
+      m_Y: 459
+      m_Width: 198
+      m_Height: 212
+    m_Scale: 1
+    m_AtlasIndex: 0
+  - m_Index: 7744
+    m_Metrics:
+      m_Width: 46.4375
+      m_Height: 117.3125
+      m_HorizontalBearingX: 49.1875
+      m_HorizontalBearingY: 102.8125
+      m_HorizontalAdvance: 255
+    m_GlyphRect:
+      m_X: 957
+      m_Y: 7
+      m_Width: 46
+      m_Height: 117
+    m_Scale: 1
+    m_AtlasIndex: 0
+  m_CharacterTable:
+  - m_ElementType: 1
+    m_Unicode: 48
+    m_GlyphIndex: 17
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 49
+    m_GlyphIndex: 18
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 50
+    m_GlyphIndex: 19
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 51
+    m_GlyphIndex: 20
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 52
+    m_GlyphIndex: 21
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 53
+    m_GlyphIndex: 22
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 54
+    m_GlyphIndex: 23
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 55
+    m_GlyphIndex: 24
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 56
+    m_GlyphIndex: 25
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 57
+    m_GlyphIndex: 26
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 20998
+    m_GlyphIndex: 1347
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 22987
+    m_GlyphIndex: 2132
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 24320
+    m_GlyphIndex: 2559
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 25103
+    m_GlyphIndex: 2845
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 25968
+    m_GlyphIndex: 3188
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 26032
+    m_GlyphIndex: 3211
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 26463
+    m_GlyphIndex: 3363
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 28216
+    m_GlyphIndex: 3963
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 32467
+    m_GlyphIndex: 5150
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 37325
+    m_GlyphIndex: 6831
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 65306
+    m_GlyphIndex: 7744
+    m_Scale: 1
+  m_AtlasTextures:
+  - {fileID: 28626134429217484}
+  m_AtlasTextureIndex: 0
+  m_UsedGlyphRects: []
+  m_FreeGlyphRects: []
   m_fontInfo:
     Name: HappyZcool-2016
     PointSize: 255
@@ -38,6 +449,10 @@ MonoBehaviour:
     AtlasWidth: 1024
     AtlasHeight: 1024
   atlas: {fileID: 28626134429217484}
+  m_AtlasWidth: 1024
+  m_AtlasHeight: 1024
+  m_AtlasPadding: 5
+  m_AtlasRenderMode: 16426
   m_glyphInfoList:
   - id: 48
     x: 862
@@ -228,23 +643,11 @@ MonoBehaviour:
     yOffset: 102.8125
     xAdvance: 255
     scale: 1
-  m_kerningInfo:
+  m_KerningTable:
     kerningPairs: []
-  m_kerningPair:
-    m_FirstGlyph: 0
-    m_FirstGlyphAdjustments:
-      xPlacement: 0
-      yPlacement: 0
-      xAdvance: 0
-      yAdvance: 0
-    m_SecondGlyph: 0
-    m_SecondGlyphAdjustments:
-      xPlacement: 0
-      yPlacement: 0
-      xAdvance: 0
-      yAdvance: 0
-    xOffset: 0
-  fallbackFontAssets: []
+  m_FontFeatureTable:
+    m_GlyphPairAdjustmentRecords: []
+  m_FallbackFontAssetTable: []
   m_CreationSettings:
     sourceFontFileName: 
     sourceFontFileGUID: 174376faa1c68f64a8ae1344bad3868f
@@ -262,6 +665,27 @@ MonoBehaviour:
     fontStyleModifier: 2
     renderMode: 6
     includeFontFeatures: 0
+  m_FontWeightTable:
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
+  - regularTypeface: {fileID: 0}
+    italicTypeface: {fileID: 0}
   fontWeights:
   - regularTypeface: {fileID: 0}
     italicTypeface: {fileID: 0}
@@ -293,8 +717,9 @@ MonoBehaviour:
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: ZhankuHappy SDF Material
   m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
   m_ShaderKeywords: 
@@ -391,8 +816,9 @@ Material:
 --- !u!28 &28626134429217484
 Texture2D:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: ZhankuHappy SDF Atlas
   m_ImageContentsHash:
     serializedVersion: 2
@@ -406,6 +832,8 @@ Texture2D:
   m_TextureFormat: 1
   m_MipCount: 1
   m_IsReadable: 0
+  m_StreamingMipmaps: 0
+  m_StreamingMipmapsPriority: 0
   m_AlphaIsTransparency: 0
   m_ImageCount: 1
   m_TextureDimension: 2
