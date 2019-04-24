@@ -105,16 +105,23 @@ public class TGGameScene : TGBaseScene
     {
         base.Init();
 
+        var tutorialSpr = Resources.Load<Sprite>(controller.inputSetting.DeviceName);
+
         uiRoot.gameObject.SetActive(true);
         uiRoot.exitBtn.onClick.AddListener(OnPressExitGame);
         uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
-        uiRoot.questionBtn.onClick.AddListener(() => GameState = GameStates.Tutorial);
+
+        if (tutorialSpr != null)
+            uiRoot.questionBtn.onClick.AddListener(() => GameState = GameStates.Tutorial);
+
+        else
+            uiRoot.questionBtn.gameObject.SetActive(false);
 
         uiRoot.exitGamePanel.confirmBtn.onClick.AddListener(ExitScene);
         uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
         uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 
-        uiRoot.tutorialPanel.SetImage(Resources.Load<Sprite>(controller.inputSetting.DeviceName));
+        uiRoot.tutorialPanel.SetImage(tutorialSpr);
         uiRoot.tutorialPanel.confirmBtn.onClick.AddListener(uiRoot.tutorialPanel.Exit);
         uiRoot.tutorialPanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 

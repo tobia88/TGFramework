@@ -10,7 +10,6 @@ using UnityEngine;
 
 public class LMInput_UDP : LMBasePortInput
 {
-
 	private Thread m_receiveThread;
 	private UdpClient m_client;
 	private IPEndPoint m_endPoint;
@@ -25,6 +24,41 @@ public class LMInput_UDP : LMBasePortInput
 		m_client = new UdpClient(m_endPoint);
 	}
 
+	public override IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
+	{
+		KeyportData = portData;
+
+		if (!OpenPort())
+			yield break;
+
+		Debug.Log("Port Active, receiving data");
+
+		CurrentResolver = (resolver != null) ? resolver : GetProperResolver(KeyportData);
+
+		if (CurrentResolver != null)
+		{
+			CurrentResolver.Init(this);
+			yield return controller.StartCoroutine(OnStartResolver());
+		}
+
+		IsPortActive = m_isConnected = true;
+
+		if (!IsConnected)
+		{
+			Close();
+			ErrorTxt = "连接失败，请检查设备是否正确连接";
+		}
+	}
+
+	protected override IEnumerator OnStartResolver()
+	{
+		CurrentResolver.Start();
+
+		yield return controller.StartCoroutine(TestConnect());
+	}
+
+	public override bool OnUpdate() { return true; }
+
 	public override bool OpenPort()
 	{
 		TGController.Instance.DebugText("正在读取UDP");
@@ -34,6 +68,13 @@ public class LMInput_UDP : LMBasePortInput
 		m_receiveThread.Start();
 
 		return true;
+	}
+
+	public override IEnumerator TestConnect()
+	{
+		IsPortActive = true;
+		m_isConnected = true;
+		yield return 1;
 	}
 
 	public override void Close()
@@ -52,23 +93,7 @@ public class LMInput_UDP : LMBasePortInput
 		if (m_client == null)
 			return;
 
-		controller.StartCoroutine(PortWriteRoutine(bytes));
-		// m_client.Send(bytes, bytes.Length, m_endPoint);
-	}
-
-	private IEnumerator PortWriteRoutine(byte[] bytes)
-	{
 		m_client.Send(bytes, bytes.Length, m_endPoint);
-
-		m_isPortWriting = true;
-
-		yield return new WaitForSeconds(0.1f);
-
-		m_isConnected = false;
-		yield return new WaitUntil(() => m_isConnected);
-
-		Debug.Log("Write Finished");
-		m_isPortWriting = false;
 	}
 
 	private void ReceiveData()
@@ -77,15 +102,13 @@ public class LMInput_UDP : LMBasePortInput
 		{
 			try
 			{
-				m_bytes = m_client.Receive(ref m_endPoint);
-				ResolveData(m_bytes);
+				Bytes = m_client.Receive(ref m_endPoint);
+				OnHandleData(Bytes);
 			}
 			catch (ArgumentNullException e)
 			{
 				if (TGController.Instance != null)
 					TGController.Instance.DebugText(e.Message);
-
-				m_cdTick++;
 			}
 		}
 	}

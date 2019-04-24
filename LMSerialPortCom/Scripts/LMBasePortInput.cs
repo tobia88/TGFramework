@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO.Ports;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public interface IPortReceiver
@@ -30,23 +31,27 @@ public abstract class LMBasePortInput
 {
 
 	// protected bool m_isInit;
-	protected byte[] m_bytes;
 	protected float m_cdTick;
 	protected int m_byteLength;
 	protected bool m_isConnected;
 
+	public byte[] Bytes { get; protected set; }
 	public TGController controller { get; private set; }
 	public bool IsPortActive { get; protected set; }
-	public bool IsConnected { get { return IsPortActive && !m_isPortWriting && m_isConnected; } }
+	public virtual bool IsConnected { get { return IsPortActive && !m_isPortWriting && m_isConnected; } }
 	public bool m_isPortWriting { get; protected set; }
 	public LMBasePortResolver CurrentResolver { get; protected set; }
-	public KeyPortData KeyportData { get; private set; }
+	public KeyPortData KeyportData { get; protected set; }
 	public string ErrorTxt { get; protected set; }
 	public bool HasData { get; protected set; }
+	public float ConnectLimit { get { return 5f; } }
+
+	public System.Action<byte[]> onReceiveDataCallback;
 
 	private bool CountdownToReconnect()
 	{
-		return m_cdTick > 200000;
+		m_cdTick += Time.deltaTime;
+		return m_cdTick >= ConnectLimit;
 	}
 
 	public void Init(TGController _controller)
@@ -54,9 +59,7 @@ public abstract class LMBasePortInput
 		controller = _controller;
 	}
 
-	public abstract bool OpenPort();
-
-	public virtual IEnumerator OnStart(KeyPortData portData)
+	public virtual IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
 	{
 		KeyportData = portData;
 
@@ -65,14 +68,15 @@ public abstract class LMBasePortInput
 
 		Debug.Log("Port Active, receiving data");
 
-		// IsPortActive = true;
+		CurrentResolver = (resolver != null) ? resolver : GetProperResolver(KeyportData);
 
-		CurrentResolver = GetProperResolver(KeyportData);
-		CurrentResolver.Init(this);
+		if (CurrentResolver != null)
+			CurrentResolver.Init(this);
 
-		// yield return new WaitUntil(() => IsConnected);
 		yield return controller.StartCoroutine(TestConnect());
-		yield return controller.StartCoroutine(OnStartResolver());
+
+		if (CurrentResolver != null)
+			yield return controller.StartCoroutine(OnStartResolver());
 
 		if (!IsConnected)
 		{
@@ -81,29 +85,19 @@ public abstract class LMBasePortInput
 		}
 	}
 
-	private IEnumerator TestConnect()
+	public abstract bool OpenPort();
+	public abstract void Write(byte[] bytes);
+
+	public virtual void Recalibration()
 	{
-		for (int i = 0; i < 5; i++)
-		{
-			yield return new WaitForSeconds(1f);
-
-			IsPortActive = m_isConnected && !m_isPortWriting;
-
-			if (IsPortActive)
-				yield break;
-		}
+		CurrentResolver.Recalibration();
 	}
 
-	private IEnumerator OnStartResolver()
+	public void Write(string code, bool isHex = true)
 	{
-		if (!IsConnected)
-			yield break;
-
-		Debug.Log(IsConnected);
-
-		CurrentResolver.Start();
-
-		yield return controller.StartCoroutine(TestConnect());
+		byte[] bytes = (isHex) ? TGUtility.HexToByteArray(code) : Encoding.ASCII.GetBytes(code);
+		Debug.Log("Write Port: " + code + ", Converted into: " + BitConverter.ToString(bytes));
+		Write(bytes);
 	}
 
 	public virtual void Close()
@@ -115,35 +109,23 @@ public abstract class LMBasePortInput
 		Reset();
 	}
 
-	public void OnUpdate()
+	public virtual bool OnUpdate()
 	{
 		if (!IsPortActive || m_isPortWriting)
-			return;
+			return false;
 
 		if (CountdownToReconnect())
 		{
-			Debug.Log("重连");
+			Debug.LogWarning("Time over than limit: " + ConnectLimit + ", prepare for reconnection");;
 			ReconnectInFewSeconds();
 		}
 
-		if (m_bytes != null && m_bytes.Length > 0)
+		if (Bytes != null && Bytes.Length > 0)
 		{
 			controller.DebugText("连接成功，请重新打开数据面板");
 		}
-	}
 
-	protected virtual void ReconnectInFewSeconds()
-	{
-		controller.DebugText("连接断开，数秒后重新连接");
-		Reset();
-	}
-
-	protected void Reset()
-	{
-		// m_isInit = false;
-		m_cdTick = 0f;
-		m_isPortWriting = false;
-		m_isConnected = false;
+		return true;
 	}
 
 	public virtual float GetValue(int index)
@@ -162,19 +144,42 @@ public abstract class LMBasePortInput
 		return CurrentResolver.GetRawValue(index);
 	}
 
-	public virtual void Recalibration()
+	public virtual IEnumerator TestConnect()
 	{
-		CurrentResolver.Recalibration();
+		for (int i = 0; i < 5; i++)
+		{
+			yield return new WaitForSeconds(1f);
+
+			IsPortActive = m_isConnected && !m_isPortWriting;
+
+			if (IsPortActive)
+				yield break;
+		}
 	}
 
-	public void Write(string hex)
+	protected virtual IEnumerator OnStartResolver()
 	{
-		byte[] bytes = TGUtility.StringToByteArray(hex);
-		Debug.Log("Write Port: " + hex + ", Converted into: " + BitConverter.ToString(bytes));
-		Write(bytes);
+		if (!IsConnected)
+			yield break;
+
+		CurrentResolver.Start();
+
+		yield return controller.StartCoroutine(TestConnect());
 	}
 
-	public abstract void Write(byte[] bytes);
+	protected virtual void ReconnectInFewSeconds()
+	{
+		controller.DebugText("连接断开，数秒后重新连接");
+		Reset();
+	}
+
+	protected void Reset()
+	{
+		// m_isInit = false;
+		m_cdTick = 0f;
+		m_isPortWriting = false;
+		m_isConnected = false;
+	}
 
 	protected LMBasePortResolver GetProperResolver(KeyPortData portData)
 	{
@@ -190,7 +195,7 @@ public abstract class LMBasePortInput
 		{
 			retval = new Leadiy_M7B();
 		}
-		else
+		else if (portData.type == "key" || portData.type == "key2D")
 		{
 			retval = new LMKeyResolver();
 		}
@@ -198,26 +203,27 @@ public abstract class LMBasePortInput
 		return retval;
 	}
 
-	protected void ResolveData(Byte[] bytes)
+	protected virtual void OnHandleData(Byte[] bytes)
 	{
-		m_bytes = bytes;
+		if (onReceiveDataCallback != null)
+			onReceiveDataCallback(bytes);
 
-		HasData = m_bytes != null && m_bytes.Length > 0;
+		Bytes = bytes;
+
+		HasData = Bytes != null && Bytes.Length > 0;
 
 		if (!HasData)
-		{
-			if (m_isPortWriting)
-				return;
+			return;
 
-			m_cdTick++;
-		}
-		else
-		{
-			m_cdTick = 0f;
-			m_isConnected = true;
+		m_cdTick = 0f;
+		m_isConnected = true;
 
-			if (CurrentResolver != null)
-				CurrentResolver.ResolveBytes(m_bytes);
-		}
+		ResolveBytes(Bytes);
+	}
+
+	protected virtual void ResolveBytes(Byte[] bytes)
+	{
+		if (CurrentResolver != null)
+			CurrentResolver.ResolveBytes(bytes);
 	}
 }

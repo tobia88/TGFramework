@@ -36,6 +36,8 @@ public class TGInputSetting : TGBaseBehaviour
 
         DeviceName = m_controller.gameConfig.GetValue("训练器材", string.Empty);
 
+        Debug.Log("Current Device Name: " + DeviceName);
+
         KeyportData = keyInputConfig.GetKeyportData(DeviceName);
 
         if (KeyportData == null)
@@ -76,10 +78,6 @@ public class TGInputSetting : TGBaseBehaviour
             if (!portInput.IsPortActive)
             {
                 // m_controller.DebugText(portInput.ErrorTxt);
-#if UNITY_EDITOR && USE_TOUCH_IF_DISCONNECT
-                touchCtrl.enabled = true;
-                break;
-#else
                 int result = -1;
 
                 m_controller.dxErrorPopup.PopupWithBtns(portInput.ErrorTxt, i => result = i);
@@ -95,35 +93,48 @@ public class TGInputSetting : TGBaseBehaviour
                 m_controller.dxErrorPopup.PopupMessage("重连中");
 
                 yield return new WaitForSecondsRealtime(0.1f);
-#endif
             }
         }
     }
 
     public override IEnumerator EndRoutine() { yield return 1; }
 
-    public override void ForceClose() { }
+    public override void ForceClose() 
+    { 
+        if (portInput != null)
+            portInput.Close();
+    }
 
     private LMBasePortInput GetProperInput()
     {
+        //FIXME: Temperory
+        if (KeyportData.type == "CASMB")
+        {
+            var retval = new LMGrindTable();
+            retval.Init(m_controller, 
+                        m_controller.gameConfig.GetValue("端口", -1));
+            return retval;
+        }
+
         int udp = m_controller.gameConfig.GetValue("UDP", -1);
 
         if (udp >= 0)
         {
             var retval = new LMInput_UDP();
             retval.Init(m_controller, udp);
+            Debug.Log("Getting UDP On");
             return retval;
         }
         else
         {
             var retval = new LMInput_Port();
             retval.Init(m_controller,
-                m_controller.gameConfig.GetValue("端口", -1),
-                GetComponent<LMSerialPortCtrl>());
+                        m_controller.gameConfig.GetValue("端口", -1));
+            Debug.Log("Getting Por On");
             return retval;
         }
-    }
-
+    } 
+    
     public void SetPressureLevel(int level)
     {
         float[] arr = KeyportData.levels;

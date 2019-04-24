@@ -76,7 +76,6 @@ public class TGController : MonoBehaviour
             return;
         }
 
-
 #if UNITY_EDITOR
         RootPath = Application.dataPath + "/TGFramework/";
 #else
@@ -148,8 +147,6 @@ public class TGController : MonoBehaviour
     public void SetHeatmapEnable(bool _enable)
     {
         heatmapInput.enabled = settingData.outputHeatmap && _enable;
-
-        Debug.Log(heatmapInput.enabled);
 
         if (_enable)
         {

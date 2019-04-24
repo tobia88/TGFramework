@@ -138,7 +138,15 @@ public class TGBaseScene : MonoBehaviour
         {
             height = 590;
             width = Mathf.RoundToInt(height * ratio);
+
+            if (width > 700)
+            {
+                width = 700;
+                height = Mathf.RoundToInt(width / ratio);
+            }
         }
+
+        Debug.Log("Saved Texture Size: " + width + ", " + height);
 
         _tex = TextureScaler.ResizeTexture(_tex, width, height);
 
