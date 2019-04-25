@@ -51,9 +51,13 @@ public class LMGrindTableEmulator : LMBaseEmulator
 
             activatedButtons.Remove(btn);
 
-            if (activatedButtons.Count == 0 && m_grindTable.onTestFinished != null)
+            Debug.Log("Button Left: " + activatedButtons.Count);
+
+            if (activatedButtons.Count <= 0)
             {
-                m_grindTable.onTestFinished();
+                if (m_grindTable.onTestFinished != null)
+                    m_grindTable.onTestFinished();
+
                 Reset();
             }
         }
@@ -86,7 +90,7 @@ public class LMGrindTableEmulator : LMBaseEmulator
         var rect = btn.transform as RectTransform;
         var p = new Vector2(origin.x + stepX * x, origin.y - stepY * y);
         rect.anchoredPosition = p;
-        rect.sizeDelta = new Vector2(stepX * 0.5f, stepY * 0.5f);
+        rect.sizeDelta = new Vector2(stepX * 0.8f, stepY * 0.8f);
     }
 
     private void CreateButtons()
