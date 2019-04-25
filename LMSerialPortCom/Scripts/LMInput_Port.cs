@@ -22,9 +22,9 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		return retval;
 	}
 
-	public void Init(TGController _controller, int _com)
+	public virtual void Init(TGController _controller, KeyPortData keyportData, int _com)
 	{
-		base.Init(_controller);
+		base.Init(_controller, keyportData);
 
 		SerialPortCtrl = new LMSerialPortCtrl();
 
@@ -34,7 +34,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		portInfo.baudRate = 115200;
 	}
 
-	public override IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
+	public override IEnumerator OnStart(LMBasePortResolver resolver = null)
 	{
 		if (!SerialPortCtrl.CheckPortAvailable(portInfo.comName))
 		{
@@ -43,7 +43,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 			// throw new InvalidPortNumberException(portInfo.comName);
 		}
 
-		yield return controller.StartCoroutine(base.OnStart(portData, resolver));
+		yield return controller.StartCoroutine(base.OnStart(resolver));
 	}
 
 	public override void Write(byte[] bytes)
@@ -60,7 +60,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 	{
 		Port.Write(bytes, 0, bytes.Length);
 
-		m_isPortWriting = true;
+		IsPortWriting = true;
 
 		yield return new WaitForSeconds(0.1f);
 
@@ -68,7 +68,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		yield return new WaitUntil(() => m_isConnected);
 
 		Debug.Log("Write Finished");
-		m_isPortWriting = false;
+		IsPortWriting = false;
 	}
 
 	public override void Close()

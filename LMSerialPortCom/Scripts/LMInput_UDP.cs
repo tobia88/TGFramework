@@ -15,19 +15,17 @@ public class LMInput_UDP : LMBasePortInput
 	private IPEndPoint m_endPoint;
 	private int m_udp;
 
-	public void Init(TGController _controller, int _udp)
+	public void Init(TGController _controller, KeyPortData keyportData, int _udp)
 	{
-		Init(_controller);
+		Init(_controller, keyportData);
 		m_udp = _udp;
 
 		m_endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), m_udp);
 		m_client = new UdpClient(m_endPoint);
 	}
 
-	public override IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
+	public override IEnumerator OnStart(LMBasePortResolver resolver = null)
 	{
-		KeyportData = portData;
-
 		if (!OpenPort())
 			yield break;
 

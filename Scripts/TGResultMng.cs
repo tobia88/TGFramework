@@ -24,6 +24,7 @@ public class TGResultMng : TGBaseBehaviour
         ini.WriteValue("ret", "名称", m_controller.GameNameCn);
         ini.WriteValue("ret", "种类", "2");
         ini.WriteValue("ret", "开始时间", TGUtility.ParseDateTimeToString(m_controller.startTime));
+        ini.WriteValue("ret", "游戏时长", m_controller.timePassed + "秒");
         ini.WriteValue("ret", "结束时间", TGUtility.ParseDateTimeToString(m_controller.endTime));
         WriteExtraData(ini);
 

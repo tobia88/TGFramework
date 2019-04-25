@@ -10,6 +10,7 @@ public class TGController : MonoBehaviour
     public static TGController Instance;
     public DateTime startTime;
     public DateTime endTime;
+    public float timePassed;
     public Camera systemCam;
 
     public string GameNameCn { get; private set; }
@@ -240,6 +241,7 @@ public class TGController : MonoBehaviour
 
             yield return StartCoroutine(mainGame.GameRoutine());
 
+            timePassed = mainGame.CurrentScene.TimePassed;
             endTime = DateTime.Now;
 
             yield return StartCoroutine(mainGame.EndRoutine());

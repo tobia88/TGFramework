@@ -44,15 +44,13 @@ public class TGInputSetting : TGBaseBehaviour
 
         if (KeyportData == null)
         {
-            m_controller.ErrorQuit("训练器材 " + DeviceName + "不存在！");
+            m_controller.dxErrorPopup.PopupMessage("训练器材 " + DeviceName + "不存在！");
             yield break;
         }
 
         touchCtrl.enabled = KeyportData.type == "touch";
 
-        IsTesting = m_controller.gameConfig.GetValue("测试", 0) == 1;
-
-        if (!touchCtrl.enabled && !IsTesting)
+        if (!touchCtrl.enabled)
         {
             yield return StartCoroutine(ConnectDeviceRoutine());
         }
@@ -67,6 +65,8 @@ public class TGInputSetting : TGBaseBehaviour
 
     IEnumerator ConnectDeviceRoutine()
     {
+        IsTesting = m_controller.gameConfig.GetValue("测试", 0) == 1;
+
         // FIXME: Temperory
         if (KeyportData.type == "m7b" && m_gameConfig.evalData.isFullAxis)
         {
@@ -75,9 +75,12 @@ public class TGInputSetting : TGBaseBehaviour
 
         portInput = GetProperInput();
 
+        if (IsTesting)
+            yield break;
+
         while (!portInput.IsPortActive)
         {
-            yield return StartCoroutine(portInput.OnStart(KeyportData));
+            yield return StartCoroutine(portInput.OnStart());
 
             if (!portInput.IsPortActive)
             {
@@ -116,6 +119,7 @@ public class TGInputSetting : TGBaseBehaviour
         {
             var retval = new LMGrindTable();
             retval.Init(m_controller, 
+                        KeyportData,
                         m_controller.gameConfig.GetValue("端口", -1));
             return retval;
         }
@@ -125,7 +129,7 @@ public class TGInputSetting : TGBaseBehaviour
         if (udp >= 0)
         {
             var retval = new LMInput_UDP();
-            retval.Init(m_controller, udp);
+            retval.Init(m_controller, KeyportData, udp);
             Debug.Log("Getting UDP On");
             return retval;
         }
@@ -133,6 +137,7 @@ public class TGInputSetting : TGBaseBehaviour
         {
             var retval = new LMInput_Port();
             retval.Init(m_controller,
+                        KeyportData,
                         m_controller.gameConfig.GetValue("端口", -1));
             Debug.Log("Getting Por On");
             return retval;

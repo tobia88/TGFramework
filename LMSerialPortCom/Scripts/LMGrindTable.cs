@@ -32,13 +32,14 @@ public class LMGrindTable : LMInput_Port
 
     private string m_currentKey;
     private string m_currentValue;
-
     private Rect m_worldBound;
+    private LMGrindTableEmulator m_emulator;
 
     public System.Action onTestFinished;
     public System.Action onTestStarted;
     public System.Action<Vector2> onTurnOffLight;
     public Queue<GrindEvent> eventQueue = new Queue<GrindEvent>();
+    public LMGrindTableEmulator GrindTable { get { return Emulator as LMGrindTableEmulator; } }
 
     public override bool OpenPort()
     {
@@ -49,18 +50,27 @@ public class LMGrindTable : LMInput_Port
             if (udp >= 0)
             {
                 m7bPort = new LMInput_UDP();
-                (m7bPort as LMInput_UDP).Init(controller, udp);
+                (m7bPort as LMInput_UDP).Init(controller, KeyportData, udp);
             }
             else
             {
                 m7bPort = new LMInput_Port();
                 (m7bPort as LMInput_Port).Init(controller,
+                                               KeyportData,
                                                controller.gameConfig.GetValue("端口2", -1));
             }
             return true;
         }
         return false;
     }
+
+	public override void Init(TGController _controller, KeyPortData keyportData, int _com)
+	{
+		base.Init(_controller, keyportData, _com);
+
+        ColumnCount = keyportData.width;
+        RowCount = keyportData.height;
+	}
 
     public override bool OnUpdate()
     {
@@ -114,7 +124,15 @@ public class LMGrindTable : LMInput_Port
 
         foreach (var p in path)
         {
-            newCode = VectorToCode(p);
+            var node = GetNode(p);
+
+            if (controller.inputSetting.IsTesting)
+            {
+                GrindTable.SetBtnEnable(node.x, node.y, EmuTableBtnStates.Waiting);
+                continue;
+            }
+
+            newCode = NodeToCode(node);
 
             if (lastCode == newCode)
                 continue;
@@ -174,10 +192,8 @@ public class LMGrindTable : LMInput_Port
             m7bPort.Close();
     }
 
-    private string VectorToCode(Vector2 p)
+    private string NodeToCode(Node node)
     {
-        var node = GetNode(p);
-
         int colIndex = 65 + node.x;
         int rowIndex = 65 + node.y;
 
@@ -214,8 +230,16 @@ public class LMGrindTable : LMInput_Port
         if (colIndex >= 89) colIndex -= 2;
         if (rowIndex >= 89) rowIndex -= 2;
 
-        float ratioX = ((float) colIndex - 65) / (ColumnCount - 1);
-        float ratioY = 1f - ((float) rowIndex - 65) / (RowCount - 1);
+        colIndex -= 65;
+        rowIndex -= 65;
+
+        return NodeToVector(colIndex, rowIndex);
+    }
+
+    public Vector2 NodeToVector(int x, int y)
+    {
+        float ratioX = (float) x / (ColumnCount - 1);
+        float ratioY = 1f - (float) y / (RowCount - 1);
 
         Debug.Log(string.Format("Rx: {0}. Ry: {1}", ratioX, ratioY));
 
@@ -223,18 +247,15 @@ public class LMGrindTable : LMInput_Port
                            ratioY * m_worldBound.height + m_worldBound.y);
     }
 
-    public override IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
+    public override IEnumerator OnStart(LMBasePortResolver resolver = null)
     {
-        yield return controller.StartCoroutine(base.OnStart(portData, resolver));
-
-        ColumnCount = portData.width;
-        RowCount = portData.height;
+        yield return controller.StartCoroutine(base.OnStart(resolver));
 
         if (string.IsNullOrEmpty(ErrorTxt) && m7bPort != null)
         {
             Debug.Log("m7b is started");
             m7bResolver = new Leadiy_M7B();
-            yield return controller.StartCoroutine(m7bPort.OnStart(portData, m7bResolver));
+            yield return controller.StartCoroutine(m7bPort.OnStart(m7bResolver));
             ErrorTxt = m7bPort.ErrorTxt;
         }
         
