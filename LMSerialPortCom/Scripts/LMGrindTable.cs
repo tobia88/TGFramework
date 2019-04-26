@@ -125,6 +125,7 @@ public class LMGrindTable : LMInput_Port
         foreach (var p in path)
         {
             var node = GetNode(p);
+            Debug.Log("Get Node: " + node.x + ", " + node.y);
             newCode = NodeToCode(node);
 
             if (lastCode == newCode)
