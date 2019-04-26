@@ -108,22 +108,22 @@ public class TGGameScene : TGBaseScene
         var tutorialSpr = Resources.Load<Sprite>(controller.inputSetting.DeviceName);
 
         uiRoot.gameObject.SetActive(true);
+
+        uiRoot.Init(this, tutorialSpr);
+
         uiRoot.exitBtn.onClick.AddListener(OnPressExitGame);
         uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
 
         if (tutorialSpr != null)
+        {
             uiRoot.questionBtn.onClick.AddListener(() => GameState = GameStates.Tutorial);
-
-        else
-            uiRoot.questionBtn.gameObject.SetActive(false);
+            uiRoot.tutorialPanel.confirmBtn.onClick.AddListener(uiRoot.tutorialPanel.Exit);
+            uiRoot.tutorialPanel.onFinishClosePanel += () => GameState = GameStates.Playing;
+        }
 
         uiRoot.exitGamePanel.confirmBtn.onClick.AddListener(ExitScene);
         uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
         uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
-
-        uiRoot.tutorialPanel.SetImage(tutorialSpr);
-        uiRoot.tutorialPanel.confirmBtn.onClick.AddListener(uiRoot.tutorialPanel.Exit);
-        uiRoot.tutorialPanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 
         var config = controller.gameConfig;
 
@@ -287,7 +287,9 @@ public class TGGameScene : TGBaseScene
         if (bgm.clip != null)
             AudioMng.Instance.Fade(bgm, 0f, 1f);
 
-        uiRoot.gameOverPanel.SetScore(Score);
+        var score = (gameType == GameTypes.Missions) ? TimeLeft.ToString("0秒") : Score.ToString();
+
+        uiRoot.gameOverPanel.SetScore(score);
         uiRoot.gameOverPanel.Show();
 
         Debug.Log("Game Over");
