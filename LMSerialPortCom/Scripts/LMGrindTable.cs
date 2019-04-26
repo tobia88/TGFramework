@@ -125,17 +125,18 @@ public class LMGrindTable : LMInput_Port
         foreach (var p in path)
         {
             var node = GetNode(p);
+            newCode = NodeToCode(node);
+
+            Debug.Log(node);
+
+            if (lastCode == newCode)
+                continue;
 
             if (controller.inputSetting.IsTesting)
             {
                 GrindTable.SetBtnEnable(node.x, node.y, EmuTableBtnStates.Waiting);
                 continue;
             }
-
-            newCode = NodeToCode(node);
-
-            if (lastCode == newCode)
-                continue;
 
             content += newCode;
             lastCode = newCode;
@@ -151,18 +152,19 @@ public class LMGrindTable : LMInput_Port
 
     public void DrawLine(Vector2 from, Vector2 to)
     {
-        Vector2 n = (from - to).normalized;
-        
         var list = new List<Vector2>();
 
         list.Add(from);
 
         for (float i = 0f, step = 0.05f; i < 1f; i += step)
         {
-            list.Add(Vector3.Lerp(from, to, i));
+            var addPos = Vector3.Lerp(from, to, i);
+            list.Add(addPos);
         }
 
         list.Add(to);
+
+        Debug.Log(list.ToArray().ToArrayString());
 
         Write(list.ToArray());
     }

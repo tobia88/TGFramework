@@ -27,6 +27,7 @@ public class LMGrindTableEmulator : LMBaseEmulator
 
     public void SetBtnEnable(int x, int y, EmuTableBtnStates btnState)
     {
+        Debug.Log("X: " + x + ", Y: " + y);
         var btn = m_btns[y * column + x];
         btn.BtnState = btnState;
         activatedButtons.Add(btn);
