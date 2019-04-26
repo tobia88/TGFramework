@@ -127,10 +127,10 @@ public class LMGrindTable : LMInput_Port
             var node = GetNode(p);
             newCode = NodeToCode(node);
 
-            Debug.Log(node);
-
             if (lastCode == newCode)
                 continue;
+
+            lastCode = newCode;
 
             if (controller.inputSetting.IsTesting)
             {
@@ -139,7 +139,6 @@ public class LMGrindTable : LMInput_Port
             }
 
             content += newCode;
-            lastCode = newCode;
         }
         
         Write(string.Format(PATH_FORMAT, content), false);
@@ -163,8 +162,6 @@ public class LMGrindTable : LMInput_Port
         }
 
         list.Add(to);
-
-        Debug.Log(list.ToArray().ToArrayString());
 
         Write(list.ToArray());
     }
