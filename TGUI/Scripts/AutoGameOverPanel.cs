@@ -7,14 +7,23 @@ public class AutoGameOverPanel : TGBasePanel
 {
     public TMPro.TextMeshProUGUI scoreTxt;
     public TMPro.TextMeshProUGUI countdownTxt;
+	public Sprite timeSpr;
+	public Sprite missionSpr;
+	public Image bgImg;
 
-    public void SetScore(int _score)
+    public void SetScore(string score)
     {
-        scoreTxt.text = _score.ToString();
+        scoreTxt.text = score.ToString();
     }
 
     public void SetCountdownTxt(int _countdown)
     {
         countdownTxt.text = _countdown.ToString();
     }
+
+	public void SetGameType(GameTypes gameType)
+	{
+		var spr = (gameType == GameTypes.Missions) ? missionSpr : timeSpr;
+		bgImg.sprite = spr;
+	}
 }

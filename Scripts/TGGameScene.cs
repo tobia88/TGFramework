@@ -23,6 +23,7 @@ public enum GameTypes
 public class TGGameScene : TGBaseScene
 {
     protected float m_timeLeft;
+    protected float m_gameTimePassed;
     protected int m_score;
     protected int m_difficultyLv;
     protected GameStates m_gameState;
@@ -104,18 +105,26 @@ public class TGGameScene : TGBaseScene
     public override void Init()
     {
         base.Init();
+
+        var tutorialSpr = Resources.Load<Sprite>(controller.inputSetting.DeviceName);
+
         uiRoot.gameObject.SetActive(true);
+
+        uiRoot.Init(this, tutorialSpr);
+
         uiRoot.exitBtn.onClick.AddListener(OnPressExitGame);
         uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
-        uiRoot.questionBtn.onClick.AddListener(() => GameState = GameStates.Tutorial);
+
+        if (tutorialSpr != null)
+        {
+            uiRoot.questionBtn.onClick.AddListener(() => GameState = GameStates.Tutorial);
+            uiRoot.tutorialPanel.confirmBtn.onClick.AddListener(uiRoot.tutorialPanel.Exit);
+            uiRoot.tutorialPanel.onFinishClosePanel += () => GameState = GameStates.Playing;
+        }
 
         uiRoot.exitGamePanel.confirmBtn.onClick.AddListener(ExitScene);
         uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
         uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
-
-        uiRoot.tutorialPanel.SetImage(Resources.Load<Sprite>(controller.inputSetting.DeviceName));
-        uiRoot.tutorialPanel.confirmBtn.onClick.AddListener(uiRoot.tutorialPanel.Exit);
-        uiRoot.tutorialPanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 
         var config = controller.gameConfig;
 
@@ -240,6 +249,8 @@ public class TGGameScene : TGBaseScene
             Score += 10;
         }
 
+        m_gameTimePassed += Time.deltaTime;
+
         if (gameType == GameTypes.TimeLimit)
         {
             if (TimeLeft <= 0f)
@@ -265,7 +276,10 @@ public class TGGameScene : TGBaseScene
     {
         AudioMng.Instance.StopAll();
 
-        extraData.Add("分数", Score.ToString());
+        var score = (gameType == GameTypes.Missions) ?
+                Mathf.RoundToInt(m_gameTimePassed) : Score;
+
+        extraData.Add("分数", score.ToString());
         base.ExitScene();
     }
 
@@ -279,7 +293,10 @@ public class TGGameScene : TGBaseScene
         if (bgm.clip != null)
             AudioMng.Instance.Fade(bgm, 0f, 1f);
 
-        uiRoot.gameOverPanel.SetScore(Score);
+        var score = (gameType == GameTypes.Missions) ? 
+                m_gameTimePassed.ToString("0秒") : Score.ToString();
+
+        uiRoot.gameOverPanel.SetScore(score);
         uiRoot.gameOverPanel.Show();
 
         Debug.Log("Game Over");
@@ -303,11 +320,4 @@ public class TGGameScene : TGBaseScene
 
         GameState = GameStates.End;
     }
-
-    // IEnumerator CaptureDelay()
-    // {
-    //     yield return new WaitForSeconds(1f);
-    //     CaptureScreen();
-    // }
-
 }

@@ -17,6 +17,12 @@ public class LMGrindTable : LMInput_Port
         }
     }
 
+    public struct Node
+    {
+        public int x;
+        public int y;
+    }
+
     public Leadiy_M7B m7bResolver;
     public LMBasePortInput m7bPort;
 
@@ -26,13 +32,14 @@ public class LMGrindTable : LMInput_Port
 
     private string m_currentKey;
     private string m_currentValue;
-
     private Rect m_worldBound;
+    private LMGrindTableEmulator m_emulator;
 
     public System.Action onTestFinished;
     public System.Action onTestStarted;
     public System.Action<Vector2> onTurnOffLight;
     public Queue<GrindEvent> eventQueue = new Queue<GrindEvent>();
+    public LMGrindTableEmulator GrindTable { get { return Emulator as LMGrindTableEmulator; } }
 
     public override bool OpenPort()
     {
@@ -43,18 +50,27 @@ public class LMGrindTable : LMInput_Port
             if (udp >= 0)
             {
                 m7bPort = new LMInput_UDP();
-                (m7bPort as LMInput_UDP).Init(controller, udp);
+                (m7bPort as LMInput_UDP).Init(controller, KeyportData, udp);
             }
             else
             {
                 m7bPort = new LMInput_Port();
                 (m7bPort as LMInput_Port).Init(controller,
+                                               KeyportData,
                                                controller.gameConfig.GetValue("端口2", -1));
             }
             return true;
         }
         return false;
     }
+
+	public override void Init(TGController _controller, KeyPortData keyportData, int _com)
+	{
+		base.Init(_controller, keyportData, _com);
+
+        ColumnCount = keyportData.width;
+        RowCount = keyportData.height;
+	}
 
     public override bool OnUpdate()
     {
@@ -108,13 +124,21 @@ public class LMGrindTable : LMInput_Port
 
         foreach (var p in path)
         {
-            newCode = VectorToCode(p);
+            var node = GetNode(p);
+            newCode = NodeToCode(node);
 
             if (lastCode == newCode)
                 continue;
 
-            content += newCode;
             lastCode = newCode;
+
+            if (controller.inputSetting.IsTesting)
+            {
+                GrindTable.SetBtnEnable(node.x, node.y, EmuTableBtnStates.Waiting);
+                continue;
+            }
+
+            content += newCode;
         }
         
         Write(string.Format(PATH_FORMAT, content), false);
@@ -125,6 +149,41 @@ public class LMGrindTable : LMInput_Port
         m_worldBound = rect;
     }
 
+    public void DrawLine(Vector2 from, Vector2 to)
+    {
+        var list = new List<Vector2>();
+
+        list.Add(from);
+
+        for (float i = 0f, step = 0.05f; i < 1f; i += step)
+        {
+            var addPos = Vector3.Lerp(from, to, i);
+            list.Add(addPos);
+        }
+
+        list.Add(to);
+
+        Write(list.ToArray());
+    }
+
+    public void DrawArc(Vector2 center, float radius, int fromDeg, int toDeg)
+    {
+        var list = new List<Vector2>();
+
+        for (int i = fromDeg; i <= toDeg; i++)
+        {
+            var np = new Vector2();
+            var rad = i * Mathf.Deg2Rad;
+
+            np.x = Mathf.Cos(rad) * radius + center.x;
+            np.y = Mathf.Sin(rad) * radius + center.y;
+
+            list.Add(np);
+        }
+
+        Write(list.ToArray());
+    }
+
     public override void Close()
     {
         Write(CLEAR_PATH, false);
@@ -132,13 +191,10 @@ public class LMGrindTable : LMInput_Port
             m7bPort.Close();
     }
 
-    private string VectorToCode(Vector2 p)
+    private string NodeToCode(Node node)
     {
-        float ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
-        float ratioY = 1f - ((p.y - m_worldBound.y) / (m_worldBound.height));
-
-        int colIndex = 65 + Mathf.RoundToInt(ratioX * (ColumnCount - 1));
-        int rowIndex = 65 + Mathf.RoundToInt(ratioY * (RowCount - 1));
+        int colIndex = 65 + node.x;
+        int rowIndex = 65 + node.y;
 
         // YZ has been used for head and tail, so just skip it
         if (colIndex >= 89) colIndex += 2;
@@ -148,6 +204,18 @@ public class LMGrindTable : LMInput_Port
         char rowChar = (char)rowIndex;
 
         return colChar.ToString() + rowChar.ToString();
+    }
+
+    private Node GetNode(Vector2 p)
+    {
+        float ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
+        float ratioY = 1f - ((p.y - m_worldBound.y) / (m_worldBound.height));
+
+        Node n = new Node();
+        n.x = Mathf.RoundToInt(ratioX * (ColumnCount - 1));
+        n.y = Mathf.RoundToInt(ratioY * (RowCount - 1));
+
+        return n;
     }
 
     private Vector2 CodeToVector(string code)
@@ -161,8 +229,16 @@ public class LMGrindTable : LMInput_Port
         if (colIndex >= 89) colIndex -= 2;
         if (rowIndex >= 89) rowIndex -= 2;
 
-        float ratioX = ((float) colIndex - 65) / (ColumnCount - 1);
-        float ratioY = 1f - ((float) rowIndex - 65) / (RowCount - 1);
+        colIndex -= 65;
+        rowIndex -= 65;
+
+        return NodeToVector(colIndex, rowIndex);
+    }
+
+    public Vector2 NodeToVector(int x, int y)
+    {
+        float ratioX = (float) x / (ColumnCount - 1);
+        float ratioY = 1f - (float) y / (RowCount - 1);
 
         Debug.Log(string.Format("Rx: {0}. Ry: {1}", ratioX, ratioY));
 
@@ -170,18 +246,15 @@ public class LMGrindTable : LMInput_Port
                            ratioY * m_worldBound.height + m_worldBound.y);
     }
 
-    public override IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
+    public override IEnumerator OnStart(LMBasePortResolver resolver = null)
     {
-        yield return controller.StartCoroutine(base.OnStart(portData, resolver));
-
-        ColumnCount = portData.width;
-        RowCount = portData.height;
+        yield return controller.StartCoroutine(base.OnStart(resolver));
 
         if (string.IsNullOrEmpty(ErrorTxt) && m7bPort != null)
         {
             Debug.Log("m7b is started");
             m7bResolver = new Leadiy_M7B();
-            yield return controller.StartCoroutine(m7bPort.OnStart(portData, m7bResolver));
+            yield return controller.StartCoroutine(m7bPort.OnStart(m7bResolver));
             ErrorTxt = m7bPort.ErrorTxt;
         }
         

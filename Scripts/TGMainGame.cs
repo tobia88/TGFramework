@@ -33,6 +33,10 @@ public class TGMainGame : TGBaseBehaviour
 
     private IEnumerator LoadSceneRoutine()
     {
+
+        yield return StartCoroutine(ClearLoadingScene());
+
+        Debug.Log("Loading Scene: " + SceneName);
         asyncOperation = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
 
         float remainProg = 1f - m_controller.ProgressValue;
@@ -46,6 +50,21 @@ public class TGMainGame : TGBaseBehaviour
             lastProgress = asyncOperation.progress;
 
             yield return null;
+        }
+    }
+
+    private IEnumerator ClearLoadingScene()
+    {
+        for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
+        {
+            var scn = SceneManager.GetSceneAt(i);
+
+            if (scn == gameObject.scene)
+                continue;   
+            
+            Debug.Log("Clearing Scene: " + scn.name);
+
+            yield return SceneManager.UnloadSceneAsync(scn);
         }
     }
 

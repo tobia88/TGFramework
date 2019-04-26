@@ -29,7 +29,6 @@ public class KeyInputConfig
 
 public abstract class LMBasePortInput
 {
-
 	// protected bool m_isInit;
 	protected float m_cdTick;
 	protected int m_byteLength;
@@ -38,13 +37,14 @@ public abstract class LMBasePortInput
 	public byte[] Bytes { get; protected set; }
 	public TGController controller { get; private set; }
 	public bool IsPortActive { get; protected set; }
-	public virtual bool IsConnected { get { return IsPortActive && !m_isPortWriting && m_isConnected; } }
-	public bool m_isPortWriting { get; protected set; }
+	public virtual bool IsConnected { get { return IsPortActive && !IsPortWriting && m_isConnected; } }
+	public bool IsPortWriting { get; protected set; }
 	public LMBasePortResolver CurrentResolver { get; protected set; }
 	public KeyPortData KeyportData { get; protected set; }
 	public string ErrorTxt { get; protected set; }
 	public bool HasData { get; protected set; }
 	public float ConnectLimit { get { return 5f; } }
+	public LMBaseEmulator Emulator { get; private set; }
 
 	public System.Action<byte[]> onReceiveDataCallback;
 
@@ -54,15 +54,22 @@ public abstract class LMBasePortInput
 		return m_cdTick >= ConnectLimit;
 	}
 
-	public void Init(TGController _controller)
+	public virtual void Init(TGController _controller, KeyPortData keyportData)
 	{
-		controller = _controller;
+		controller = _controller; 
+		KeyportData = keyportData;
 	}
 
-	public virtual IEnumerator OnStart(KeyPortData portData, LMBasePortResolver resolver = null)
-	{
-		KeyportData = portData;
+	public virtual void OnStartTest() 
+	{ 
+		Emulator = GameObject.FindObjectOfType<LMBaseEmulator>();
 
+		if (Emulator != null)
+			Emulator.Init(this);
+	}
+
+	public virtual IEnumerator OnStart(LMBasePortResolver resolver = null)
+	{
 		if (!OpenPort())
 			yield break;
 
@@ -111,7 +118,7 @@ public abstract class LMBasePortInput
 
 	public virtual bool OnUpdate()
 	{
-		if (!IsPortActive || m_isPortWriting)
+		if (!IsPortActive || IsPortWriting)
 			return false;
 
 		if (CountdownToReconnect())
@@ -150,7 +157,7 @@ public abstract class LMBasePortInput
 		{
 			yield return new WaitForSeconds(1f);
 
-			IsPortActive = m_isConnected && !m_isPortWriting;
+			IsPortActive = m_isConnected && !IsPortWriting;
 
 			if (IsPortActive)
 				yield break;
@@ -177,7 +184,7 @@ public abstract class LMBasePortInput
 	{
 		// m_isInit = false;
 		m_cdTick = 0f;
-		m_isPortWriting = false;
+		IsPortWriting = false;
 		m_isConnected = false;
 	}
 

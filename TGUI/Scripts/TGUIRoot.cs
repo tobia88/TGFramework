@@ -17,6 +17,20 @@ public class TGUIRoot : MonoBehaviour
 	public Button recalibrationBtn;
 	public Button questionBtn;
 
+	public void Init(TGGameScene gameScene, Sprite tutorialSpr)
+	{
+		questionBtn.gameObject.SetActive(tutorialSpr != null);
+
+		if (tutorialSpr != null)
+			tutorialPanel.SetImage(tutorialSpr);
+
+		var gameType = gameScene.gameType;
+		timeBar.gameObject.SetActive(gameType == GameTypes.TimeLimit);
+		scoreTxt.gameObject.SetActive(gameType == GameTypes.Missions);
+
+		gameOverPanel.SetGameType(gameType);
+	}
+
 	public GetPointTextUI CreateScorePrefab(int _score, Vector3 _pos)
 	{
 		GetPointTextUI prefab = (_score > 0) ? getScorePrefab : lossScorePrefab;
