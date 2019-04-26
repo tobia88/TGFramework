@@ -84,7 +84,6 @@ public class TGInputSetting : TGBaseBehaviour
 
             if (!portInput.IsPortActive)
             {
-                // m_controller.DebugText(portInput.ErrorTxt);
                 int result = -1;
 
                 m_controller.dxErrorPopup.PopupWithBtns(portInput.ErrorTxt, i => result = i);

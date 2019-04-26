@@ -140,7 +140,9 @@ public class TGGameScene : TGBaseScene
     protected virtual void OnScoreChanged(int value)
     {
         m_score = Mathf.Max(value, 0);
-        uiRoot.scoreTxt.text = m_score.ToString();
+
+        if (uiRoot.scoreTxt != null && uiRoot.scoreTxt.isActiveAndEnabled)
+            uiRoot.scoreTxt.text = m_score.ToString();
     }
 
     private void OnPressExitGame()
@@ -276,10 +278,7 @@ public class TGGameScene : TGBaseScene
     {
         AudioMng.Instance.StopAll();
 
-        var score = (gameType == GameTypes.Missions) ?
-                Mathf.RoundToInt(m_gameTimePassed) : Score;
-
-        extraData.Add("分数", score.ToString());
+        extraData.Add("分数", Score.ToString());
         base.ExitScene();
     }
 
@@ -293,10 +292,7 @@ public class TGGameScene : TGBaseScene
         if (bgm.clip != null)
             AudioMng.Instance.Fade(bgm, 0f, 1f);
 
-        var score = (gameType == GameTypes.Missions) ? 
-                m_gameTimePassed.ToString("0s") : Score.ToString();
-
-        uiRoot.gameOverPanel.SetScore(score);
+        uiRoot.gameOverPanel.SetScore(Score.ToString());
         uiRoot.gameOverPanel.Show();
 
         Debug.Log("Game Over");
