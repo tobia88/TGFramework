@@ -281,8 +281,35 @@
             ],
             "width": 24,
             "height": 16,
-            "type": "CASMB",
-            "heatmap": true
+            "type": "CASMB"
+        },
+        {
+            "name": [
+                "儿童磨砂桌"
+            ],
+            "value": [
+                {
+                    "key": "x",
+                    "max": "最大值",
+                    "min": "最小值",
+                    "origin": -1
+                },
+                {
+                    "key": "y",
+                    "max": "最大值",
+                    "min": "最小值",
+                    "origin": -1
+                },
+                {
+                    "key": "z",
+                    "max": "最大值",
+                    "min": "最小值",
+                    "origin": -1
+                }
+            ],
+            "width": 28,
+            "height": 12,
+            "type": "CASMB"
         }
     ]
 }

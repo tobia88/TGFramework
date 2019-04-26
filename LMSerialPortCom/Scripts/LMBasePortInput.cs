@@ -60,14 +60,6 @@ public abstract class LMBasePortInput
 		KeyportData = keyportData;
 	}
 
-	public virtual void OnStartTest() 
-	{ 
-		Emulator = GameObject.FindObjectOfType<LMBaseEmulator>();
-
-		if (Emulator != null)
-			Emulator.Init(this);
-	}
-
 	public virtual IEnumerator OnStart(LMBasePortResolver resolver = null)
 	{
 		if (!OpenPort())
@@ -149,6 +141,19 @@ public abstract class LMBasePortInput
 			return 0f;
 
 		return CurrentResolver.GetRawValue(index);
+	}
+
+	public virtual void SetTest(bool testing)
+	{
+		Emulator = GameObject.FindObjectOfType<LMBaseEmulator>();
+
+		if (Emulator != null)
+		{
+			Emulator.gameObject.SetActive(testing);
+
+			if (testing)
+				Emulator.Init(this);
+		}
 	}
 
 	public virtual IEnumerator TestConnect()

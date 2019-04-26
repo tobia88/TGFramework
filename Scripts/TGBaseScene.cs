@@ -31,9 +31,6 @@ public class TGBaseScene : MonoBehaviour
     public virtual void Init()
     {
         controller = TGController.Instance;
-
-        if (controller.inputSetting.IsTesting)
-            controller.inputSetting.portInput.OnStartTest();
     }
 
     public virtual void OnStart()

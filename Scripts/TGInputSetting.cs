@@ -112,6 +112,12 @@ public class TGInputSetting : TGBaseBehaviour
             portInput.Close();
     }
 
+    public void OnGameStart() 
+    {
+        if (portInput != null)
+            portInput.SetTest(IsTesting);
+    }
+
     private LMBasePortInput GetProperInput()
     {
         //FIXME: Temperory

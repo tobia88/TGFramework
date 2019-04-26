@@ -73,6 +73,9 @@ public class TGMainGame : TGBaseBehaviour
     public IEnumerator GameRoutine()
     {
         CurrentScene.Init();
+
+        m_inputSetting.OnGameStart();
+
         CurrentScene.OnStart();
 
         while (CurrentScene.isActive)
