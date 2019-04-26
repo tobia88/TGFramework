@@ -294,7 +294,7 @@ public class TGGameScene : TGBaseScene
             AudioMng.Instance.Fade(bgm, 0f, 1f);
 
         var score = (gameType == GameTypes.Missions) ? 
-                m_gameTimePassed.ToString("0秒") : Score.ToString();
+                m_gameTimePassed.ToString("0s") : Score.ToString();
 
         uiRoot.gameOverPanel.SetScore(score);
         uiRoot.gameOverPanel.Show();
