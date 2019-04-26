@@ -146,7 +146,7 @@ public class TGBaseScene : MonoBehaviour
             }
         }
 
-        Debug.Log("Saved Texture Size: " + width + ", " + height);
+        Debug.Log("Saved Texture Sizes: " + width + ", " + height);
 
         _tex = TextureScaler.ResizeTexture(_tex, width, height);
 
