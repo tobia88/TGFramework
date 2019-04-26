@@ -23,6 +23,7 @@ public enum GameTypes
 public class TGGameScene : TGBaseScene
 {
     protected float m_timeLeft;
+    protected float m_gameTimePassed;
     protected int m_score;
     protected int m_difficultyLv;
     protected GameStates m_gameState;
@@ -248,6 +249,8 @@ public class TGGameScene : TGBaseScene
             Score += 10;
         }
 
+        m_gameTimePassed += Time.deltaTime;
+
         if (gameType == GameTypes.TimeLimit)
         {
             if (TimeLeft <= 0f)
@@ -273,7 +276,10 @@ public class TGGameScene : TGBaseScene
     {
         AudioMng.Instance.StopAll();
 
-        extraData.Add("分数", Score.ToString());
+        var score = (gameType == GameTypes.Missions) ?
+                Mathf.RoundToInt(m_gameTimePassed) : Score;
+
+        extraData.Add("分数", score.ToString());
         base.ExitScene();
     }
 
@@ -287,7 +293,8 @@ public class TGGameScene : TGBaseScene
         if (bgm.clip != null)
             AudioMng.Instance.Fade(bgm, 0f, 1f);
 
-        var score = (gameType == GameTypes.Missions) ? TimeLeft.ToString("0秒") : Score.ToString();
+        var score = (gameType == GameTypes.Missions) ? 
+                m_gameTimePassed.ToString("0秒") : Score.ToString();
 
         uiRoot.gameOverPanel.SetScore(score);
         uiRoot.gameOverPanel.Show();
@@ -313,11 +320,4 @@ public class TGGameScene : TGBaseScene
 
         GameState = GameStates.End;
     }
-
-    // IEnumerator CaptureDelay()
-    // {
-    //     yield return new WaitForSeconds(1f);
-    //     CaptureScreen();
-    // }
-
 }
