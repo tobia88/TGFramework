@@ -129,8 +129,6 @@ public class LMGrindTable : LMInput_Port
         string lastCode = string.Empty;
         string newCode = string.Empty;
 
-        for ()
-
         foreach (var p in path)
         {
             var node = GetNode(p);
