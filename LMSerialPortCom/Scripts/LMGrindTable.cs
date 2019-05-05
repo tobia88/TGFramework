@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Text;
+using UnityEngine;
 
 public class LMGrindTable : LMInput_Port
 {
@@ -28,6 +28,7 @@ public class LMGrindTable : LMInput_Port
 
     public int ColumnCount { get; private set; }
     public int RowCount { get; private set; }
+    public bool Is3D { get; private set; }
     public const string CLEAR_PATH = "CB01FD";
 
     private string m_currentKey;
@@ -37,7 +38,7 @@ public class LMGrindTable : LMInput_Port
 
     public System.Action onTestFinished;
     public System.Action onTestStarted;
-    public System.Action<Vector2> onTurnOffLight;
+    public System.Action<Vector3> onTurnOffLight;
     public Queue<GrindEvent> eventQueue = new Queue<GrindEvent>();
     public LMGrindTableEmulator GrindTable { get { return Emulator as LMGrindTableEmulator; } }
 
@@ -56,21 +57,27 @@ public class LMGrindTable : LMInput_Port
             {
                 m7bPort = new LMInput_Port();
                 (m7bPort as LMInput_Port).Init(controller,
-                                               KeyportData,
-                                               controller.gameConfig.GetValue("端口2", -1));
+                    KeyportData,
+                    controller.gameConfig.GetValue("端口2", -1));
             }
             return true;
         }
         return false;
     }
 
-	public override void Init(TGController _controller, KeyPortData keyportData, int _com)
-	{
-		base.Init(_controller, keyportData, _com);
+    public override void Init(TGController _controller, KeyPortData keyportData, int _com)
+    {
+        base.Init(_controller, keyportData, _com);
 
         ColumnCount = keyportData.width;
         RowCount = keyportData.height;
-	}
+    }
+
+    public void InitTable(Rect bound, bool is3D)
+    {
+        this.Is3D = is3D;
+        this.m_worldBound = bound;
+    }
 
     public override bool OnUpdate()
     {
@@ -88,7 +95,7 @@ public class LMGrindTable : LMInput_Port
 
     private void TriggerEvent(GrindEvent evt)
     {
-        switch(evt.key)
+        switch (evt.key)
         {
             case "CJ":
                 Debug.Log("Test Started");
@@ -116,11 +123,13 @@ public class LMGrindTable : LMInput_Port
 
     public const string PATH_FORMAT = "Y{0}Z";
 
-    public void Write(Vector2[] path)
+    public void Write(Vector3[] path)
     {
         string content = string.Empty;
         string lastCode = string.Empty;
         string newCode = string.Empty;
+
+        for ()
 
         foreach (var p in path)
         {
@@ -141,18 +150,13 @@ public class LMGrindTable : LMInput_Port
 
             content += newCode;
         }
-        
+
         Write(string.Format(PATH_FORMAT, content), false);
     }
 
-    public void SetWorldBound(Rect rect)
+    public void DrawLine(Vector3 from, Vector3 to)
     {
-        m_worldBound = rect;
-    }
-
-    public void DrawLine(Vector2 from, Vector2 to)
-    {
-        var list = new List<Vector2>();
+        var list = new List<Vector3>();
 
         list.Add(from);
 
@@ -167,17 +171,25 @@ public class LMGrindTable : LMInput_Port
         Write(list.ToArray());
     }
 
-    public void DrawArc(Vector2 center, float radius, int fromDeg, int toDeg)
+    public void DrawArc(Vector3 center, float radius, int fromDeg, int toDeg)
     {
-        var list = new List<Vector2>();
+        var list = new List<Vector3>();
 
         for (int i = fromDeg; i <= toDeg; i++)
         {
-            var np = new Vector2();
+            var np = new Vector3();
             var rad = i * Mathf.Deg2Rad;
 
-            np.x = Mathf.Cos(rad) * radius + center.x;
-            np.y = Mathf.Sin(rad) * radius + center.y;
+            if (Is3D)
+            {
+                np.x = Mathf.Cos(rad) * radius + center.x;
+                np.z = Mathf.Sin(rad) * radius + center.z;
+            }
+            else
+            {
+                np.x = Mathf.Cos(rad) * radius + center.x;
+                np.y = Mathf.Sin(rad) * radius + center.y;
+            }
 
             list.Add(np);
         }
@@ -198,8 +210,8 @@ public class LMGrindTable : LMInput_Port
         int rowIndex = 65 + node.y;
 
         // YZ has been used for head and tail, so just skip it
-        if (colIndex >= 89) colIndex += 2;
-        if (rowIndex >= 89) rowIndex += 2;
+        if (colIndex >= 89)colIndex += 2;
+        if (rowIndex >= 89)rowIndex += 2;
 
         char colChar = (char)colIndex;
         char rowChar = (char)rowIndex;
@@ -207,28 +219,40 @@ public class LMGrindTable : LMInput_Port
         return colChar.ToString() + rowChar.ToString();
     }
 
-    private Node GetNode(Vector2 p)
+    private Node GetNode(Vector3 p)
     {
-        float ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
-        float ratioY = 1f - ((p.y - m_worldBound.y) / (m_worldBound.height));
+        float ratioX = 0f;
+        float ratioY = 0f;
+
+        if (Is3D)
+        {
+            ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
+            ratioY = (p.z - m_worldBound.y) / (m_worldBound.height);
+        }
+        else
+        {
+            ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
+            ratioY = (p.y - m_worldBound.y) / (m_worldBound.height);
+        }
 
         Node n = new Node();
+
         n.x = Mathf.RoundToInt(ratioX * (ColumnCount - 1));
         n.y = Mathf.RoundToInt(ratioY * (RowCount - 1));
 
         return n;
     }
 
-    private Vector2 CodeToVector(string code)
+    private Vector3 CodeToVector(string code)
     {
         Debug.Log("Code To Vector: " + code);
 
-        int colIndex = (int) code[0];
-        int rowIndex = (int) code[1];
+        int colIndex = (int)code[0];
+        int rowIndex = (int)code[1];
 
         // YZ has been used for head and tail, so just skip it
-        if (colIndex >= 89) colIndex -= 2;
-        if (rowIndex >= 89) rowIndex -= 2;
+        if (colIndex >= 89)colIndex -= 2;
+        if (rowIndex >= 89)rowIndex -= 2;
 
         colIndex -= 65;
         rowIndex -= 65;
@@ -236,15 +260,20 @@ public class LMGrindTable : LMInput_Port
         return NodeToVector(colIndex, rowIndex);
     }
 
-    public Vector2 NodeToVector(int x, int y)
+    public Vector3 NodeToVector(int x, int y)
     {
-        float ratioX = (float) x / (ColumnCount - 1);
-        float ratioY = 1f - (float) y / (RowCount - 1);
+        float ratioX = (float)x / (ColumnCount - 1);
+        float ratioY = 1f - (float)y / (RowCount - 1);
+
+        float rx = ratioX * m_worldBound.width + m_worldBound.x;
+        float ry = ratioY * m_worldBound.height + m_worldBound.y;
 
         Debug.Log(string.Format("Rx: {0}. Ry: {1}", ratioX, ratioY));
 
-        return new Vector2(ratioX * m_worldBound.width + m_worldBound.x,
-                           ratioY * m_worldBound.height + m_worldBound.y);
+        if (Is3D)
+            return new Vector3(rx, 0f, ry);
+
+        return new Vector3(rx, ry);
     }
 
     public override IEnumerator OnStart(LMBasePortResolver resolver = null)
@@ -258,7 +287,7 @@ public class LMGrindTable : LMInput_Port
             yield return controller.StartCoroutine(m7bPort.OnStart(m7bResolver));
             ErrorTxt = m7bPort.ErrorTxt;
         }
-        
+
     }
 
     public Vector3 GetAccelerations()
