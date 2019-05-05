@@ -226,12 +226,18 @@ public class LMGrindTable : LMInput_Port
         {
             ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
             ratioY = (p.z - m_worldBound.y) / (m_worldBound.height);
+
+            // Reverse Ratio Y
+            ratioY = 1f - ratioY;
         }
         else
         {
             ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
             ratioY = (p.y - m_worldBound.y) / (m_worldBound.height);
         }
+
+        ratioX = Mathf.Clamp01(ratioX);
+        ratioY = Mathf.Clamp01(ratioY);
 
         Node n = new Node();
 
