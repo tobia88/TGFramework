@@ -309,8 +309,10 @@ public class TGGameScene : TGBaseScene
         }
 
         uiRoot.gameOverPanel.SetCountdownTxt(0);
-
-        var dateStr = controller.endTime.ToString("yyyy_MM_dd_HH_mm_ss");
+        
+        var now = System.DateTime.Now;
+        var dateStr = now.ToString("yyyy_MM_dd_HH_mm_ss");
+        controller.endTime = now;
 
         yield return StartCoroutine(RecordFrame(dateStr));
 

@@ -239,14 +239,10 @@ public class TGController : MonoBehaviour
             dxLoadingPanel.SetActive(false);
 
             yield return StartCoroutine(mainGame.GameRoutine());
-
-            endTime = DateTime.Now;
-
             yield return StartCoroutine(mainGame.EndRoutine());
-            yield return StartCoroutine(resultMng.StartRoutine());
         }
 
-        yield return StartCoroutine(mainGame.EndRoutine());
+        yield return StartCoroutine(resultMng.StartRoutine());
         yield return StartCoroutine(resultMng.EndRoutine());
         yield return StartCoroutine(inputSetting.EndRoutine());
         yield return StartCoroutine(gameConfig.EndRoutine());
