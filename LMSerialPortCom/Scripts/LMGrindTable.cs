@@ -23,13 +23,15 @@ public class LMGrindTable : LMInput_Port
         public int y;
     }
 
+    public const string CLEAR_PATH = "CB01FD";
+    public const int SKIP_LENGTH = 8; //Skip along from code 88 to 96
+
     public Leadiy_M7B m7bResolver;
     public LMBasePortInput m7bPort;
 
     public int ColumnCount { get; private set; }
     public int RowCount { get; private set; }
     public bool Is3D { get; private set; }
-    public const string CLEAR_PATH = "CB01FD";
 
     private string m_currentKey;
     private string m_currentValue;
@@ -213,9 +215,8 @@ public class LMGrindTable : LMInput_Port
         int colIndex = 65 + node.x;
         int rowIndex = 65 + node.y;
 
-        // YZ has been used for head and tail, so just skip it
-        if (colIndex >= 89)colIndex += 2;
-        if (rowIndex >= 89)rowIndex += 2;
+        if (colIndex >= 89)colIndex += SKIP_LENGTH;
+        if (rowIndex >= 89)rowIndex += SKIP_LENGTH;
 
         char colChar = (char)colIndex;
         char rowChar = (char)rowIndex;
@@ -264,9 +265,8 @@ public class LMGrindTable : LMInput_Port
         int colIndex = (int)code[0];
         int rowIndex = (int)code[1];
 
-        // YZ has been used for head and tail, so just skip it
-        if (colIndex >= 89)colIndex -= 2;
-        if (rowIndex >= 89)rowIndex -= 2;
+        if (colIndex >= 89)colIndex -= SKIP_LENGTH;
+        if (rowIndex >= 89)rowIndex -= SKIP_LENGTH;
 
         colIndex -= 65;
         rowIndex -= 65;
