@@ -120,12 +120,7 @@ public abstract class LMBasePortInput
 			ReconnectInFewSeconds();
 		}
 
-		if (Bytes != null && Bytes.Length > 0)
-		{
-			controller.DebugText("连接成功，请重新打开数据面板");
-		}
-
-		return true;
+		return Bytes != null;
 	}
 
 	public virtual float GetValue(int index)

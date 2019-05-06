@@ -149,7 +149,6 @@ public class LMGrindTable : LMInput_Port
             if (IsTesting)
             {
                 GrindTableEmu.SetBtnEnable(node.x, node.y, EmuTableBtnStates.Waiting);
-                continue;
             }
 
             content += newCode;
@@ -221,7 +220,11 @@ public class LMGrindTable : LMInput_Port
         char colChar = (char)colIndex;
         char rowChar = (char)rowIndex;
 
-        return colChar.ToString() + rowChar.ToString();
+        string retval = colChar.ToString() + rowChar.ToString();
+
+        Debug.Log(string.Format("Writing code x={0} y={1}, return {2}", colIndex, rowIndex, retval));
+
+        return retval;
     }
 
     private Node GetNode(Vector3 p)
