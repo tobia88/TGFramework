@@ -215,8 +215,8 @@ public class LMGrindTable : LMInput_Port
         int colIndex = 65 + node.x;
         int rowIndex = 65 + node.y;
 
-        if (colIndex >= 89)colIndex += SKIP_LENGTH;
-        if (rowIndex >= 89)rowIndex += SKIP_LENGTH;
+        if (colIndex >= 89) colIndex += SKIP_LENGTH;
+        if (rowIndex >= 89) rowIndex += SKIP_LENGTH;
 
         char colChar = (char)colIndex;
         char rowChar = (char)rowIndex;
@@ -344,7 +344,8 @@ public class LMGrindTable : LMInput_Port
             {
                 if (split[i].Length != 7 || split[i].IndexOf(':') < -1)
                     continue;
-
+                
+                Debug.Log("Catch Event: " + split);
                 split = split[i].Split(':');
 
                 string key = split[0];

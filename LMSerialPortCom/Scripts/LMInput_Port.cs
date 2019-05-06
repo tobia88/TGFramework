@@ -55,12 +55,21 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 		}
 	}
 
-
 	private IEnumerator PortWriteRoutine(byte[] bytes)
 	{
-		Port.Write(bytes, 0, bytes.Length);
-
-		IsPortWriting = true;
+		while (!IsPortWriting)
+		{
+			try
+			{
+				Port.Write(bytes, 0, bytes.Length);
+				IsPortWriting = true;
+			}
+			catch (System.TimeoutException ex)
+			{
+				Debug.LogWarning(ex);
+				Debug.Log("Restart port write routine");
+			}
+		}
 
 		yield return new WaitForSeconds(0.1f);
 
