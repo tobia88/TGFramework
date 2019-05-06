@@ -26,7 +26,6 @@ public class TGUIRoot : MonoBehaviour
 
 		var gameType = gameScene.gameType;
 		timeBar.gameObject.SetActive(gameType == GameTypes.TimeLimit);
-		scoreTxt.gameObject.SetActive(gameType == GameTypes.Missions);
 
 		gameOverPanel.SetGameType(gameType);
 	}

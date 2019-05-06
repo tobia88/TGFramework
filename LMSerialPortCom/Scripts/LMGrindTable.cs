@@ -34,13 +34,11 @@ public class LMGrindTable : LMInput_Port
     private string m_currentKey;
     private string m_currentValue;
     private Rect m_worldBound;
-    private LMGrindTableEmulator m_emulator;
-
     public System.Action onTestFinished;
     public System.Action onTestStarted;
     public System.Action<Vector3> onTurnOffLight;
     public Queue<GrindEvent> eventQueue = new Queue<GrindEvent>();
-    public LMGrindTableEmulator GrindTable { get { return Emulator as LMGrindTableEmulator; } }
+    public LMGrindTableEmulator GrindTableEmu { get { return Emulator as LMGrindTableEmulator; } }
 
     public override bool OpenPort()
     {
@@ -71,6 +69,14 @@ public class LMGrindTable : LMInput_Port
 
         ColumnCount = keyportData.width;
         RowCount = keyportData.height;
+    }
+
+    public void ClearLights()
+    {
+        Write(CLEAR_PATH, false);
+
+        if (IsTesting)
+            GrindTableEmu.Reset();
     }
 
     public void InitTable(Rect bound, bool is3D)
@@ -140,9 +146,9 @@ public class LMGrindTable : LMInput_Port
 
             lastCode = newCode;
 
-            if (controller.inputSetting.IsTesting)
+            if (IsTesting)
             {
-                GrindTable.SetBtnEnable(node.x, node.y, EmuTableBtnStates.Waiting);
+                GrindTableEmu.SetBtnEnable(node.x, node.y, EmuTableBtnStates.Waiting);
                 continue;
             }
 
@@ -197,7 +203,8 @@ public class LMGrindTable : LMInput_Port
 
     public override void Close()
     {
-        Write(CLEAR_PATH, false);
+        ClearLights();
+
         if (m7bPort != null)
             m7bPort.Close();
     }

@@ -8,7 +8,7 @@ public class LMGrindTableEmulator : LMBaseEmulator
     private Camera m_camera;
     private LMGrindTableEmulatorBtn[] m_btns;
     private RectTransform m_rectTrans;
-    
+
     public int column, row;
     public LMGrindTableEmulatorBtn btnPrefab;
     public List<LMGrindTableEmulatorBtn> activatedButtons = new List<LMGrindTableEmulatorBtn>();
@@ -76,6 +76,12 @@ public class LMGrindTableEmulator : LMBaseEmulator
 
             SetTransform(m_btns[i], x, y);
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (m_grindTable.onTestFinished != null)
+                m_grindTable.onTestFinished();
+        }
     }
 
     private void SetTransform(LMGrindTableEmulatorBtn btn, int x, int y)
@@ -111,8 +117,7 @@ public class LMGrindTableEmulator : LMBaseEmulator
     {
         var btn = Instantiate(btnPrefab);
 
-
-        btn.transform.SetParent(transform, true);   
+        btn.transform.SetParent(transform, true);
         btn.Init(this, x, y);
         SetTransform(btn, x, y);
 

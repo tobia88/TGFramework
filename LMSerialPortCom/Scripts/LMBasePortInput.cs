@@ -45,6 +45,7 @@ public abstract class LMBasePortInput
 	public bool HasData { get; protected set; }
 	public float ConnectLimit { get { return 5f; } }
 	public LMBaseEmulator Emulator { get; private set; }
+	public bool IsTesting { get; protected set; }
 
 	public System.Action<byte[]> onReceiveDataCallback;
 
@@ -154,6 +155,9 @@ public abstract class LMBasePortInput
 			if (testing)
 				Emulator.Init(this);
 		}
+
+		IsTesting = testing;
+
 	}
 
 	public virtual IEnumerator TestConnect()
