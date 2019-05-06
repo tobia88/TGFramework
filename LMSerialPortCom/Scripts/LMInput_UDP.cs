@@ -103,10 +103,11 @@ public class LMInput_UDP : LMBasePortInput
 				Bytes = m_client.Receive(ref m_endPoint);
 				OnHandleData(Bytes);
 			}
-			catch (ArgumentNullException e)
+			catch (System.Exception e)
 			{
-				if (TGController.Instance != null)
-					TGController.Instance.DebugText(e.Message);
+				Debug.LogWarning(e);
+				Close();
+				OpenPort();
 			}
 		}
 	}
