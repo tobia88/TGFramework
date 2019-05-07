@@ -281,7 +281,8 @@
             ],
             "width": 24,
             "height": 16,
-            "type": "CASMB"
+            "type": "CASMB",
+            "disableRecalibrate": true
         },
         {
             "name": [
@@ -309,7 +310,8 @@
             ],
             "width": 28,
             "height": 12,
-            "type": "CASMB"
+            "type": "CASMB",
+            "disableRecalibrate": true
         }
     ]
 }

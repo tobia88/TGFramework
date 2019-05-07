@@ -57,6 +57,9 @@ public class TGBaseScene : MonoBehaviour
 
     protected virtual void OnPressExit()
     {
+        if (!isActive)
+            return;
+
         ExitScene();
     }
 

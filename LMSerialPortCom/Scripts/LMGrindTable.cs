@@ -15,6 +15,11 @@ public class LMGrindTable : LMInput_Port
             this.key = key;
             this.value = value;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Key:{0}, Value:{1}", key, value);
+        }
     }
 
     public struct Node
@@ -35,6 +40,7 @@ public class LMGrindTable : LMInput_Port
 
     private string m_currentKey;
     private string m_currentValue;
+    
     private Rect m_worldBound;
     public System.Action onTestFinished;
     public System.Action onTestStarted;
@@ -75,7 +81,10 @@ public class LMGrindTable : LMInput_Port
 
     public void ClearLights()
     {
+        Debug.Log("Clear Lights");
+
         Write(CLEAR_PATH, false);
+        eventQueue.Clear();
 
         if (IsTesting)
             GrindTableEmu.Reset();
@@ -103,6 +112,7 @@ public class LMGrindTable : LMInput_Port
 
     private void TriggerEvent(GrindEvent evt)
     {
+        Debug.Log(string.Format("Event Triggered: " + evt));
         switch (evt.key)
         {
             case "CJ":
@@ -121,10 +131,10 @@ public class LMGrindTable : LMInput_Port
                 break;
 
             case "CC":
-                Debug.Log("On Turn Off Light: " + m_currentValue);
+                Debug.Log("On Turn Off Light: " + evt.value);
 
                 if (onTurnOffLight != null)
-                    onTurnOffLight(CodeToVector(m_currentValue));
+                    onTurnOffLight(CodeToVector(evt.value));
                 break;
         }
     }
@@ -208,6 +218,8 @@ public class LMGrindTable : LMInput_Port
 
         if (m7bPort != null)
             m7bPort.Close();
+
+        base.Close();
     }
 
     private string NodeToCode(Node node)
@@ -345,7 +357,7 @@ public class LMGrindTable : LMInput_Port
                 if (split[i].Length != 7 || split[i].IndexOf(':') < -1)
                     continue;
                 
-                Debug.Log("Catch Event: " + split);
+                Debug.Log("Catch Event: " + split[i]);
                 split = split[i].Split(':');
 
                 string key = split[0];
@@ -364,9 +376,12 @@ public class LMGrindTable : LMInput_Port
         if (m_currentKey == key && m_currentValue == value)
             return;
 
+        var evt = new GrindEvent(key, value);
+        eventQueue.Enqueue(evt);
+
+        Debug.Log("Event Enqueue: " + evt);
+
         m_currentKey = key;
         m_currentValue = value;
-
-        eventQueue.Enqueue(new GrindEvent(m_currentKey, m_currentKey));
     }
 }

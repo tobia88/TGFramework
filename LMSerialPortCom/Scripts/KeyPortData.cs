@@ -29,7 +29,7 @@ public class KeyPortData
     public bool isDegree;
     public bool raw;
     public bool heatmap;
-    // public string thresholdEquation;
+    public bool disableRecalibrate;
     public int inputTotalGap;
     public KeyPortValueData[] value;
     public KeyPortInputData[] input;
