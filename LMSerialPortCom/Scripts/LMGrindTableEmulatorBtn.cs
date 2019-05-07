@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 public enum EmuTableBtnStates
 {
     Null,
+    Start,
+    End,
     Waiting,
     Pressed
 }
@@ -45,7 +47,8 @@ public class LMGrindTableEmulatorBtn : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData e)
     {
-        if (m_btnState != EmuTableBtnStates.Waiting)
+        if (m_btnState == EmuTableBtnStates.Null || 
+            m_btnState == EmuTableBtnStates.Pressed)
             return;
 
         m_emulator.OnBtnClick(this);
@@ -59,7 +62,8 @@ public class LMGrindTableEmulatorBtn : MonoBehaviour, IPointerClickHandler
 
     private Color GetColor(EmuTableBtnStates state)
     {
-        if (m_btnState == EmuTableBtnStates.Pressed) return Color.green;
+        if (m_btnState == EmuTableBtnStates.Start) return Color.green;
+        if (m_btnState == EmuTableBtnStates.End) return Color.red;
         if (m_btnState == EmuTableBtnStates.Waiting) return Color.yellow;
         return Color.gray;
     }

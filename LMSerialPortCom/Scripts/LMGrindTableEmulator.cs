@@ -8,6 +8,7 @@ public class LMGrindTableEmulator : LMBaseEmulator
     private Camera m_camera;
     private LMGrindTableEmulatorBtn[] m_btns;
     private RectTransform m_rectTrans;
+    private int m_btnPressed;
 
     public int column, row;
     public LMGrindTableEmulatorBtn btnPrefab;
@@ -34,53 +35,60 @@ public class LMGrindTableEmulator : LMBaseEmulator
 
     public void Reset()
     {
+        m_btnPressed = 0;
+
         Debug.Log("Reset");
         foreach (var btn in m_btns)
             btn.BtnState = EmuTableBtnStates.Null;
+            
+        activatedButtons.Clear();
+    }
+
+    public void Restart()
+    {
+        if (activatedButtons == null)
+            return;
+
+        activatedButtons[0].BtnState = EmuTableBtnStates.Start;
+        for (int i = 1; i < activatedButtons.Count-1; i++)
+        {
+            activatedButtons[i].BtnState = EmuTableBtnStates.Waiting;
+        }
+        activatedButtons[activatedButtons.Count - 1].BtnState = EmuTableBtnStates.End;
+
+        m_btnPressed = 0;
     }
 
     public void OnBtnClick(LMGrindTableEmulatorBtn btn)
     {
         if (activatedButtons.Contains(btn))
         {
-            btn.BtnState = EmuTableBtnStates.Pressed;
+            m_btnPressed++;
 
             if (m_grindTable.onTurnOffLight != null)
             {
                 m_grindTable.onTurnOffLight(m_grindTable.NodeToVector(btn.x, btn.y));
             }
 
-            activatedButtons.Remove(btn);
+            Debug.Log("Btn Pressed: " + m_btnPressed);
 
-            Debug.Log("Button Left: " + activatedButtons.Count);
-
-            if (activatedButtons.Count <= 0)
+            if (btn.BtnState == EmuTableBtnStates.End)
             {
-                Reset();
+                bool result = m_btnPressed >= 3;
 
+                if (!result)
+                    Restart();
+                else
+                    Reset();
+
+                // 如果按钮点击量大于等于3，则表示训练通过，反之从来一次
                 if (m_grindTable.onTestFinished != null)
-                    m_grindTable.onTestFinished();
+                    m_grindTable.onTestFinished(result);
             }
-        }
-    }
-
-    void Update()
-    {
-        if (m_btns == null)
-            return;
-
-        for (int i = 0; i < m_btns.Length; i++)
-        {
-            int x = i % column;
-            int y = i / column;
-
-            SetTransform(m_btns[i], x, y);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (m_grindTable.onTestFinished != null)
-                m_grindTable.onTestFinished();
+            else
+            {
+                btn.BtnState = EmuTableBtnStates.Pressed;
+            }
         }
     }
 
