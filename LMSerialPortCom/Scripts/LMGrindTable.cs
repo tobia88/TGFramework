@@ -41,7 +41,7 @@ public class LMGrindTable : LMInput_Port
 
     private string m_currentKey;
     private string m_currentValue;
-    
+
     private Rect m_worldBound;
     public System.Action<bool> onTestFinished;
     public System.Action onTestStarted;
@@ -104,6 +104,9 @@ public class LMGrindTable : LMInput_Port
 
     public override bool OnUpdate()
     {
+        if (IsTesting)
+            GrindTableEmu.OnUpdate();
+
         if (base.OnUpdate())
         {
             //如果存在排序中的事件，则按顺序触发该事件
@@ -112,6 +115,7 @@ public class LMGrindTable : LMInput_Port
                 var evt = eventQueue.Dequeue();
                 TriggerEvent(evt);
             }
+
             return true;
         }
         return false;
@@ -133,7 +137,7 @@ public class LMGrindTable : LMInput_Port
             case "CB":
                 // 如果获取CB:0001则表示顺利完成任务
                 // 反之获取CB:0002则表示任务失败，需要重来
-                bool result = evt.value=="1";
+                bool result = evt.value == "1";
                 Debug.Log("Train Finished, Result: " + result);
                 if (onTestFinished != null)
                     onTestFinished(result);
@@ -180,7 +184,7 @@ public class LMGrindTable : LMInput_Port
                 // 开始的灯亮绿色，中间的黄色，最后的灯是红色
                 var state = EmuTableBtnStates.Waiting;
 
-                if (i == 0) 
+                if (i == 0)
                     state = EmuTableBtnStates.Start;
                 else if (i == path.Length - 1)
                     state = EmuTableBtnStates.End;
@@ -253,8 +257,8 @@ public class LMGrindTable : LMInput_Port
         int rowIndex = 65 + node.y;
 
         // 直接跳过从Y开始到a之前的字符
-        if (colIndex >= 89) colIndex += SKIP_LENGTH;
-        if (rowIndex >= 89) rowIndex += SKIP_LENGTH;
+        if (colIndex >= 89)colIndex += SKIP_LENGTH;
+        if (rowIndex >= 89)rowIndex += SKIP_LENGTH;
 
         char colChar = (char)colIndex;
         char rowChar = (char)rowIndex;
@@ -384,7 +388,7 @@ public class LMGrindTable : LMInput_Port
             {
                 if (split[i].Length != 7 || split[i].IndexOf(':') < -1)
                     continue;
-                
+
                 Debug.Log("Catch Event: " + split[i]);
                 split = split[i].Split(':');
 

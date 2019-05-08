@@ -33,6 +33,16 @@ public class LMGrindTableEmulator : LMBaseEmulator
         activatedButtons.Add(btn);
     }
 
+    public void OnUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Reset();
+            if (m_grindTable.onTestFinished != null)
+                m_grindTable.onTestFinished(true);
+        }
+    }
+
     public void Reset()
     {
         m_btnPressed = 0;
@@ -74,14 +84,14 @@ public class LMGrindTableEmulator : LMBaseEmulator
 
             if (btn.BtnState == EmuTableBtnStates.End)
             {
-                bool result = m_btnPressed >= 3;
+                bool result = m_btnPressed >= 5;
 
                 if (!result)
                     Restart();
                 else
                     Reset();
 
-                // 如果按钮点击量大于等于3，则表示训练通过，反之从来一次
+                // 如果按钮点击量大于等于5，则表示训练通过，反之从来一次
                 if (m_grindTable.onTestFinished != null)
                     m_grindTable.onTestFinished(result);
             }
