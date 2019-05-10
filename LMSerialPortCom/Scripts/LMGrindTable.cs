@@ -173,25 +173,18 @@ public class LMGrindTable : LMInput_Port
             // 将位置转译成磨砂版接收的编号
             newCode = NodeToCode(node);
 
+            if (lastCode == newCode)
+                continue;
+
+            content += newCode;
+            lastCode = newCode;
+
             // 测试时候发送到模拟器
             if (IsTesting)
             {
-                // 开始的灯亮绿色，中间的黄色，最后的灯是红色
-                var state = EmuTableBtnStates.Waiting;
-
-                if (i == 0)
-                    state = EmuTableBtnStates.Start;
-                else if (i == path.Length - 1)
-                    state = EmuTableBtnStates.End;
-
-                GrindTableEmu.SetBtnEnable(node.x, node.y, state);
+                GrindTableEmu.SetBtnEnable(node.x, node.y);
             }
 
-            if (lastCode != newCode)
-            {
-                content += newCode;
-                lastCode = newCode;
-            }
         }
 
         Write(string.Format(PATH_FORMAT, content), false);
@@ -291,14 +284,14 @@ public class LMGrindTable : LMInput_Port
             ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
             ratioY = (p.z - m_worldBound.y) / (m_worldBound.height);
 
-            // Reverse Ratio Y
-            ratioY = 1f - ratioY;
         }
         else
         {
             ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
             ratioY = (p.y - m_worldBound.y) / (m_worldBound.height);
         }
+        // Reverse Ratio Y
+        ratioY = 1f - ratioY;
 
         ratioX = Mathf.Clamp01(ratioX);
         ratioY = Mathf.Clamp01(ratioY);

@@ -26,11 +26,20 @@ public class LMGrindTableEmulator : LMBaseEmulator
         CreateButtons();
     }
 
-    public void SetBtnEnable(int x, int y, EmuTableBtnStates btnState)
+    public void SetBtnEnable(int x, int y)
     {
         var btn = m_btns[y * column + x];
-        btn.BtnState = btnState;
         activatedButtons.Add(btn);
+
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        foreach (var btn in activatedButtons)
+            btn.BtnState = EmuTableBtnStates.Waiting;
+        activatedButtons[0].BtnState = EmuTableBtnStates.Start;
+        activatedButtons[activatedButtons.Count - 1].BtnState = EmuTableBtnStates.End;
     }
 
     public void OnUpdate()
