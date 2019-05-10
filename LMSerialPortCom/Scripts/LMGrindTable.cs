@@ -176,12 +176,24 @@ public class LMGrindTable : LMInput_Port
         Write(list.ToArray());
     }
 
-    public void DrawArc(Vector3 center, float radius, int fromDeg, int toDeg)
+    public void DrawArc(Vector3 center, float radius, int fromDeg, int toDeg, bool counterClockwise)
     {
         var list = new List<Vector3>();
 
-        for (int i = fromDeg; i <= toDeg; i++)
+        var sign = (counterClockwise) ? 1 : -1;
+        
+        if (fromDeg < 0) fromDeg = (fromDeg % 360) + 360;
+        if (toDeg < 0) toDeg = (toDeg % 360) + 360;
+
+        fromDeg %= 360;
+        toDeg %= 360;
+
+        for (int i = fromDeg; i != toDeg; i+=sign)
         {
+            if (i < 0) i += 360;
+
+            i %= 360;
+
             var np = new Vector3();
             var rad = i * Mathf.Deg2Rad;
 
@@ -345,7 +357,7 @@ public class LMGrindTable : LMInput_Port
                 if (split[i].Length != 7 || split[i].IndexOf(':') < -1)
                     continue;
                 
-                Debug.Log("Catch Event: " + split);
+                Debug.Log("Catch Event: " + split[i]);
                 split = split[i].Split(':');
 
                 string key = split[0];
