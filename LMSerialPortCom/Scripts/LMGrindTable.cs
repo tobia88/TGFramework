@@ -173,11 +173,6 @@ public class LMGrindTable : LMInput_Port
             // 将位置转译成磨砂版接收的编号
             newCode = NodeToCode(node);
 
-            if (lastCode == newCode)
-                continue;
-
-            lastCode = newCode;
-
             // 测试时候发送到模拟器
             if (IsTesting)
             {
@@ -192,7 +187,11 @@ public class LMGrindTable : LMInput_Port
                 GrindTableEmu.SetBtnEnable(node.x, node.y, state);
             }
 
-            content += newCode;
+            if (lastCode != newCode)
+            {
+                content += newCode;
+                lastCode = newCode;
+            }
         }
 
         Write(string.Format(PATH_FORMAT, content), false);
