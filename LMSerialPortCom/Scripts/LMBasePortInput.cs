@@ -120,7 +120,7 @@ public abstract class LMBasePortInput
 			ReconnectInFewSeconds();
 		}
 
-		return Bytes != null;
+		return true;
 	}
 
 	public virtual float GetValue(int index)

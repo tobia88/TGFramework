@@ -46,17 +46,28 @@ public class Leadiy_M7B : LMBasePortResolver
         if (_bytes == null || _bytes.Length == 0)
             return;
 
+        // 把获取的bytes转化为字符串
         m_getString += LMUtility.ByteToStr(_bytes);
 
+        // 获取角度
         var angleValues = GetByteValues(m_getString, CODE_DETECTION);
+
+        // 获取加速度
         var accelValues = GetByteValues(m_getString, ACCELERATE_DETECTION);
 
-        if (angleValues == null || accelValues == null)
+        // 如果没有获取角度和加速度，则不清空存储的字符串
+        if (angleValues == null && accelValues == null)
             return;
 
-        UpdateAngles(angleValues);
-        UpdateAcceleration(accelValues);
+        // 更新角度值
+        if (angleValues != null)
+            UpdateAngles(angleValues);
 
+        // 更新加速度值
+        if (accelValues != null)
+            UpdateAcceleration(accelValues);
+
+        // 清空字符串
         m_getString = string.Empty;
     }
 

@@ -107,13 +107,18 @@ public class TGGameScene : TGBaseScene
         base.Init();
 
         var tutorialSpr = Resources.Load<Sprite>(controller.inputSetting.DeviceName);
+        var disableRecalibrate = controller.inputSetting.KeyportData.disableRecalibrate;
 
         uiRoot.gameObject.SetActive(true);
 
         uiRoot.Init(this, tutorialSpr);
 
         uiRoot.exitBtn.onClick.AddListener(OnPressExitGame);
-        uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
+
+        uiRoot.recalibrationBtn.gameObject.SetActive(!disableRecalibrate);
+
+        if (!disableRecalibrate)
+            uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
 
         if (tutorialSpr != null)
         {
@@ -147,6 +152,9 @@ public class TGGameScene : TGBaseScene
 
     private void OnPressExitGame()
     {
+        if (!isActive)
+            return;
+
         TimeLeft = 0f;
         if (m_timePassed <= 15f)
             ExitScene();
