@@ -227,7 +227,7 @@ public class LMGrindTable : LMInput_Port
         fromDeg %= 360;
         toDeg %= 360;
 
-        for (int i = fromDeg; i != toDeg; i+=sign)
+        for (int i = fromDeg; (sign > 0) ? i <= toDeg: i >= toDeg; i+=sign)
         {
             if (i < 0) i += 360;
 
