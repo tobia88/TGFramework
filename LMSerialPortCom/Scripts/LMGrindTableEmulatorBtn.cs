@@ -62,9 +62,9 @@ public class LMGrindTableEmulatorBtn : MonoBehaviour, IPointerClickHandler
 
     private Color GetColor(EmuTableBtnStates state)
     {
-        if (m_btnState == EmuTableBtnStates.Start) return Color.green;
+        if (m_btnState == EmuTableBtnStates.Start) return Color.yellow;
         if (m_btnState == EmuTableBtnStates.End) return Color.red;
-        if (m_btnState == EmuTableBtnStates.Waiting) return Color.yellow;
+        if (m_btnState == EmuTableBtnStates.Waiting) return Color.green;
         return Color.gray;
     }
 }
