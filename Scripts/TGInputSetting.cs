@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-
 public class TGInputSetting : TGBaseBehaviour
 {
     public string configFileName;
@@ -103,15 +102,18 @@ public class TGInputSetting : TGBaseBehaviour
         }
     }
 
-    public override IEnumerator EndRoutine() { yield return 1; }
-
-    public override void ForceClose() 
-    { 
-        if (portInput != null)
-            portInput.Close();
+    public override IEnumerator EndRoutine()
+    {
+        Close();
+        yield return 1;
     }
 
-    public void OnGameStart() 
+    public override void ForceClose()
+    {
+        Close();
+    }
+
+    public void OnGameStart()
     {
         if (portInput != null)
             portInput.SetTest(IsTesting);
@@ -123,9 +125,9 @@ public class TGInputSetting : TGBaseBehaviour
         if (KeyportData.type == "CASMB")
         {
             var retval = new LMGrindTable();
-            retval.Init(m_controller, 
-                        KeyportData,
-                        m_controller.gameConfig.GetValue("端口", -1));
+            retval.Init(m_controller,
+                KeyportData,
+                m_controller.gameConfig.GetValue("端口", -1));
             return retval;
         }
 
@@ -142,13 +144,13 @@ public class TGInputSetting : TGBaseBehaviour
         {
             var retval = new LMInput_Port();
             retval.Init(m_controller,
-                        KeyportData,
-                        m_controller.gameConfig.GetValue("端口", -1));
+                KeyportData,
+                m_controller.gameConfig.GetValue("端口", -1));
             Debug.Log("Getting Por On");
             return retval;
         }
-    } 
-    
+    }
+
     public void SetPressureLevel(int level)
     {
         float[] arr = KeyportData.levels;
