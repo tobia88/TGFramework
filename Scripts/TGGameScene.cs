@@ -34,6 +34,7 @@ public class TGGameScene : TGBaseScene
     public GameTypes gameType;
     public bool showScoreTxt = true;
 
+    // game.txt里的难度等级设置
     public int DifficultyLv
 
     {
@@ -52,6 +53,8 @@ public class TGGameScene : TGBaseScene
         get { return m_timeLeft; }
         set
         {
+            // 如果游戏类型是限时类型
+            // 则不设置剩余时间
             if (gameType != GameTypes.TimeLimit)
                 return;
 
@@ -68,6 +71,8 @@ public class TGGameScene : TGBaseScene
         StageLevel = Mathf.FloorToInt(m_timePassed / 60);
     }
 
+    // 当前关卡的阶段性难度等级
+    // 现阶段被设置成了1分钟以内为等级1，2分钟以内为等级2...以此类推
     public int StageLevel
     {
         get { return m_stageLevel; }
@@ -117,20 +122,13 @@ public class TGGameScene : TGBaseScene
 
     private void InitUI()
     {
+        // 根据设备名称获取教程图片，请确保Resources文件夹下的与keyInputConfig.json
+        // 下的设备名称保持一致
         var tutorialSpr = Resources.Load<Sprite>(controller.inputSetting.DeviceName);
-        var disableRecalibrate = controller.inputSetting.KeyportData.disableRecalibrate;
-
-        uiRoot.gameObject.SetActive(true);
 
         uiRoot.Init(this, tutorialSpr);
 
-        uiRoot.exitBtn.onClick.AddListener(OnPressExitGame);
-
-        uiRoot.recalibrationBtn.gameObject.SetActive(!disableRecalibrate);
-
-        if (!disableRecalibrate)
-            uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
-
+        // 如果成功获取教程图片，则绑定点击事件和教程弹出窗口
         if (tutorialSpr != null)
         {
             uiRoot.questionBtn.onClick.AddListener(() => GameState = GameStates.Tutorial);
@@ -138,10 +136,25 @@ public class TGGameScene : TGBaseScene
             uiRoot.tutorialPanel.onFinishClosePanel += () => GameState = GameStates.Playing;
         }
 
+        // 根据keyInputConfig.json里的设置来确定是否要开启校准按钮
+        var disableRecalibrate = controller.inputSetting.KeyportData.disableRecalibrate;
+
+        uiRoot.recalibrationBtn.gameObject.SetActive(!disableRecalibrate);
+
+        // 如果确定开启校准按钮，则绑定点击事件
+        if (!disableRecalibrate)
+            uiRoot.recalibrationBtn.onClick.AddListener(Recalibration);
+
+
+        // 右上角退出按钮的点击事件绑定
+        uiRoot.exitBtn.onClick.AddListener(OnPressExitGame);
+
+        // 退出游戏的弹出窗口事件绑定
         uiRoot.exitGamePanel.confirmBtn.onClick.AddListener(ExitScene);
         uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
         uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 
+        // 根据showScoreTxt选项确定是否显示左上角的分数
         uiRoot.scoreTxt.gameObject.SetActive(showScoreTxt);
     }
 
@@ -248,6 +261,7 @@ public class TGGameScene : TGBaseScene
         SceneManager.LoadScene(0);
     }
 
+    //  退出游戏弹窗
     protected virtual void OnFreezeToExitGame()
     {
         Time.timeScale = 0f;
@@ -256,16 +270,21 @@ public class TGGameScene : TGBaseScene
 
     protected virtual void OnUpdateGamePlaying()
     {
+        #if Unity_Editor
+        // 一些方便测试的快捷键
+        // LShift + Q直接结束游戏
         if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Q))
         {
             TimeLeft = 0f;
             GameState = GameStates.GameOver;
         }
 
+        // =键加10分
         if (Input.GetKey(KeyCode.Equals))
         {
             Score += 10;
         }
+        #endif
 
         m_gameTimePassed += Time.deltaTime;
 

@@ -19,6 +19,8 @@ public class TGUIRoot : MonoBehaviour
 
 	public void Init(TGGameScene gameScene, Sprite tutorialSpr)
 	{
+		gameObject.SetActive(true);
+
 		questionBtn.gameObject.SetActive(tutorialSpr != null);
 
 		if (tutorialSpr != null)
