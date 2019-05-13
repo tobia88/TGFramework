@@ -211,17 +211,21 @@ public class LMGrindTable : LMInput_Port
     {
         var list = new List<Vector3>();
 
+        // 顺时针还是逆时针
         var sign = (counterClockwise) ? 1 : -1;
-        
-        if (fromDeg < 0) fromDeg = (fromDeg % 360) + 360;
-        if (toDeg < 0) toDeg = (toDeg % 360) + 360;
+
+        // 把值域限定在[0,359]之间
+        if (fromDeg < 0)fromDeg = (fromDeg % 360) + 360;
+        if (toDeg < 0)toDeg = (toDeg % 360) + 360;
 
         fromDeg %= 360;
         toDeg %= 360;
 
-        for (int i = fromDeg; (sign > 0) ? i <= toDeg: i >= toDeg; i+=sign)
+        for (int i = fromDeg;
+            (sign > 0) ? i <= toDeg : i >= toDeg; i += sign)
         {
-            if (i < 0) i += 360;
+            // 把i值锁定在[0,360]之间
+            if (i < 0)i += 360;
 
             i %= 360;
 
@@ -290,7 +294,7 @@ public class LMGrindTable : LMInput_Port
             ratioX = (p.x - m_worldBound.x) / (m_worldBound.width);
             ratioY = (p.y - m_worldBound.y) / (m_worldBound.height);
         }
-        // Reverse Ratio Y
+        // 逆转Y值
         ratioY = 1f - ratioY;
 
         ratioX = Mathf.Clamp01(ratioX);
@@ -349,7 +353,6 @@ public class LMGrindTable : LMInput_Port
             yield return controller.StartCoroutine(m7bPort.OnStart(m7bResolver));
             ErrorTxt = m7bPort.ErrorTxt;
         }
-
     }
 
     public Vector3 GetAccelerations()
@@ -380,26 +383,53 @@ public class LMGrindTable : LMInput_Port
 
     protected override void ResolveBytes(byte[] bytes)
     {
+        // 消除字节中的空值和空格
         bytes = LMUtility.RemoveSpacing(bytes);
 
+        // 把字节转化为字符串并叠加起来
         m_getString += Encoding.UTF8.GetString(bytes);
 
+        // 砂磨板的值会以分号为区分，如CB:0001;CC:00JK;等
+        // 因此当分号出现时候，则判断可能获取到数值了
         if (m_getString.IndexOf(';') >= 0)
         {
+            // 按分号分割成各别的数组，如[CB:0001,CC:00JK]
             string[] split = m_getString.Split(';');
 
+            // 迭代每个字符串
             for (int i = split.Length - 1; i >= 0; i--)
             {
-                if (split[i].Length != 7 || split[i].IndexOf(':') < -1)
-                    continue;
                 Debug.Log("Catch Event: " + split[i]);
-                split = split[i].Split(':');
 
-                string key = split[0];
-                string value = split[1].TrimStart('0');
+                string key = string.Empty;
+                string value = string.Empty;
 
+                // 捕获标准数值，如CC:00JK
+                if (split[i].Length == 7 && split[i].IndexOf(':') > 0)
+                {
+                    // 把键值和数值拆分开来，如[CB,0001]
+                    split = split[i].Split(':');
+
+                    key = split[0];
+
+                    // 把数值里的0删去
+                    value = split[1].TrimStart('0');
+                }
+                // 捕获其他事件，如CA01FD，CE01FD等
+                else
+                {
+                    key = split[i];
+                }
+
+                if (string.IsNullOrEmpty(key))
+                    continue;
+
+                Debug.Log("Key: " + key + "，Value: " + value);
+
+                // 存到序列里
                 SetValue(key, value);
 
+                // 只要获取任何键值，就清空叠加的字符串
                 m_getString = string.Empty;
                 break;
             }
@@ -408,9 +438,12 @@ public class LMGrindTable : LMInput_Port
 
     private void SetValue(string key, string value)
     {
+        // 由于上位机会重复发送当前的事件，因此需要判断
+        // 如果获得的时间存在重复，则跳过
         if (m_currentKey == key && m_currentValue == value)
             return;
 
+        // 把该事件存到事件序列里，依序触发
         var evt = new GrindEvent(key, value);
         eventQueue.Enqueue(evt);
 
