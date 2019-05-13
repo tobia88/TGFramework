@@ -23,7 +23,11 @@ public class AutoGameOverPanel : TGBasePanel
 
 	public void SetGameType(GameTypes gameType)
 	{
-		var spr = (gameType == GameTypes.Missions) ? missionSpr : timeSpr;
+        var spr = timeSpr;
+
+        // 暂时不需要
+		// var spr = (gameType == GameTypes.Missions) ? missionSpr : timeSpr;
+
 		bgImg.sprite = spr;
 	}
 }

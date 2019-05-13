@@ -32,6 +32,7 @@ public class TGGameScene : TGBaseScene
     public Sound bgm;
     public TGUIRoot uiRoot;
     public GameTypes gameType;
+    public bool showScoreTxt = true;
 
     public int DifficultyLv
 
@@ -106,6 +107,16 @@ public class TGGameScene : TGBaseScene
     {
         base.Init();
 
+        InitUI();
+
+        var config = controller.gameConfig;
+
+        Duration = config.GetValue("训练时长", -1) * 60;
+        DifficultyLv = config.GetValue("难度等级", -1);
+    }
+
+    private void InitUI()
+    {
         var tutorialSpr = Resources.Load<Sprite>(controller.inputSetting.DeviceName);
         var disableRecalibrate = controller.inputSetting.KeyportData.disableRecalibrate;
 
@@ -131,10 +142,7 @@ public class TGGameScene : TGBaseScene
         uiRoot.exitGamePanel.cancelBtn.onClick.AddListener(uiRoot.exitGamePanel.Exit);
         uiRoot.exitGamePanel.onFinishClosePanel += () => GameState = GameStates.Playing;
 
-        var config = controller.gameConfig;
-
-        Duration = config.GetValue("训练时长", -1) * 60;
-        DifficultyLv = config.GetValue("难度等级", -1);
+        uiRoot.scoreTxt.gameObject.SetActive(showScoreTxt);
     }
 
     protected override void OnPressExit()
