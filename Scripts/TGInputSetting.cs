@@ -64,7 +64,11 @@ public class TGInputSetting : TGBaseBehaviour
 
     IEnumerator ConnectDeviceRoutine()
     {
+        // 如果game.txt中存在测试=1，则开启测试模式
         IsTesting = m_controller.gameConfig.GetValue("测试", 0) == 1;
+
+        if (IsTesting)
+            Debug.Log("开启测试模式");
 
         // FIXME: Temperory
         if (KeyportData.type == "m7b" && m_gameConfig.evalData.isFullAxis)

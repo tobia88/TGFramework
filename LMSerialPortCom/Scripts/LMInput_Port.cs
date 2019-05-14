@@ -13,7 +13,6 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 
 	public override bool OpenPort()
 	{
-		controller.DebugText("正在读取端口: " + portInfo.comName);
 		bool retval = SerialPortCtrl.Open(portInfo, this, true);
 
 		if (!retval)
@@ -121,9 +120,7 @@ public class LMInput_Port : LMBasePortInput, IPortReceiver
 
 		while (!result)
 		{
-			controller.DebugText("正在重新链接串口...");
 			yield return new WaitForSeconds(5);
-			controller.DebugText("连接串口中...");
 			result = OpenPort();
 		}
 

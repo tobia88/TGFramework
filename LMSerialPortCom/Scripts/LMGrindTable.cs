@@ -91,7 +91,7 @@ public class LMGrindTable : LMInput_Port
         Write(CLEAR_PATH, false);
         eventQueue.Clear();
 
-        if (IsTesting)
+        if (IsTesting && GrindTableEmu != null)
             GrindTableEmu.Reset();
     }
 
@@ -383,7 +383,7 @@ public class LMGrindTable : LMInput_Port
 
     protected override void ResolveBytes(byte[] bytes)
     {
-        // 消除字节中的空值和空格
+        // 消除字节中的空值
         bytes = LMUtility.RemoveSpacing(bytes);
 
         // 把字节转化为字符串并叠加起来
@@ -396,40 +396,31 @@ public class LMGrindTable : LMInput_Port
             // 按分号分割成各别的数组，如[CB:0001,CC:00JK]
             string[] split = m_getString.Split(';');
 
-            // 迭代每个字符串
+            // 倒序迭代每个字符串
             for (int i = split.Length - 1; i >= 0; i--)
             {
-                Debug.Log("Catch Event: " + split[i]);
-
-                string key = string.Empty;
-                string value = string.Empty;
-
-                // 捕获标准数值，如CC:00JK
-                if (split[i].Length == 7 && split[i].IndexOf(':') > 0)
-                {
-                    // 把键值和数值拆分开来，如[CB,0001]
-                    split = split[i].Split(':');
-
-                    key = split[0];
-
-                    // 把数值里的0删去
-                    value = split[1].TrimStart('0');
-                }
-                // 捕获其他事件，如CA01FD，CE01FD等
-                else
-                {
-                    key = split[i];
-                }
-
-                if (string.IsNullOrEmpty(key))
+                if (split[i].IndexOf(':') < 0)
                     continue;
 
-                Debug.Log("Key: " + key + "，Value: " + value);
+                string[] splitKey = split[i].Split(':');
+
+                string key = splitKey[0] ?? string.Empty;
+
+               // 如果键值为空或者是个空格，则直接跳过
+                if (string.IsNullOrWhiteSpace(key))
+                    continue;
+
+                // 如果获取到位置代号但是不完整，则跳过
+                if (key == "CC" && split[i].Length != 7)
+                    continue;
+
+                // 如果有值，则把开始的0全部去掉
+                string value = splitKey[1].TrimStart('0') ?? string.Empty;
 
                 // 存到序列里
                 SetValue(key, value);
 
-                // 只要获取任何键值，就清空叠加的字符串
+                // 只要获取任何有效键值，就清空叠加的字符串
                 m_getString = string.Empty;
                 break;
             }
@@ -443,11 +434,13 @@ public class LMGrindTable : LMInput_Port
         if (m_currentKey == key && m_currentValue == value)
             return;
 
+        Debug.Log("捕捉到事件: Key: " + key + "，Value: " + value);
+
         // 把该事件存到事件序列里，依序触发
         var evt = new GrindEvent(key, value);
         eventQueue.Enqueue(evt);
 
-        Debug.Log("Event Enqueue: " + evt);
+        Debug.Log("加入触发事件: " + evt);
 
         m_currentKey = key;
         m_currentValue = value;
