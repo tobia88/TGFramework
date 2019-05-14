@@ -32,8 +32,8 @@ public class LMGrindTable : LMInput_Port
     public const string PATH_FORMAT = "Y{0}Z";
     public const int SKIP_LENGTH = 8; //Skip along from code 88 to 96
 
-    public Leadiy_M7B m7bResolver;
-    public LMBasePortInput m7bPort;
+    // public Leadiy_M7B m7bResolver;
+    // public LMBasePortInput m7bPort;
 
     public int ColumnCount { get; private set; }
     public int RowCount { get; private set; }
@@ -49,30 +49,30 @@ public class LMGrindTable : LMInput_Port
     public Queue<GrindEvent> eventQueue = new Queue<GrindEvent>();
     public LMGrindTableEmulator GrindTableEmu { get { return Emulator as LMGrindTableEmulator; } }
 
-    public override bool OpenPort()
-    {
-        if (base.OpenPort())
-        {
-            int udp = controller.gameConfig.GetValue("UDP", -1);
+    // public override bool OpenPort()
+    // {
+    //     if (base.OpenPort())
+    //     {
+    //         int udp = controller.gameConfig.GetValue("UDP", -1);
 
-            //如果监测udp开启了，则使用udp做为3D传感器的端口
-            if (udp >= 0)
-            {
-                m7bPort = new LMInput_UDP();
-                (m7bPort as LMInput_UDP).Init(controller, KeyportData, udp);
-            }
-            //否则使用serial port做为3D传感器端口
-            else
-            {
-                m7bPort = new LMInput_Port();
-                (m7bPort as LMInput_Port).Init(controller,
-                    KeyportData,
-                    controller.gameConfig.GetValue("端口2", -1));
-            }
-            return true;
-        }
-        return false;
-    }
+    //         //如果监测udp开启了，则使用udp做为3D传感器的端口
+    //         if (udp >= 0)
+    //         {
+    //             m7bPort = new LMInput_UDP();
+    //             (m7bPort as LMInput_UDP).Init(controller, KeyportData, udp);
+    //         }
+    //         //否则使用serial port做为3D传感器端口
+    //         else
+    //         {
+    //             m7bPort = new LMInput_Port();
+    //             (m7bPort as LMInput_Port).Init(controller,
+    //                 KeyportData,
+    //                 controller.gameConfig.GetValue("端口2", -1));
+    //         }
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     public override void Init(TGController _controller, KeyPortData keyportData, int _com)
     {
@@ -88,7 +88,7 @@ public class LMGrindTable : LMInput_Port
     {
         Debug.Log("Clear Lights");
 
-        Write(CLEAR_PATH, false);
+        // Write(CLEAR_PATH, false);
         eventQueue.Clear();
 
         if (IsTesting && GrindTableEmu != null)
@@ -253,8 +253,8 @@ public class LMGrindTable : LMInput_Port
     {
         ClearLights();
 
-        if (m7bPort != null)
-            m7bPort.Close();
+        // if (m7bPort != null)
+        //     m7bPort.Close();
 
         base.Close();
     }
@@ -341,43 +341,43 @@ public class LMGrindTable : LMInput_Port
         return new Vector3(rx, ry);
     }
 
-    public override IEnumerator OnStart(LMBasePortResolver resolver = null)
-    {
-        yield return controller.StartCoroutine(base.OnStart(resolver));
+    // public override IEnumerator OnStart(LMBasePortResolver resolver = null)
+    // {
+    //     yield return controller.StartCoroutine(base.OnStart(resolver));
 
-        // 没有任何错误信息则开启3D传感器的解析器
-        if (string.IsNullOrEmpty(ErrorTxt) && m7bPort != null)
-        {
-            Debug.Log("m7b is started");
-            m7bResolver = new Leadiy_M7B();
-            yield return controller.StartCoroutine(m7bPort.OnStart(m7bResolver));
-            ErrorTxt = m7bPort.ErrorTxt;
-        }
-    }
+    //     // 没有任何错误信息则开启3D传感器的解析器
+    //     if (string.IsNullOrEmpty(ErrorTxt) && m7bPort != null)
+    //     {
+    //         Debug.Log("m7b is started");
+    //         m7bResolver = new Leadiy_M7B();
+    //         yield return controller.StartCoroutine(m7bPort.OnStart(m7bResolver));
+    //         ErrorTxt = m7bPort.ErrorTxt;
+    //     }
+    // }
 
-    public Vector3 GetAccelerations()
-    {
-        if (m7bResolver == null)
-            return Vector3.zero;
+    // public Vector3 GetAccelerations()
+    // {
+    //     if (m7bResolver == null)
+    //         return Vector3.zero;
 
-        return m7bResolver.Acceleration;
-    }
+    //     return m7bResolver.Acceleration;
+    // }
 
-    public override float GetValue(int index)
-    {
-        if (m7bResolver == null)
-            return 0f;
+    // public override float GetValue(int index)
+    // {
+    //     if (m7bResolver == null)
+    //         return 0f;
 
-        return m7bResolver.GetValue(index);
-    }
+    //     return m7bResolver.GetValue(index);
+    // }
 
-    public override float GetRawValue(int index)
-    {
-        if (m7bResolver == null)
-            return 0f;
+    // public override float GetRawValue(int index)
+    // {
+    //     if (m7bResolver == null)
+    //         return 0f;
 
-        return m7bResolver.GetRawValue(index);
-    }
+    //     return m7bResolver.GetRawValue(index);
+    // }
 
     private string m_getString;
 
