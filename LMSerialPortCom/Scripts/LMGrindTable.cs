@@ -26,6 +26,19 @@ public class LMGrindTable: LMInput_Port {
             this.x = x;
             this.y = y;
         }
+
+        public override bool Equals( object obj ) {
+            if( obj is Node ) {
+                var n = ( Node )obj;
+                return this.x == n.x && this.y == n.y;
+            }
+
+            return false;
+        }
+
+        public override string ToString() {
+            return string.Format( "X:{0}, Y:{1}", this.x, this.y );
+        }
     }
 
     public const string CLEAR_PATH = "CB01FD";
@@ -41,8 +54,9 @@ public class LMGrindTable: LMInput_Port {
 
     private string m_currentKey;
     private string m_currentValue;
-
     private Rect m_worldBound;
+    private bool m_worldAvailable;
+
     public System.Action<bool> onTestFinished;
     public System.Action onTestStarted;
     public System.Action<Vector3> onTurnOffLight;
@@ -89,7 +103,7 @@ public class LMGrindTable: LMInput_Port {
         // Write(CLEAR_PATH, false);
         eventQueue.Clear();
 
-        if (IsTesting && GrindTableEmu != null)
+        if( IsTesting && GrindTableEmu != null )
             GrindTableEmu.Reset();
     }
 
@@ -97,6 +111,8 @@ public class LMGrindTable: LMInput_Port {
     public void InitTable( Rect bound, bool is3D ) {
         this.Is3D = is3D;
         this.m_worldBound = bound;
+
+        m_worldAvailable = true;
     }
 
     public override bool OnUpdate() {
@@ -147,6 +163,11 @@ public class LMGrindTable: LMInput_Port {
     }
 
     public void Write( Vector3[] path ) {
+        if( !m_worldAvailable ) {
+            Debug.LogError( "请先使用InitTable把rect设置好" );
+            return;
+        }
+
         // 用来保存需要发送到端口处的转译后的位置编号
         string content = string.Empty;
 
@@ -213,10 +234,25 @@ public class LMGrindTable: LMInput_Port {
         var startNode = GetNode( from );
         var endNode = GetNode( to );
 
-        int x0 = startNode.x;
-        int y0 = startNode.y;
-        int x1 = endNode.x;
-        int y1 = endNode.y;
+
+        Write( GetLines( startNode, endNode ) );
+    }
+
+
+    public void DrawLine( int x0, int y0, int x1, int y1 ) {
+        var startNode = new Node( x0, y0 );
+        var endNode = new Node( x1, y1 );
+
+        Write( GetLines( startNode, endNode ) );
+    }
+
+    private Node[] GetLines( Node a, Node b ) {
+        List<Node> nodes = new List<Node>();
+
+        int x0 = a.x;
+        int y0 = a.y;
+        int x1 = b.x;
+        int y1 = b.y;
 
         // 检测是否大斜率
         bool steep = Mathf.Abs( y1 - y0 ) > Mathf.Abs( x1 - x0 );
@@ -246,13 +282,12 @@ public class LMGrindTable: LMInput_Port {
         // 表示是一条竖线
         if( dx == 0 ) {
             int yLength = Mathf.Abs( dy );
-            
+
             for( int y = 0; y < yLength; y++ ) {
                 int fy = y0 + y * yStep;
                 nodes.Add( new Node( x0, fy ) );
             }
-        }
-        else {
+        } else {
             int de = 2 * Mathf.Abs( dy );
             int e = 0;
 
@@ -263,11 +298,11 @@ public class LMGrindTable: LMInput_Port {
                     // 如果是大斜率的，记得把xy调转回来
                     nodes.Add( new Node( y, x ) );
                 } else {
-                    nodes.Add( new Node( x, y) );
+                    nodes.Add( new Node( x, y ) );
                 }
 
                 e += de;
-                
+
                 if( e > dx ) {
                     y += yStep;
                     e -= 2 * dx;
@@ -275,20 +310,7 @@ public class LMGrindTable: LMInput_Port {
             }
         }
 
-        Write( nodes.ToArray() );
-
-        // var list = new List<Vector3>();
-
-        // list.Add( from );
-
-        // for( float i = 0f, step = 0.05f; i < 1f; i += step ) {
-        //     var addPos = Vector3.Lerp( from, to, i );
-        //     list.Add( addPos );
-        // }
-
-        // list.Add( to );
-
-        // Write( list.ToArray() );
+        return nodes.ToArray();
     }
 
     private void Swap( ref int x, ref int y ) {
@@ -332,6 +354,44 @@ public class LMGrindTable: LMInput_Port {
         }
 
         Write( list.ToArray() );
+    }
+
+    public void DrawArc( int cx, int cy, int r, int fromDeg, int toDeg, bool counterClockwise = false ) {
+        var nodes = new List<Node>();
+
+        // 顺时钟还是逆时钟旋转
+        var sign = ( counterClockwise ) ? 1 : -1;
+
+        // 把值域限定在[0,359]之间
+        if( fromDeg < 0 ) fromDeg = ( fromDeg % 360 ) + 360;
+        if( toDeg < 0 ) toDeg = ( toDeg % 360 ) + 360;
+
+        fromDeg %= 360;
+        toDeg %= 360;
+
+        for( int i = fromDeg; ( sign > 0 ) ? i <= toDeg : i >= toDeg; i += sign ) {
+            // 把i值锁定在[0,360]之间
+            if( i < 0 ) i += 360;
+
+            i %= 360;
+
+            var rad = i * Mathf.Deg2Rad;
+
+            int x = cx + Mathf.RoundToInt( Mathf.Cos( rad ) * r );
+            int y = cy + Mathf.RoundToInt( Mathf.Sin( rad ) * r );
+
+            x = Mathf.Clamp( x, 0, ColumnCount - 1 );
+            y = Mathf.Clamp( y, 0, RowCount - 1);
+
+            var n = new Node( x, y );
+
+            if( !nodes.Contains( n ) ) {
+                Debug.Log( "Add Node: " + n );
+                nodes.Add( n );
+            }
+        }
+
+        Write( nodes.ToArray() );
     }
 
     public override void Close() {
@@ -458,10 +518,9 @@ public class LMGrindTable: LMInput_Port {
 
     private string m_getString;
 
-    protected override void ResolveBytes(byte[] bytes)
-    {
+    protected override void ResolveBytes( byte[] bytes ) {
         // 消除字节中的空值
-        bytes = LMUtility.RemoveSpacing(bytes);
+        bytes = LMUtility.RemoveSpacing( bytes );
 
         // 把字节转化为字符串并叠加起来
         m_getString += Encoding.UTF8.GetString( bytes );
@@ -473,25 +532,24 @@ public class LMGrindTable: LMInput_Port {
             string[] split = m_getString.Split( ';' );
 
             // 倒序迭代每个字符串
-            for (int i = split.Length - 1; i >= 0; i--)
-            {
-                if (split[i].IndexOf(':') < 0)
+            for( int i = split.Length - 1; i >= 0; i-- ) {
+                if( split[i].IndexOf( ':' ) < 0 )
                     continue;
 
-                string[] splitKey = split[i].Split(':');
+                string[] splitKey = split[i].Split( ':' );
 
                 string key = splitKey[0] ?? string.Empty;
 
-               // 如果键值为空或者是个空格，则直接跳过
-                if (string.IsNullOrWhiteSpace(key))
+                // 如果键值为空或者是个空格，则直接跳过
+                if( string.IsNullOrWhiteSpace( key ) )
                     continue;
 
                 // 如果获取到位置代号但是不完整，则跳过
-                if (key == "CC" && split[i].Length != 7)
+                if( key == "CC" && split[i].Length != 7 )
                     continue;
 
                 // 如果有值，则把开始的0全部去掉
-                string value = splitKey[1].TrimStart('0') ?? string.Empty;
+                string value = splitKey[1].TrimStart( '0' ) ?? string.Empty;
 
                 // 存到序列里
                 SetValue( key, value );
@@ -509,13 +567,13 @@ public class LMGrindTable: LMInput_Port {
         if( m_currentKey == key && m_currentValue == value )
             return;
 
-        Debug.Log("捕捉到事件: Key: " + key + "，Value: " + value);
+        Debug.Log( "捕捉到事件: Key: " + key + "，Value: " + value );
 
         // 把该事件存到事件序列里，依序触发
         var evt = new GrindEvent( key, value );
         eventQueue.Enqueue( evt );
 
-        Debug.Log("加入触发事件: " + evt);
+        Debug.Log( "加入触发事件: " + evt );
 
         m_currentKey = key;
         m_currentValue = value;
