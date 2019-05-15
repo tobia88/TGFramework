@@ -180,7 +180,6 @@ public abstract class LMBasePortInput
 
 	protected virtual void ReconnectInFewSeconds()
 	{
-		controller.DebugText("连接断开，数秒后重新连接");
 		Reset();
 	}
 

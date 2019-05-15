@@ -59,8 +59,6 @@ public class LMInput_UDP : LMBasePortInput
 
 	public override bool OpenPort()
 	{
-		TGController.Instance.DebugText("正在读取UDP");
-
 		m_receiveThread = new Thread(new ThreadStart(ReceiveData));
 		m_receiveThread.IsBackground = true;
 		m_receiveThread.Start();
@@ -78,6 +76,8 @@ public class LMInput_UDP : LMBasePortInput
 	public override void Close()
 	{
 		base.Close();
+
+		Debug.Log("正在关闭UDP");
 
 		if (m_receiveThread != null && m_receiveThread.IsAlive)
 			m_receiveThread.Abort();
@@ -103,11 +103,19 @@ public class LMInput_UDP : LMBasePortInput
 				Bytes = m_client.Receive(ref m_endPoint);
 				OnHandleData(Bytes);
 			}
+			catch (ThreadAbortException)
+			{
+				Thread.ResetAbort();
+				Debug.LogWarning("Thread Abort Exception");
+			}
+			catch (ObjectDisposedException)
+			{
+				Debug.LogWarning("Object Dispose Exception");
+			}
 			catch (System.Exception e)
 			{
 				Debug.LogWarning(e);
 				Close();
-				OpenPort();
 			}
 		}
 	}

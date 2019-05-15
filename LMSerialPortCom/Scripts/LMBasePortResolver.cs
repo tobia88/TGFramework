@@ -67,21 +67,7 @@ public abstract class LMBasePortResolver
 
     protected bool CheckIfPortValueExist(int index)
     {
-        if (values == null)
-        {
-            TGController.Instance.DebugText("没有串口数据");
-            return false;
-        }
-        else
-        {
-            if (index >= values.Length)
-            {
-                TGController.Instance.DebugText("取值索引" + index + "大于数组长度: " + values.Length);
-                return false;
-            }
-        }
-
-        return true;
+        return values != null && index < values.Length;
     }
 
     public virtual float GetValue(int index)

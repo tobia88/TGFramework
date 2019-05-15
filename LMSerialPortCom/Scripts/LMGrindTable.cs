@@ -32,8 +32,8 @@ public class LMGrindTable: LMInput_Port {
     public const string PATH_FORMAT = "Y{0}Z";
     public const int SKIP_LENGTH = 8; //Skip along from code 88 to 96
 
-    public Leadiy_M7B m7bResolver;
-    public LMBasePortInput m7bPort;
+    // public Leadiy_M7B m7bResolver;
+    // public LMBasePortInput m7bPort;
 
     public int ColumnCount { get; private set; }
     public int RowCount { get; private set; }
@@ -49,26 +49,30 @@ public class LMGrindTable: LMInput_Port {
     public Queue<GrindEvent> eventQueue = new Queue<GrindEvent>();
     public LMGrindTableEmulator GrindTableEmu { get { return Emulator as LMGrindTableEmulator; } }
 
-    public override bool OpenPort() {
-        if( base.OpenPort() ) {
-            int udp = controller.gameConfig.GetValue( "UDP", -1 );
+    // public override bool OpenPort()
+    // {
+    //     if (base.OpenPort())
+    //     {
+    //         int udp = controller.gameConfig.GetValue("UDP", -1);
 
-            //如果监测udp开启了，则使用udp做为3D传感器的端口
-            if( udp >= 0 ) {
-                m7bPort = new LMInput_UDP();
-                ( m7bPort as LMInput_UDP ).Init( controller, KeyportData, udp );
-            }
-            //否则使用serial port做为3D传感器端口
-            else {
-                m7bPort = new LMInput_Port();
-                ( m7bPort as LMInput_Port ).Init( controller,
-                    KeyportData,
-                    controller.gameConfig.GetValue( "端口2", -1 ) );
-            }
-            return true;
-        }
-        return false;
-    }
+    //         //如果监测udp开启了，则使用udp做为3D传感器的端口
+    //         if (udp >= 0)
+    //         {
+    //             m7bPort = new LMInput_UDP();
+    //             (m7bPort as LMInput_UDP).Init(controller, KeyportData, udp);
+    //         }
+    //         //否则使用serial port做为3D传感器端口
+    //         else
+    //         {
+    //             m7bPort = new LMInput_Port();
+    //             (m7bPort as LMInput_Port).Init(controller,
+    //                 KeyportData,
+    //                 controller.gameConfig.GetValue("端口2", -1));
+    //         }
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     public override void Init( TGController _controller, KeyPortData keyportData, int _com ) {
         base.Init( _controller, keyportData, _com );
@@ -82,10 +86,10 @@ public class LMGrindTable: LMInput_Port {
     public void ClearLights() {
         Debug.Log( "Clear Lights" );
 
-        Write( CLEAR_PATH, false );
+        // Write(CLEAR_PATH, false);
         eventQueue.Clear();
 
-        if( IsTesting )
+        if (IsTesting && GrindTableEmu != null)
             GrindTableEmu.Reset();
     }
 
@@ -333,8 +337,8 @@ public class LMGrindTable: LMInput_Port {
     public override void Close() {
         ClearLights();
 
-        if( m7bPort != null )
-            m7bPort.Close();
+        // if (m7bPort != null)
+        //     m7bPort.Close();
 
         base.Close();
     }
@@ -414,44 +418,50 @@ public class LMGrindTable: LMInput_Port {
         return new Vector3( rx, ry );
     }
 
-    public override IEnumerator OnStart( LMBasePortResolver resolver = null ) {
-        yield return controller.StartCoroutine( base.OnStart( resolver ) );
+    // public override IEnumerator OnStart(LMBasePortResolver resolver = null)
+    // {
+    //     yield return controller.StartCoroutine(base.OnStart(resolver));
 
-        // 没有任何错误信息则开启3D传感器的解析器
-        if( string.IsNullOrEmpty( ErrorTxt ) && m7bPort != null ) {
-            Debug.Log( "m7b is started" );
-            m7bResolver = new Leadiy_M7B();
-            yield return controller.StartCoroutine( m7bPort.OnStart( m7bResolver ) );
-            ErrorTxt = m7bPort.ErrorTxt;
-        }
-    }
+    //     // 没有任何错误信息则开启3D传感器的解析器
+    //     if (string.IsNullOrEmpty(ErrorTxt) && m7bPort != null)
+    //     {
+    //         Debug.Log("m7b is started");
+    //         m7bResolver = new Leadiy_M7B();
+    //         yield return controller.StartCoroutine(m7bPort.OnStart(m7bResolver));
+    //         ErrorTxt = m7bPort.ErrorTxt;
+    //     }
+    // }
 
-    public Vector3 GetAccelerations() {
-        if( m7bResolver == null )
-            return Vector3.zero;
+    // public Vector3 GetAccelerations()
+    // {
+    //     if (m7bResolver == null)
+    //         return Vector3.zero;
 
-        return m7bResolver.Acceleration;
-    }
+    //     return m7bResolver.Acceleration;
+    // }
 
-    public override float GetValue( int index ) {
-        if( m7bResolver == null )
-            return 0f;
+    // public override float GetValue(int index)
+    // {
+    //     if (m7bResolver == null)
+    //         return 0f;
 
-        return m7bResolver.GetValue( index );
-    }
+    //     return m7bResolver.GetValue(index);
+    // }
 
-    public override float GetRawValue( int index ) {
-        if( m7bResolver == null )
-            return 0f;
+    // public override float GetRawValue(int index)
+    // {
+    //     if (m7bResolver == null)
+    //         return 0f;
 
-        return m7bResolver.GetRawValue( index );
-    }
+    //     return m7bResolver.GetRawValue(index);
+    // }
 
     private string m_getString;
 
-    protected override void ResolveBytes( byte[] bytes ) {
-        // 消除字节中的空值和空格
-        bytes = LMUtility.RemoveSpacing( bytes );
+    protected override void ResolveBytes(byte[] bytes)
+    {
+        // 消除字节中的空值
+        bytes = LMUtility.RemoveSpacing(bytes);
 
         // 把字节转化为字符串并叠加起来
         m_getString += Encoding.UTF8.GetString( bytes );
@@ -462,37 +472,31 @@ public class LMGrindTable: LMInput_Port {
             // 按分号分割成各别的数组，如[CB:0001,CC:00JK]
             string[] split = m_getString.Split( ';' );
 
-            // 迭代每个字符串
-            for( int i = split.Length - 1; i >= 0; i-- ) {
-                Debug.Log( "Catch Event: " + split[i] );
-
-                string key = string.Empty;
-                string value = string.Empty;
-
-                // 捕获标准数值，如CC:00JK
-                if( split[i].Length == 7 && split[i].IndexOf( ':' ) > 0 ) {
-                    // 把键值和数值拆分开来，如[CB,0001]
-                    split = split[i].Split( ':' );
-
-                    key = split[0];
-
-                    // 把数值里的0删去
-                    value = split[1].TrimStart( '0' );
-                }
-                // 捕获其他事件，如CA01FD，CE01FD等
-                else {
-                    key = split[i];
-                }
-
-                if( string.IsNullOrEmpty( key ) )
+            // 倒序迭代每个字符串
+            for (int i = split.Length - 1; i >= 0; i--)
+            {
+                if (split[i].IndexOf(':') < 0)
                     continue;
 
-                Debug.Log( "Key: " + key + "，Value: " + value );
+                string[] splitKey = split[i].Split(':');
+
+                string key = splitKey[0] ?? string.Empty;
+
+               // 如果键值为空或者是个空格，则直接跳过
+                if (string.IsNullOrWhiteSpace(key))
+                    continue;
+
+                // 如果获取到位置代号但是不完整，则跳过
+                if (key == "CC" && split[i].Length != 7)
+                    continue;
+
+                // 如果有值，则把开始的0全部去掉
+                string value = splitKey[1].TrimStart('0') ?? string.Empty;
 
                 // 存到序列里
                 SetValue( key, value );
 
-                // 只要获取任何键值，就清空叠加的字符串
+                // 只要获取任何有效键值，就清空叠加的字符串
                 m_getString = string.Empty;
                 break;
             }
@@ -505,11 +509,13 @@ public class LMGrindTable: LMInput_Port {
         if( m_currentKey == key && m_currentValue == value )
             return;
 
+        Debug.Log("捕捉到事件: Key: " + key + "，Value: " + value);
+
         // 把该事件存到事件序列里，依序触发
         var evt = new GrindEvent( key, value );
         eventQueue.Enqueue( evt );
 
-        Debug.Log( "Event Enqueue: " + evt );
+        Debug.Log("加入触发事件: " + evt);
 
         m_currentKey = key;
         m_currentValue = value;

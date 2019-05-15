@@ -270,21 +270,23 @@ public class TGGameScene : TGBaseScene
 
     protected virtual void OnUpdateGamePlaying()
     {
-        #if Unity_Editor
-        // 一些方便测试的快捷键
-        // LShift + Q直接结束游戏
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Q))
+        if (controller.inputSetting.IsTesting)
         {
-            TimeLeft = 0f;
-            GameState = GameStates.GameOver;
-        }
+            // 一些方便测试的快捷键
+            // LShift + Q直接结束游戏
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Q))
+            {
+                TimeLeft = 0f;
+                GameState = GameStates.GameOver;
+            }
 
-        // =键加10分
-        if (Input.GetKey(KeyCode.Equals))
-        {
-            Score += 10;
+            // =键加10分
+            if (Input.GetKey(KeyCode.Equals))
+            {
+                Score += 10;
+            }
+
         }
-        #endif
 
         m_gameTimePassed += Time.deltaTime;
 

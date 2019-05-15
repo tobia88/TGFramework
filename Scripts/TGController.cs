@@ -126,11 +126,6 @@ public class TGController : MonoBehaviour
         Application.Quit();
     }
 
-    public void DebugText(string _txt)
-    {
-        dxCentre.DebugText(_txt);
-    }
-
     public void ShowPopupError(string error)
     {
         dxErrorPopup.SetActive(true);
@@ -176,7 +171,6 @@ public class TGController : MonoBehaviour
         Debug.LogWarning(_error);
         StopAllCoroutines();
         systemCam.gameObject.SetActive(true);
-        DebugText(_error);
 
         EnableDiagnosis();
     }
