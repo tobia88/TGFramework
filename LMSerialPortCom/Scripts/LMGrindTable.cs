@@ -207,6 +207,7 @@ public class LMGrindTable: LMInput_Port {
 
         for( int i = 0; i < nodes.Length; i++ ) {
             var node = nodes[i];
+
             Debug.Log( "Get Node: " + node.x + ", " + node.y );
 
             // 将位置转译成磨砂版接收的编号
@@ -357,41 +358,138 @@ public class LMGrindTable: LMInput_Port {
     }
 
     public void DrawArc( int cx, int cy, int r, int fromDeg, int toDeg, bool counterClockwise = false ) {
+
+        // 把所有角度调整到[0, 360]
+        fromDeg = ConvertDeg( fromDeg );
+        toDeg = ConvertDeg( toDeg );
+
+        int d = ( 5 - r * 4 ) / 4;
+        int x = 0;
+        int y = r;
+
         var nodes = new List<Node>();
 
-        // 顺时钟还是逆时钟旋转
-        var sign = ( counterClockwise ) ? 1 : -1;
+        // Bresenham Mid Point Circle Drawing Algorithm
+        while( x <= y ) {
+            // 八个角度同步绘画相互映射，其中加入对角度值的判定
+            // 如果审核不通过则不绘制该点
+            DrawCirc( cx, cy, x, y, fromDeg, toDeg, ref nodes, counterClockwise );
+            DrawCirc( cx, cy, x, -y, fromDeg, toDeg, ref nodes, counterClockwise );
+            DrawCirc( cx, cy, -x, y, fromDeg, toDeg, ref nodes, counterClockwise );
+            DrawCirc( cx, cy, -x, -y, fromDeg, toDeg, ref nodes, counterClockwise );
+            DrawCirc( cx, cy, y, x, fromDeg, toDeg, ref nodes, counterClockwise );
+            DrawCirc( cx, cy, y, -x, fromDeg, toDeg, ref nodes, counterClockwise );
+            DrawCirc( cx, cy, -y, x, fromDeg, toDeg, ref nodes, counterClockwise );
+            DrawCirc( cx, cy, -y, -x, fromDeg, toDeg, ref nodes, counterClockwise );
 
-        // 把值域限定在[0,359]之间
-        if( fromDeg < 0 ) fromDeg = ( fromDeg % 360 ) + 360;
-        if( toDeg < 0 ) toDeg = ( toDeg % 360 ) + 360;
+            if( d < 0 ) {
+                d += 2 * x + 1;
+            } else {
+                d += 2 * ( x - y ) + 1;
+                y--;
+            }
+            
+            x++;
+        }
 
-        fromDeg %= 360;
-        toDeg %= 360;
+        // 把点从新排序
+        nodes.Sort( ( Node a, Node b ) => {
+            // 计算比对点的角度
+            float degA = Mathf.Atan2( a.y - cy, a.x - cx ) * Mathf.Rad2Deg;
+            float degB = Mathf.Atan2( b.y - cy, b.x - cx ) * Mathf.Rad2Deg;
 
-        for( int i = fromDeg; ( sign > 0 ) ? i <= toDeg : i >= toDeg; i += sign ) {
-            // 把i值锁定在[0,360]之间
-            if( i < 0 ) i += 360;
+            // 把角度调整到方便比对的角度，其中包括对经过角度0的负数调整
+            degA = ConvertDegOverZero( ( int )degA, fromDeg, toDeg, counterClockwise );
+            degB = ConvertDegOverZero( ( int )degB, fromDeg, toDeg, counterClockwise );
 
-            i %= 360;
+            int retval = degA.CompareTo( degB );
 
-            var rad = i * Mathf.Deg2Rad;
+            return ( counterClockwise ) ? retval * -1 : retval;
+        } );
 
-            int x = cx + Mathf.RoundToInt( Mathf.Cos( rad ) * r );
-            int y = cy + Mathf.RoundToInt( Mathf.Sin( rad ) * r );
 
-            x = Mathf.Clamp( x, 0, ColumnCount - 1 );
-            y = Mathf.Clamp( y, 0, RowCount - 1);
+        Write( nodes.ToArray() );
+    }
 
-            var n = new Node( x, y );
+    // 检测点是否在有效范围以内
+    private bool Within( int x, int y ) {
+        return x >= 0 && x < ColumnCount && y >= 0 && y < RowCount;
+    }
 
-            if( !nodes.Contains( n ) ) {
-                Debug.Log( "Add Node: " + n );
-                nodes.Add( n );
+    // 把角度调整到[0, 360]
+    private int ConvertDeg( int deg ) {
+        return( deg + 360 ) % 360;
+    }
+
+    // 把角度根据顺时钟逆时钟调整到相应区域，好方便比较
+    // 例如从角度270画到90度，因为会经过0度，造成0度前后数值无法比对的问题，因此创建此方法
+    private int ConvertDegOverZero( int deg, int fromDeg, int toDeg, bool counterClockwise ) {
+        // 把角度映射到[0, 360]
+        int retval = ConvertDeg( deg );
+
+        // 如果是顺时针旋转，但是起始角度比终点角度大，因此判断会经过0度
+        if( !counterClockwise && fromDeg > toDeg ) {
+
+            // 如果角度比起始角度大，则-360度，变为负值
+            if( retval > fromDeg )
+                retval -= 360;
+        }
+
+        // 如果是逆时钟转，并且起始角度小于终点角度，因此也会经过0度
+        else if( counterClockwise && fromDeg < toDeg ) {
+
+            // 如果角度比终点角度大，则-360度，变为负值
+            if( retval > toDeg ) {
+                retval -= 360;
+            }
+        }
+        return retval;
+    }
+
+    private void DrawCirc( int cx, int cy, int x, int y, int fromDeg, int toDeg, ref List<Node> nodes, bool counterClockwise ) {
+        // 判断要画的点是否在有效区域，并且角度是否在起始角度与终点角度之间
+        if( Within( cx + x, cy + y ) && WithinAngle( cx, cy, cx + x, cy + y, fromDeg, toDeg, counterClockwise ) )
+            nodes.Add( new Node( cx + x, cy + y ) );
+    }
+
+    // 判断要画的点是否在有效角度之间
+    private bool WithinAngle( int cx, int cy, int tx, int ty, int fromDeg, int toDeg, bool counterClockwise ) {
+        var dy = ty - cy;
+        var dx = tx - cx;
+
+        var deg = Mathf.Atan2( dy, dx ) * Mathf.Rad2Deg;
+
+        // 把角度变换到[0, 360]
+        deg = ConvertDeg( ( int )deg );
+
+        var nf = fromDeg;
+        var nt = toDeg;
+
+        // 如果顺时钟旋转并且起始角度大于终点角度，则表示会经过零点
+        if( !counterClockwise && nf > nt ) {
+            // 把起始角度变为负值
+            nf -= 360;
+
+            // 如果角度比起始角度大，则-360度，变为负值
+            if( deg > fromDeg )
+                deg -= 360;
+        }
+
+        else if( counterClockwise && nf < nt ) {
+            // 把终点角度变为负值
+            nt -= 360;
+
+            // 如果角度比终点角度大，则-360度，变为负值
+            if( deg > toDeg ) {
+                deg -= 360;
             }
         }
 
-        Write( nodes.ToArray() );
+        // 如果起始角度比终点角度大，则调转过来，以方便测试区间
+        if( nf > nt )
+            Swap( ref nf, ref nt );
+
+        return deg >= nf && deg <= nt;
     }
 
     public override void Close() {
