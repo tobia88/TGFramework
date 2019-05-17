@@ -431,7 +431,7 @@ public class LMGrindTable: LMInput_Port {
         if( !counterClockwise && fromDeg > toDeg ) {
 
             // 如果角度比起始角度大，则-360度，变为负值
-            if( retval > fromDeg )
+            if( retval >= fromDeg )
                 retval -= 360;
         }
 
@@ -439,7 +439,7 @@ public class LMGrindTable: LMInput_Port {
         else if( counterClockwise && fromDeg < toDeg ) {
 
             // 如果角度比终点角度大，则-360度，变为负值
-            if( retval > toDeg ) {
+            if( retval >= toDeg ) {
                 retval -= 360;
             }
         }
