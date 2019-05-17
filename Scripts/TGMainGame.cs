@@ -68,7 +68,10 @@ public class TGMainGame : TGBaseBehaviour
         }
     }
 
-    public override void ForceClose() { }
+    public override void ForceClose() { 
+        if( CurrentScene != null )
+            CurrentScene.Close();
+    }
 
     public IEnumerator GameRoutine()
     {

@@ -84,6 +84,8 @@ public class TGBaseScene : MonoBehaviour
         controller.inputSetting.Recalibration();
     }
 
+    public virtual void Close () {}
+
     public IEnumerator RecordFrame(string _dateStr)
     {
         yield return new WaitForEndOfFrame();
@@ -95,6 +97,7 @@ public class TGBaseScene : MonoBehaviour
 
     public virtual IEnumerator PreUnloadScene()
     {
+        Close();
         yield return 1;
     }
 
