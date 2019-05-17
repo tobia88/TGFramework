@@ -388,7 +388,7 @@ public class LMGrindTable: LMInput_Port {
                 d += 2 * ( x - y ) + 1;
                 y--;
             }
-            
+
             x++;
         }
 
@@ -418,7 +418,7 @@ public class LMGrindTable: LMInput_Port {
 
     // 把角度调整到[0, 360]
     private int ConvertDeg( int deg ) {
-        return( deg + 360 ) % 360;
+        return ( deg + 360 ) % 360;
     }
 
     // 把角度根据顺时钟逆时钟调整到相应区域，好方便比较
@@ -448,8 +448,14 @@ public class LMGrindTable: LMInput_Port {
 
     private void DrawCirc( int cx, int cy, int x, int y, int fromDeg, int toDeg, ref List<Node> nodes, bool counterClockwise ) {
         // 判断要画的点是否在有效区域，并且角度是否在起始角度与终点角度之间
-        if( Within( cx + x, cy + y ) && WithinAngle( cx, cy, cx + x, cy + y, fromDeg, toDeg, counterClockwise ) )
-            nodes.Add( new Node( cx + x, cy + y ) );
+        if( Within( cx + x, cy + y ) && WithinAngle( cx, cy, cx + x, cy + y, fromDeg, toDeg, counterClockwise ) ) {
+            var n =  new Node( cx + x, cy + y ) ;
+
+            if( !nodes.Contains( n ) ) {
+                // Debug.Log( "Add Node: " + n );
+                nodes.Add( n );
+            }
+        }
     }
 
     // 判断要画的点是否在有效角度之间
@@ -460,7 +466,9 @@ public class LMGrindTable: LMInput_Port {
         var deg = Mathf.Atan2( dy, dx ) * Mathf.Rad2Deg;
 
         // 把角度变换到[0, 360]
-        deg = ConvertDeg( ( int )deg );
+        deg = ConvertDeg( Mathf.FloorToInt( deg ) );
+
+        // Debug.Log( string.Format( "TX: {0}, TY: {1}, Deg: {2}", tx, ty, deg ));
 
         var nf = fromDeg;
         var nt = toDeg;
@@ -471,16 +479,15 @@ public class LMGrindTable: LMInput_Port {
             nf -= 360;
 
             // 如果角度比起始角度大，则-360度，变为负值
-            if( deg > fromDeg )
+            if( deg >= fromDeg )
                 deg -= 360;
-        }
 
-        else if( counterClockwise && nf < nt ) {
+        } else if( counterClockwise && nf < nt ) {
             // 把终点角度变为负值
             nt -= 360;
 
             // 如果角度比终点角度大，则-360度，变为负值
-            if( deg > toDeg ) {
+            if( deg >= toDeg ) {
                 deg -= 360;
             }
         }
