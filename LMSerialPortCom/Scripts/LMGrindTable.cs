@@ -100,8 +100,8 @@ public class LMGrindTable: LMInput_Port {
     public void ClearLights() {
         Debug.Log( "Clear Lights" );
 
-        // Write(CLEAR_PATH, false);
         eventQueue.Clear();
+        Write(CLEAR_PATH, false);
 
         if( IsTesting && GrindTableEmu != null )
             GrindTableEmu.Reset();
