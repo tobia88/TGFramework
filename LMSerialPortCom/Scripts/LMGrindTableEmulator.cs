@@ -99,16 +99,23 @@ public class LMGrindTableEmulator: LMBaseEmulator {
     private void SetTransform( LMGrindTableEmulatorBtn btn, int x, int y ) {
         var r = m_rectTrans.rect;
 
-        // Start from top left
+        var gridSize = new Vector2( r.width / column, r.height / row );
+        var spacing = gridSize * 0.1f;
+
+        // 从左上角开始生成
         var origin = new Vector3( r.width * -0.5f, r.height * 0.5f );
 
-        var stepX = r.width / ( column - 1 );
-        var stepY = r.height / ( row - 1 );
+        // 偏移量，以确保按键生成在网格里
+        origin.x += gridSize.x * 0.5f;
+        origin.y -= gridSize.y * 0.5f;
+
+        // var stepX = r.width / ( column - 1 );
+        // var stepY = r.height / ( row - 1 );
 
         var rect = btn.transform as RectTransform;
-        var p = new Vector2( origin.x + stepX * x, origin.y - stepY * y );
+        var p = new Vector2( origin.x + gridSize.x * x, origin.y - gridSize.y * y );
         rect.anchoredPosition = p;
-        rect.sizeDelta = new Vector2( stepX * 0.8f, stepY * 0.8f );
+        rect.sizeDelta = gridSize - spacing;
     }
 
     private void CreateButtons() {
