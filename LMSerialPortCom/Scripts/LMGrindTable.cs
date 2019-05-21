@@ -243,7 +243,6 @@ public class LMGrindTable: LMInput_Port {
     public void DrawLine( int x0, int y0, int x1, int y1 ) {
         var startNode = new Node( x0, y0 );
         var endNode = new Node( x1, y1 );
-
         Write( GetLines( startNode, endNode ) );
     }
 
@@ -294,11 +293,12 @@ public class LMGrindTable: LMInput_Port {
 
             int y = y0;
 
-            for( int x = x0; x < x1; x++ ) {
+            for( int x = x0; x <= x1; x++ ) {
                 if( steep ) {
                     // 如果是大斜率的，记得把xy调转回来
                     nodes.Add( new Node( y, x ) );
                 } else {
+                    Debug.LogWarning(x0);
                     nodes.Add( new Node( x, y ) );
                 }
 
@@ -310,7 +310,10 @@ public class LMGrindTable: LMInput_Port {
                 }
             }
         }
-
+        if (mirror||steep)
+        {
+            nodes.Reverse();
+        }
         return nodes.ToArray();
     }
 
