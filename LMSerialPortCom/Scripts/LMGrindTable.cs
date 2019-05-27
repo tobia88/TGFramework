@@ -36,6 +36,10 @@ public class LMGrindTable: LMInput_Port {
             return false;
         }
 
+        public override int GetHashCode() {
+            return x.GetHashCode() ^ y.GetHashCode();
+        }
+
         public override string ToString() {
             return string.Format( "X:{0}, Y:{1}", this.x, this.y );
         }

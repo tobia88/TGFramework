@@ -7,11 +7,6 @@ using UnityEngine;
 
 public static class TGUtility
 {
-    public static string ParseDateTimeToString(DateTime _dateTime)
-    {
-        return _dateTime.ToString("yyyy/M/d HH:mm:ss");
-    }
-
     public static float GetValueFromINI(string key)
     {
         if (string.IsNullOrEmpty(key))
