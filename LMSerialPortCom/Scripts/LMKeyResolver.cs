@@ -188,8 +188,6 @@ public class LMKeyResolver: LMBasePortResolver {
         try {
             m_getString += Encoding.ASCII.GetString( _bytes );
 
-            Debug.Log( m_getString );
-
             // ?AB:3000;AC:2030??????????
             // ???[AB:3000, AC:2030]
             var splitBySemicolon = m_getString.Split( ';' );
