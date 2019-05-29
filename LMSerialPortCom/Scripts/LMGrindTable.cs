@@ -106,6 +106,7 @@ public class LMGrindTable: LMInput_Port {
 
         Write(CLEAR_PATH, false);
         eventQueue.Clear();
+        Write(CLEAR_PATH, false);
 
         if( IsTesting && GrindTableEmu != null )
             GrindTableEmu.Reset();
