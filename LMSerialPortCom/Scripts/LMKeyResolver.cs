@@ -199,12 +199,16 @@ public class LMKeyResolver: LMBasePortResolver {
 
                     if( tmpSplit.Contains( tmpInput.key ) ) {
                         var splitByColon = tmpSplit.Split( ':' );
+
+                        if( splitByColon.Length < 2 )
+                            continue;
+
                         var tmpValue = splitByColon[1];
 
                         if( tmpValue.Length != tmpInput.length )
                             continue;
 
-                        tmpInput.SetValue( float.Parse( tmpValue) );
+                        tmpInput.SetValue( float.Parse( tmpValue ) );
                         testGetValue = true;
                     }
                 }
@@ -213,7 +217,13 @@ public class LMKeyResolver: LMBasePortResolver {
             if( testGetValue )
                 m_getString = string.Empty;
 
+            if( values == null )
+                return;
+
             for( int i = 0; i < values.Length; i++ ) {
+                if( values[i] == null )
+                    continue;
+
                 var resolve = ResolveEquation( values[i].equation );
                 values[i].SetValue( resolve );
             }

@@ -17,7 +17,6 @@ public static class TGUtility {
                 int end = key.IndexOf( ')' );
 
                 var sliced = key.Substring( start, end - start ).Split( ',' );
-                Debug.Log( "Sliced string: " + sliced );
 
                 for( int i = 0; i < sliced.Length; i++ ) {
                     string cutkey = sliced[i];
