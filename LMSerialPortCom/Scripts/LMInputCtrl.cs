@@ -2,24 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInputReceiver
-{
-    void MoveByPort(Vector3 _input);
-    void MoveByTouch(Vector3 _pos);
-    LMInputCtrl InputCtrl {get;}
+public interface IInputReceiver {
+    void MoveByPort( Vector3 _input );
+    void MoveByTouch( Vector3 _pos );
+    LMInputCtrl InputCtrl { get; }
 }
 
-public class LMInputCtrl : MonoBehaviour
-{
-    [Range(0f, 1f)]
+public class LMInputCtrl: MonoBehaviour {
+    [Range( 0f, 1f )]
     public float damp = 0.1f;
     public AxisOrder axisOrder;
 
     private Vector3 m_input;
     private IInputReceiver m_playerCtrl;
 
-    public enum AxisOrder
-    {
+    public enum AxisOrder {
         XYZ,
         XZY,
         YXZ,
@@ -31,72 +28,62 @@ public class LMInputCtrl : MonoBehaviour
     public bool reverseX;
     public bool reverseY;
 
-    public void OnInit(IInputReceiver _receiver)
-    {
+    public void OnInit( IInputReceiver _receiver ) {
         m_playerCtrl = _receiver;
     }
 
-    public void OnUpdate()
-    {
+    public void OnUpdate() {
         var input = TGController.Instance.inputSetting;
 
-        if (!input.IsPortActive)
-        {
-            TouchInputUpdate(input.touchCtrl);
-        }
-        else
-        {
-            PortInputUpdate(input);
+        if( !input.IsPortActive ) {
+            TouchInputUpdate( input.touchCtrl );
+        } else {
+            PortInputUpdate( input );
         }
     }
 
-    private void TouchInputUpdate(LMTouchCtrl touch)
-    {
-        if (touch == null)
+    private void TouchInputUpdate( LMTouchCtrl touch ) {
+        if( touch == null )
             return;
 
-        if (touch.IsTouched)
-            m_playerCtrl.MoveByTouch(touch.CurrentPosition);
+        if( touch.IsTouched )
+            m_playerCtrl.MoveByTouch( touch.CurrentPosition );
 
 
-        if (touch.IsTouched)
-            TGUtility.DrawHeatmap2D(touch.ScreenPosition);
+        if( touch.IsTouched )
+            TGUtility.DrawHeatmap2D( touch.ScreenPosition );
     }
 
-    private void PortInputUpdate(TGInputSetting input)
-    {
+    private void PortInputUpdate( TGInputSetting input ) {
         var target = new Vector3();
 
         string strOrder = axisOrder.ToString().ToLower();
 
-        if (input.DeviceType == "m7b" || input.DeviceType == "m7b2D")
-        {
+        if( input.DeviceType == "m7b" || input.DeviceType == "m7b2D" ) {
             target = input.GetValueFromEvalAxis();
-        }
-        else
-        {
+        } else {
             target = input.GetValues();
         }
 
-        target = target.Reorder(strOrder);
+        target = target.Reorder( strOrder );
 
-        target.x = Mathf.Clamp01(target.x);
-        target.y = Mathf.Clamp01(target.y);
-        target.z = Mathf.Clamp01(target.z);
+        target.x = Mathf.Clamp01( target.x );
+        target.y = Mathf.Clamp01( target.y );
+        target.z = Mathf.Clamp01( target.z );
 
-        if (reverseX)
+        if( reverseX )
             target.x = 1.0f - target.x;
 
-        if (reverseY)
+        if( reverseY )
             target.y = 1.0f - target.y;
 
-        m_input.x = Mathf.Lerp(m_input.x, target.x, damp);
-        m_input.y = Mathf.Lerp(m_input.y, target.y, damp);
-        m_input.z = Mathf.Lerp(m_input.z, target.z, damp);
+        m_input.x = Mathf.Lerp( m_input.x, target.x, damp );
+        m_input.y = Mathf.Lerp( m_input.y, target.y, damp );
+        m_input.z = Mathf.Lerp( m_input.z, target.z, damp );
 
         // TGController.Instance.WriteLine("Input After: " + m_input.ToString());
 
-        m_playerCtrl.MoveByPort(m_input);
+        m_playerCtrl.MoveByPort( m_input );
     }
 
     // private Vector3 M7BUpdate(TGInputSetting input, string strOrder)
