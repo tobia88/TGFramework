@@ -64,15 +64,12 @@ public class TGGameScene: TGBaseScene {
 
     public int Score {
         get { return m_score; }
-        set {
-            OnScoreChanged( value );
-        }
+        set { OnScoreChanged( value ); }
     }
 
     public GameStates GameState {
         get { return m_gameState; }
         set {
-
             if( m_gameState != value ) {
                 m_gameState = value;
                 OnEnterGameState( m_gameState );
@@ -120,6 +117,8 @@ public class TGGameScene: TGBaseScene {
     }
 
     public virtual void OnEnterStateGameOver() {
+        TimeLeft = 0f;
+
         if( bgm.clip != null )
             AudioMng.Instance.Fade( bgm, 0f, 1f );
 
@@ -260,7 +259,6 @@ public class TGGameScene: TGBaseScene {
             // 一些方便测试的快捷键
             // LShift + Q直接结束游戏
             if( Input.GetKey( KeyCode.LeftShift ) && Input.GetKeyDown( KeyCode.Q ) ) {
-                TimeLeft = 0f;
                 GameState = GameStates.GameOver;
             }
 
@@ -297,9 +295,10 @@ public class TGGameScene: TGBaseScene {
         if( !isActive )
             return;
 
-        TimeLeft = 0f;
         if( m_timePassed <= 15f )
             ExitScene();
+        else
+            GameState = GameStates.GameOver;
     }
 
 
