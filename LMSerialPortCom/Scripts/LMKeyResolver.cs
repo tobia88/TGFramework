@@ -8,7 +8,6 @@ using System.Text;
 using TG;
 using UnityEngine;
 
-// ?????????????keyInputConfig.json???????????
 public class KeyResolveValue {
     private float m_default;
     private bool m_isInit;
@@ -97,7 +96,6 @@ public class KeyResolveValue {
     }
 }
 
-// ??????????keyInputConfig.json?Key??
 public class KeyResolveInput {
     public string key;
     public int length;
@@ -145,7 +143,7 @@ public class LMKeyResolver: LMBasePortResolver {
 
         inputTotalGap = _portInput.KeyportData.inputTotalGap;
 
-        string txt = TGController.Instance.gameConfig.GetValue( "??", string.Empty );
+        string txt = TGController.Instance.gameConfig.GetValue( "校准", string.Empty );
 
         if( !string.IsNullOrEmpty( txt ) ) {
             SetBiases( txt );
@@ -188,28 +186,21 @@ public class LMKeyResolver: LMBasePortResolver {
         try {
             m_getString += Encoding.ASCII.GetString( _bytes );
 
-            // ?AB:3000;AC:2030??????????
-            // ???[AB:3000, AC:2030]
             var splitBySemicolon = m_getString.Split( ';' );
-
-            // ?????????????????????????????????????
             bool testGetValue = false;
 
             for( int i = splitBySemicolon.Length - 1; i >= 0; i-- ) {
 
                 var tmpSplit = splitBySemicolon[i];
 
-                // ??keyInputConfig.json????Key???????
                 for( int j = 0; j < inputs.Length; j++ ) {
 
                     var tmpInput = inputs[j];
 
                     if( tmpSplit.Contains( tmpInput.key ) ) {
-                        // ?AB:3000???[AB, 3000]
                         var splitByColon = tmpSplit.Split( ':' );
                         var tmpValue = splitByColon[1];
 
-                        // ???????????????????????
                         if( tmpValue.Length != tmpInput.length )
                             continue;
 
@@ -219,11 +210,9 @@ public class LMKeyResolver: LMBasePortResolver {
                 }
             }
 
-            // ?????????????????????
             if( testGetValue )
                 m_getString = string.Empty;
 
-            // ???????????
             for( int i = 0; i < values.Length; i++ ) {
                 var resolve = ResolveEquation( values[i].equation );
                 values[i].SetValue( resolve );
