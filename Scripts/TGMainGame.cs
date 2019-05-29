@@ -1,50 +1,44 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TGMainGame : TGBaseBehaviour
-{
+public class TGMainGame: TGBaseBehaviour {
     public string SceneName { get; private set; }
-    public Dictionary<string, string> extraData;
     public TGBaseScene CurrentScene { get; private set; }
 
     public AsyncOperation asyncOperation;
 
-    public override IEnumerator StartRoutine()
-    {
+    public override IEnumerator StartRoutine() {
         SceneName = m_controller.SceneName;
 
-        Scene tmpScene = SceneManager.GetSceneByName(SceneName);
+        Scene tmpScene = SceneManager.GetSceneByName( SceneName );
 
-        if (!tmpScene.isLoaded)
-        { 
-            yield return StartCoroutine(LoadSceneRoutine());
+        if( !tmpScene.isLoaded ) {
+            yield return StartCoroutine( LoadSceneRoutine() );
         }
 
-        CurrentScene = SetSceneActive(SceneName);
+        CurrentScene = SetSceneActive( SceneName );
 
-        if (CurrentScene == null)
-        {
-            m_controller.ErrorQuit("TGBaseScene doesn't found on scene " + this.SceneName);
+        if( CurrentScene == null ) {
+            m_controller.ErrorQuit( "TGBaseScene doesn't found on scene " + this.SceneName );
         }
     }
 
-    private IEnumerator LoadSceneRoutine()
-    {
+    private IEnumerator LoadSceneRoutine() {
 
-        yield return StartCoroutine(ClearLoadingScene());
+        yield return StartCoroutine( ClearLoadingScene() );
 
-        Debug.Log("Loading Scene: " + SceneName);
-        asyncOperation = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
+        Debug.Log( "Loading Scene: " + SceneName );
+        asyncOperation = SceneManager.LoadSceneAsync( SceneName, LoadSceneMode.Additive );
 
         float remainProg = 1f - m_controller.ProgressValue;
 
         float lastProgress = 0f;
 
-        while (!asyncOperation.isDone)
-        {
+        while( !asyncOperation.isDone ) {
             float d = asyncOperation.progress - lastProgress;
             m_controller.ProgressValue += d * remainProg;
             lastProgress = asyncOperation.progress;
@@ -53,57 +47,62 @@ public class TGMainGame : TGBaseBehaviour
         }
     }
 
-    private IEnumerator ClearLoadingScene()
-    {
-        for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
-        {
-            var scn = SceneManager.GetSceneAt(i);
+    private IEnumerator ClearLoadingScene() {
+        for( int i = SceneManager.sceneCount - 1; i >= 0; i-- ) {
+            var scn = SceneManager.GetSceneAt( i );
 
-            if (scn == gameObject.scene)
-                continue;   
-            
-            Debug.Log("Clearing Scene: " + scn.name);
+            if( scn == gameObject.scene )
+                continue;
 
-            yield return SceneManager.UnloadSceneAsync(scn);
+            Debug.Log( "Clearing Scene: " + scn.name );
+
+            yield return SceneManager.UnloadSceneAsync( scn );
         }
     }
 
-    public override void ForceClose() { 
+    public override void ForceClose() {
         if( CurrentScene != null )
-            CurrentScene.Close();
+            CurrentScene.ForceClose();
     }
 
-    public IEnumerator GameRoutine()
-    {
+    public IEnumerator GameRoutine() {
+        // 记录开始时间
+        TGData.startTime = DateTime.Now;
+
+        // 初始化场景
         CurrentScene.Init();
 
+        // 配置输入设置
         m_inputSetting.OnGameStart();
 
+        // 游戏场景开始
         CurrentScene.OnStart();
 
-        while (CurrentScene.isActive)
-        {
+        // 游戏场景循环
+        while( CurrentScene.isActive ) {
             CurrentScene.OnUpdate();
             m_controller.inputSetting.OnUpdate();
             yield return 1;
         }
 
-        extraData = CurrentScene.extraData;
+        // 记录结束时间
+        TGData.endTime = DateTime.Now;
+
+        // 截屏
+        yield return StartCoroutine( CurrentScene.CaptureScreenshot() );
     }
 
-    public override IEnumerator EndRoutine()
-    {
-        if (CurrentScene == null)
+    public override IEnumerator EndRoutine() {
+        if( CurrentScene == null )
             yield break;
 
-        yield return StartCoroutine(CurrentScene.PreUnloadScene());
-        yield return SceneManager.UnloadSceneAsync(SceneName);
+        yield return StartCoroutine( CurrentScene.PreUnloadScene() );
+        yield return SceneManager.UnloadSceneAsync( SceneName );
     }
 
-    private TGBaseScene SetSceneActive(string sceneName)
-    {
-        var tmpScene = SceneManager.GetSceneByName(SceneName);
-        SceneManager.SetActiveScene(tmpScene);
+    private TGBaseScene SetSceneActive( string sceneName ) {
+        var tmpScene = SceneManager.GetSceneByName( SceneName );
+        SceneManager.SetActiveScene( tmpScene );
 
         return tmpScene.GetComponent<TGBaseScene>();
     }

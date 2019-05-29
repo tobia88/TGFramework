@@ -8,8 +8,7 @@ using System.Text;
 using TG;
 using UnityEngine;
 
-public class KeyResolveValue
-{
+public class KeyResolveValue {
     private float m_default;
     private bool m_isInit;
 
@@ -29,249 +28,208 @@ public class KeyResolveValue
     public double LastRawValue { get; private set; }
     public double RawValue { get; private set; }
 
-    public KeyResolveValue(KeyPortValueData _data, bool _degree, bool _raw, bool _reverse)
-    {
+    public KeyResolveValue( KeyPortValueData _data, bool _degree, bool _raw, bool _reverse ) {
         key = _data.key;
         isDegree = _degree;
 
         raw = _raw;
 
-        StartMin = TGUtility.GetValueFromINI(_data.min);
-        StartMax = TGUtility.GetValueFromINI(_data.max);
+        StartMin = TGUtility.GetValueFromINI( _data.min );
+        StartMax = TGUtility.GetValueFromINI( _data.max );
 
         equation = _data.equation;
 
-        value = m_default = (_data.origin == -1) ?
-            0 : Min + (Max - Min) * _data.origin;
+        value = m_default = ( _data.origin == -1 ) ?
+            0 : Min + ( Max - Min ) * _data.origin;
 
         Ratio = 1;
     }
 
-    public void SetRatio(float _ratio)
-    {
+    public void SetRatio( float _ratio ) {
         Ratio = _ratio;
     }
 
-    public void Recalibration()
-    {
+    public void Recalibration() {
         value = m_default;
     }
 
     private int _delayFrame = 30;
 
-    public void SetValue(double newVal)
-    {
-        if (_delayFrame > 0)
-        {
+    public void SetValue( double newVal ) {
+        if( _delayFrame > 0 ) {
             _delayFrame--;
             return;
         }
 
-        if (double.IsNaN(newVal))
+        if( double.IsNaN( newVal ) )
             newVal = 0f;
 
-        if (!m_isInit)
-        {
+        if( !m_isInit ) {
             LastRawValue = RawValue = newVal;
             m_isInit = true;
-        }
-        else
-        {
+        } else {
             LastRawValue = RawValue;
             RawValue = newVal;
         }
 
-        if (raw)
-        {
-            value = (float)RawValue;
+        if( raw ) {
+            value = ( float )RawValue;
             return;
         }
 
-        if (isDegree)
-        {
-            value = TGUtility.PreventValueSkipping(value, LastRawValue, RawValue, reverse);
-        }
-        else
-        {
-            int sign = (reverse) ? -1 : 1;
-            float dist = (float)(RawValue - LastRawValue);
+        if( isDegree ) {
+            value = TGUtility.PreventValueSkipping( value, LastRawValue, RawValue, reverse );
+        } else {
+            int sign = ( reverse ) ? -1 : 1;
+            float dist = ( float )( RawValue - LastRawValue );
             value += dist * sign;
         }
 
     }
 
-    public float GetValue()
-    {
-        if (Min != Max)
-        {
-            return (float)(value - Min) / (Max - Min);
+    public float GetValue() {
+        if( Min != Max ) {
+            return ( float )( value - Min ) / ( Max - Min );
         }
 
-        return (float)value;
+        return ( float )value;
     }
 }
 
-public class KeyResolveInput
-{
+public class KeyResolveInput {
     public string key;
     public int length;
     public float value;
     public float bias;
 
-    public void SetValue(float _value)
-    {
+    public void SetValue( float _value ) {
         value = _value;
     }
 
-    public float GetValue()
-    {
+    public float GetValue() {
         return value - bias;
     }
 
-    public override string ToString()
-    {
+    public override string ToString() {
         string retval = key + ": " + GetValue().ToString();
 
-        if (bias != 0f)
-            retval += "(" + value.ToString() + (bias * -1f).ToString() + ")";
+        if( bias != 0f )
+            retval += "(" + value.ToString() + ( bias * -1f ).ToString() + ")";
 
         return retval;
     }
 }
 
-public class LMKeyResolver : LMBasePortResolver
-{
+public class LMKeyResolver: LMBasePortResolver {
     private string m_getString;
 
     public int inputTotalGap;
 
-    public float InputTotal
-    {
-        get
-        {
-            if (inputs == null)
+    public float InputTotal {
+        get {
+            if( inputs == null )
                 return 0;
 
-            return inputs.Sum(i => i.GetValue());
+            return inputs.Sum( i => i.GetValue() );
         }
     }
 
-    public bool Threshold
-    {
+    public bool Threshold {
         get { return inputTotalGap == 0 || InputTotal >= inputTotalGap; }
     }
 
-    public override void Init(LMBasePortInput _portInput)
-    {
-        base.Init(_portInput);
+    public override void Init( LMBasePortInput _portInput ) {
+        base.Init( _portInput );
 
         inputTotalGap = _portInput.KeyportData.inputTotalGap;
 
-        string txt = TGController.Instance.gameConfig.GetValue("校准", string.Empty);
+        string txt = TGController.Instance.gameConfig.GetValue( "校准", string.Empty );
 
-        if (!string.IsNullOrEmpty(txt))
-        {
-            SetBiases(txt);
+        if( !string.IsNullOrEmpty( txt ) ) {
+            SetBiases( txt );
         }
     }
 
-    public override float GetValue(int index)
-    {
-        if (!Threshold)
-        {
-            Debug.Log("Failed Threshold, Return 0f");
+    public override float GetValue( int index ) {
+        if( !Threshold ) {
             return 0f;
         }
 
-        return base.GetValue(index);
+        return base.GetValue( index );
     }
 
-    public void SetBiases(string bias)
-    {
-        string[] split = bias.Split(';');
+    public void SetBiases( string bias ) {
+        string[] split = bias.Split( ';' );
 
-        for (int i = 0; i < split.Length; i++)
-        {
-            string[] resolved = split[i].Split(':');
+        for( int i = 0; i < split.Length; i++ ) {
+            string[] resolved = split[i].Split( ':' );
 
-            for (int j = 0; j < inputs.Length; j++)
-            {
-                if (inputs[j].key == resolved[0])
-                {
-                    inputs[j].bias += float.Parse(resolved[1]);
+            for( int j = 0; j < inputs.Length; j++ ) {
+                if( inputs[j].key == resolved[0] ) {
+                    inputs[j].bias += float.Parse( resolved[1] );
                     continue;
                 }
             }
         }
     }
 
-    public override void ResolveBytes(byte[] _bytes)
-    {
-        if (_bytes == null || _bytes.Length == 0)
+    public override void ResolveBytes( byte[] _bytes ) {
+        if( _bytes == null || _bytes.Length == 0 )
             return;
 
-        _bytes = LMUtility.RemoveSpacing(_bytes);
+        _bytes = LMUtility.RemoveSpacing( _bytes );
 
-        FilterIds(_bytes);
+        FilterIds( _bytes );
     }
 
-    protected void FilterIds(byte[] _bytes)
-    {
-        try
-        {
-            m_getString += Encoding.UTF8.GetString(_bytes);
+    protected void FilterIds( byte[] _bytes ) {
+        try {
+            m_getString += Encoding.ASCII.GetString( _bytes );
 
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                KeyResolveInput tmpInfo = inputs[i];
+            var splitBySemicolon = m_getString.Split( ';' );
+            bool testGetValue = false;
 
-                string fullId = tmpInfo.key + ":";
+            for( int i = splitBySemicolon.Length - 1; i >= 0; i-- ) {
 
-                int index = m_getString.IndexOf(fullId);
+                var tmpSplit = splitBySemicolon[i];
 
-                if (index >= 0 && (index + fullId.Length + tmpInfo.length) < m_getString.Length)
-                {
-                    string v = m_getString.Substring(index + fullId.Length, tmpInfo.length);
+                for( int j = 0; j < inputs.Length; j++ ) {
 
-                    if (v.Length != tmpInfo.length)
-                    {
-                        Debug.Log("Value Before Flush: " + v);
-                        // string getting mess, just flush it
-                        Flush();
-                        break;
-                    }
-                    else
-                    {
-                        tmpInfo.SetValue(float.Parse(v));
-                        m_getString = m_getString.Remove(index, fullId.Length + tmpInfo.length);
+                    var tmpInput = inputs[j];
+
+                    if( tmpSplit.Contains( tmpInput.key ) ) {
+                        var splitByColon = tmpSplit.Split( ':' );
+                        var tmpValue = splitByColon[1];
+
+                        if( tmpValue.Length != tmpInput.length )
+                            continue;
+
+                        tmpInput.SetValue( float.Parse( tmpValue) );
+                        testGetValue = true;
                     }
                 }
             }
 
-            for (int i = 0; i < values.Length; i++)
-            {
-                var resolve = ResolveEquation(values[i].equation);
-                values[i].SetValue(resolve);
+            if( testGetValue )
+                m_getString = string.Empty;
+
+            for( int i = 0; i < values.Length; i++ ) {
+                var resolve = ResolveEquation( values[i].equation );
+                values[i].SetValue( resolve );
             }
 
-            if (m_getString != string.Empty)
-                m_getString = m_getString.Replace(";", string.Empty);
-        }
-        catch (Exception _ex)
-        {
-            Debug.LogWarning(_ex);
+        } catch( Exception _ex ) {
+            Debug.LogWarning( _ex );
         }
     }
 
-    private void Flush()
-    {
-        Debug.Log("Flush: " + m_getString);
+    private void Flush() {
+        Debug.Log( "Flush: " + m_getString );
         m_getString = string.Empty;
     }
 
-    public override void Recalibration()
-    {
-        foreach (var v in values)
+    public override void Recalibration() {
+        foreach( var v in values )
             v.Recalibration();
     }
 

@@ -14,7 +14,7 @@ public abstract class TGBaseBehaviour : MonoBehaviour
         m_controller = _controller;
     }
 
-    public abstract void ForceClose();
-    public abstract IEnumerator StartRoutine();
-    public abstract IEnumerator EndRoutine();
+    public virtual void ForceClose() {}
+    public virtual IEnumerator StartRoutine() { yield return 1; }
+    public virtual IEnumerator EndRoutine() { yield return 1; }
 }

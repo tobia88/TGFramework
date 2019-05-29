@@ -4,37 +4,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TGBaseScene : MonoBehaviour
-{
-    private const string MAIN_SCREENSHOT_KEY = "图片";
+public class TGBaseScene: MonoBehaviour {
 
     protected float m_startTime;
     protected float m_timePassed;
+
     public Dictionary<string, string> extraData = new Dictionary<string, string>();
 
     public TGController controller { get; private set; }
-    public Rect screenshotCropInfo = new Rect(0, 0, 1920, 1080);
 
     public System.Action<string> onCaptureScreen;
 
-    public float TimePassed
-    {
+    public float TimePassed {
         get { return m_timePassed; }
-        set
-        {
-            OnTimePassed(value);
-        }
+        set { OnTimePassed( value ); }
     }
 
     public bool isActive = false;
 
-    public virtual void Init()
-    {
+    public virtual void Init() {
         controller = TGController.Instance;
     }
 
-    public virtual void OnStart()
-    {
+    public virtual void OnStart() {
         isActive = true;
 
         m_startTime = Time.time;
@@ -44,10 +36,8 @@ public class TGBaseScene : MonoBehaviour
         Recalibration();
     }
 
-    public virtual void OnUpdate()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
+    public virtual void OnUpdate() {
+        if( Input.GetKeyDown( KeyCode.Escape ) ) {
             OnPressExit();
             return;
         }
@@ -55,137 +45,86 @@ public class TGBaseScene : MonoBehaviour
         TimePassed += Time.deltaTime;
     }
 
-    protected virtual void OnPressExit()
-    {
-        if (!isActive)
+    public virtual void ExitScene() {
+        isActive = false;
+    }
+
+    // 强制退出
+    public virtual void ForceClose() {}
+
+    public void DelayCall( System.Action _func, float _delay ) {
+        StartCoroutine( DelayCallRoutine( _func, _delay ) );
+    }
+
+    // 校准
+    public virtual void Recalibration() {
+        controller.inputSetting.Recalibration();
+    }
+
+    public IEnumerator CaptureScreenshot() {
+        var dateStr = TGData.endTime.ToFileFormatString();
+        yield return new WaitForEndOfFrame();
+        yield return StartCoroutine( SaveMainScreenshot( dateStr ) );
+        yield return StartCoroutine( SaveHeatmapTex( dateStr ) );
+        if( onCaptureScreen != null )
+            onCaptureScreen( dateStr );
+    }
+
+    public virtual IEnumerator PreUnloadScene() {
+        yield return 1;
+    }
+
+    // 截屏区域
+    protected virtual Rect GetScreenshotCropRect() {
+        return new Rect( 0, 0, Screen.width, Screen.height );
+    }
+
+    private IEnumerator SaveHeatmapTex( string _dateStr ) {
+        if( controller.heatmapInput.enabled ) {
+            string fileName = "heat_" + _dateStr + ".png";
+
+            //FIXME: 要把它调整到UI底下
+            controller.heatmapInput.ApplyHeatmap();
+            yield return StartCoroutine( TGTextureHelper.SaveTexture( controller.heatmapInput.outputTex, fileName ) );
+            TGData.SaveScreenshot( fileName );
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator SaveMainScreenshot( string _dateStr ) {
+        var raw = ScreenCapture.CaptureScreenshotAsTexture();
+
+        var rect = GetScreenshotCropRect();
+
+        int ix = ( int ) rect.x;
+        int iy = ( int ) rect.y;
+        int iw = ( int ) rect.width;
+        int ih = ( int ) rect.height;
+
+        Color[] c = raw.GetPixels( ix, iy, iw, ih );
+
+        var tex = new Texture2D( iw, ih );
+        tex.SetPixels( c );
+        tex.Apply( false );
+
+        string fileName = _dateStr + ".png";
+        yield return StartCoroutine( TGTextureHelper.SaveTexture( tex, fileName ) );
+    }
+
+    protected virtual void OnTimePassed( float _value ) {
+        m_timePassed = _value;
+    }
+
+    protected virtual void OnPressExit() {
+        if( !isActive )
             return;
 
         ExitScene();
     }
 
-    public virtual void ExitScene()
-    {
-        // Compensate screenshot key if it doesn't existed
-        if (!extraData.ContainsKey(MAIN_SCREENSHOT_KEY))
-        {
-            extraData.Add(MAIN_SCREENSHOT_KEY, string.Empty);
-        }
-
-        isActive = false;
-    }
-
-    public void DelayCall(System.Action _func, float _delay)
-    {
-        StartCoroutine(DelayCallRoutine(_func, _delay));
-    }
-
-    public virtual void Recalibration()
-    {
-        controller.inputSetting.Recalibration();
-    }
-
-    public virtual void Close () {}
-
-    public IEnumerator RecordFrame(string _dateStr)
-    {
-        yield return new WaitForEndOfFrame();
-        yield return StartCoroutine(SaveMainScreenshot(_dateStr));
-        yield return StartCoroutine(SaveHeatmapTex(_dateStr));
-        if (onCaptureScreen != null)
-            onCaptureScreen(_dateStr);
-    }
-
-    public virtual IEnumerator PreUnloadScene()
-    {
-        Close();
-        yield return 1;
-    }
-
-    private IEnumerator SaveHeatmapTex(string _dateStr)
-    {
-        if (controller.heatmapInput.enabled)
-        {
-            string fileName = "heat_" + _dateStr + ".png";
-            controller.heatmapInput.ApplyHeatmap();
-            yield return StartCoroutine(SaveTexture(controller.heatmapInput.outputTex, fileName));
-            SaveScreenshotKey(MAIN_SCREENSHOT_KEY, fileName);
-        }
-
-        yield return null;
-    }
-
-    private IEnumerator SaveMainScreenshot(string _dateStr)
-    {
-        var raw = ScreenCapture.CaptureScreenshotAsTexture();
-        Color[] c = raw.GetPixels((int)screenshotCropInfo.x,
-            (int)screenshotCropInfo.y,
-            (int)screenshotCropInfo.width,
-            (int)screenshotCropInfo.height);
-        var tex = new Texture2D((int)screenshotCropInfo.width, (int)screenshotCropInfo.height);
-        tex.SetPixels(c);
-        tex.Apply(false);
-
-        string fileName = _dateStr + ".png";
-        yield return StartCoroutine(SaveTexture(tex, fileName));
-        SaveScreenshotKey(MAIN_SCREENSHOT_KEY, fileName);
-    }
-
-    private IEnumerator SaveTexture(Texture2D _tex, string _name)
-    {
-        float ratio = (float)_tex.width / _tex.height;
-        int width = 0, height = 0;
-
-        if (ratio > 1.39f)
-        {
-            width = 700;
-            height = Mathf.RoundToInt(width / ratio);
-        }
-        else
-        {
-            height = 590;
-            width = Mathf.RoundToInt(height * ratio);
-
-            if (width > 700)
-            {
-                width = 700;
-                height = Mathf.RoundToInt(width / ratio);
-            }
-        }
-
-        Debug.Log("Saved Texture Sizes: " + width + ", " + height);
-
-        _tex = TextureScaler.ResizeTexture(_tex, width, height);
-
-        byte[] bytes = _tex.EncodeToPNG();
-        GameObject.Destroy(_tex);
-
-        Debug.Log("Write Texture: " + _name);
-
-        controller.fileWriter.Write(_name, bytes);
-
-        yield return null;
-    }
-
-    private void SaveScreenshotKey(string _key, string _fileName)
-    {
-        if (extraData.ContainsKey(_key))
-        {
-            extraData[_key] += "|" + _fileName;
-        }
-        else
-        {
-            extraData.Add(_key, _fileName);
-        }
-    }
-
-    protected virtual void OnTimePassed(float _value)
-    {
-        m_timePassed = _value;
-    }
-
-    IEnumerator DelayCallRoutine(System.Action _func, float _delay)
-    {
-        yield return new WaitForSeconds(_delay);
+    IEnumerator DelayCallRoutine( System.Action _func, float _delay ) {
+        yield return new WaitForSeconds( _delay );
         _func();
     }
 }

@@ -36,6 +36,10 @@ public class LMGrindTable: LMInput_Port {
             return false;
         }
 
+        public override int GetHashCode() {
+            return x.GetHashCode() ^ y.GetHashCode();
+        }
+
         public override string ToString() {
             return string.Format( "X:{0}, Y:{1}", this.x, this.y );
         }
@@ -100,6 +104,7 @@ public class LMGrindTable: LMInput_Port {
     public void ClearLights() {
         Debug.Log( "Clear Lights" );
 
+        Write(CLEAR_PATH, false);
         eventQueue.Clear();
         Write(CLEAR_PATH, false);
 
@@ -132,7 +137,6 @@ public class LMGrindTable: LMInput_Port {
     }
 
     private void TriggerEvent( GrindEvent evt ) {
-        Debug.Log( string.Format( "Event Triggered: " + evt ) );
         switch( evt.key ) {
             case "CJ":
                 // 任务开始事件
@@ -143,6 +147,10 @@ public class LMGrindTable: LMInput_Port {
                 break;
 
             case "CB":
+                // 如果没有数值则直接跳过
+                if( string.IsNullOrEmpty( evt.value ) )
+                    return;
+
                 // 如果获取CB:0001则表示顺利完成任务
                 // 反之获取CB:0002则表示任务失败，需要重来
                 bool result = evt.value == "1";
@@ -243,7 +251,6 @@ public class LMGrindTable: LMInput_Port {
     public void DrawLine( int x0, int y0, int x1, int y1 ) {
         var startNode = new Node( x0, y0 );
         var endNode = new Node( x1, y1 );
-
         Write( GetLines( startNode, endNode ) );
     }
 
@@ -294,11 +301,12 @@ public class LMGrindTable: LMInput_Port {
 
             int y = y0;
 
-            for( int x = x0; x < x1; x++ ) {
+            for( int x = x0; x <= x1; x++ ) {
                 if( steep ) {
                     // 如果是大斜率的，记得把xy调转回来
                     nodes.Add( new Node( y, x ) );
                 } else {
+                    Debug.LogWarning(x0);
                     nodes.Add( new Node( x, y ) );
                 }
 
@@ -310,7 +318,10 @@ public class LMGrindTable: LMInput_Port {
                 }
             }
         }
-
+        if (mirror||steep)
+        {
+            nodes.Reverse();
+        }
         return nodes.ToArray();
     }
 
@@ -670,6 +681,10 @@ public class LMGrindTable: LMInput_Port {
         // 由于上位机会重复发送当前的事件，因此需要判断
         // 如果获得的时间存在重复，则跳过
         if( m_currentKey == key && m_currentValue == value )
+            return;
+
+        // 如果没有数值，则直接返回
+        if( string.IsNullOrEmpty( value ))
             return;
 
         Debug.Log( "捕捉到事件: Key: " + key + "，Value: " + value );

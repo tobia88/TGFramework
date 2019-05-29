@@ -8,8 +8,6 @@ using UnityEngine.SceneManagement;
 public class TGController : MonoBehaviour
 {
     public static TGController Instance;
-    public DateTime startTime;
-    public DateTime endTime;
     public Camera systemCam;
 
     public string GameNameCn { get; private set; }
@@ -217,8 +215,6 @@ public class TGController : MonoBehaviour
 
     IEnumerator ProcessRoutine()
     {
-        startTime = DateTime.Now;
-
         dxLoadingPanel.SetActive(true);
         yield return StartCoroutine(gameConfig.StartRoutine());
         yield return StartCoroutine(inputSetting.StartRoutine());
