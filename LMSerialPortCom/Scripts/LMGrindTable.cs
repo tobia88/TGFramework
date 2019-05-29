@@ -136,7 +136,6 @@ public class LMGrindTable: LMInput_Port {
     }
 
     private void TriggerEvent( GrindEvent evt ) {
-        Debug.Log( string.Format( "Event Triggered: " + evt ) );
         switch( evt.key ) {
             case "CJ":
                 // 任务开始事件
@@ -147,6 +146,10 @@ public class LMGrindTable: LMInput_Port {
                 break;
 
             case "CB":
+                // 如果没有数值则直接跳过
+                if( string.IsNullOrEmpty( evt.value ) )
+                    return;
+
                 // 如果获取CB:0001则表示顺利完成任务
                 // 反之获取CB:0002则表示任务失败，需要重来
                 bool result = evt.value == "1";
@@ -677,6 +680,10 @@ public class LMGrindTable: LMInput_Port {
         // 由于上位机会重复发送当前的事件，因此需要判断
         // 如果获得的时间存在重复，则跳过
         if( m_currentKey == key && m_currentValue == value )
+            return;
+
+        // 如果没有数值，则直接返回
+        if( string.IsNullOrEmpty( value ))
             return;
 
         Debug.Log( "捕捉到事件: Key: " + key + "，Value: " + value );
