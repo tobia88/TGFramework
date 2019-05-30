@@ -5,8 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TGController : MonoBehaviour
-{
+public class TGController: MonoBehaviour {
     public static TGController Instance;
     public Camera systemCam;
 
@@ -17,7 +16,7 @@ public class TGController : MonoBehaviour
     public HeatmapInput heatmapInput;
     public TGMainGame mainGame;
     public TGResultMng resultMng;
-    [Header("Debug")]
+    [Header( "Debug" )]
     public TGDXCentre dxCentre;
     public TGDXTextCentre dxTextCentre;
     public TGDXHeatmapPanel dxHeatmapPanel;
@@ -26,20 +25,17 @@ public class TGController : MonoBehaviour
 
     private float m_progressValue;
 
-    public float ProgressValue
-    {
+    public float ProgressValue {
         get { return m_progressValue; }
-        set
-        {
+        set {
             m_progressValue = value;
-            Debug.Log("Progress: " + m_progressValue);
-            OnMainGameProgressChanged(m_progressValue);
+            Debug.Log( "Progress: " + m_progressValue );
+            OnMainGameProgressChanged( m_progressValue );
         }
     }
 
     public LMFileWriter fileWriter;
-    public string RootPath
-    {
+    public string RootPath {
         get;
         private set;
     }
@@ -47,30 +43,27 @@ public class TGController : MonoBehaviour
 
     private bool m_onClearEnd;
 
-    public string SceneName
-    {
-        get { return settingData.GetSceneNameByDeviceType(inputSetting.DeviceType); }
+    public string SceneName {
+        get { return settingData.GetSceneNameByDeviceType( inputSetting.DeviceType ); }
     }
 
-    private void Awake()
-    {
+    private void Awake() {
         Instance = this;
-        gameConfig.Init(this);
-        inputSetting.Init(this);
-        mainGame.Init(this);
-        resultMng.Init(this);
+        gameConfig.Init( this );
+        inputSetting.Init( this );
+        mainGame.Init( this );
+        resultMng.Init( this );
 
-        dxCentre.OnInit(this);
-        dxTextCentre.OnInit(this);
-        dxHeatmapPanel.OnInit(this);
-        dxErrorPopup.OnInit(this);
-        dxLoadingPanel.OnInit(this);
+        dxCentre.OnInit( this );
+        dxTextCentre.OnInit( this );
+        dxHeatmapPanel.OnInit( this );
+        dxErrorPopup.OnInit( this );
+        dxLoadingPanel.OnInit( this );
 
-        settingData = Resources.Load<TGSettingData>("SettingData");
+        settingData = Resources.Load<TGSettingData>( "SettingData" );
 
-        if (settingData == null)
-        {
-            ErrorQuit("缺少Setting Data文件！务必确保Resources文件夹底下有SettingData");
+        if( settingData == null ) {
+            ErrorQuit( "缺少Setting Data文件！务必确保Resources文件夹底下有SettingData" );
             return;
         }
 
@@ -79,111 +72,94 @@ public class TGController : MonoBehaviour
 #else
         RootPath = Application.dataPath.Replace(Application.productName + "_Data", string.Empty);
 #endif
-        fileWriter.Init(RootPath);
+        fileWriter.Init( RootPath );
 
         GameNameCn = settingData.gameNameCn;
 
-        systemCam.gameObject.SetActive(false);
+        systemCam.gameObject.SetActive( false );
 
         AudioMng.Init();
 
         IsInit = true;
     }
 
-    private void OnApplicationQuit()
-    {
-        if (!m_onClearEnd)
-        {
+    private void OnApplicationQuit() {
+        if( !m_onClearEnd ) {
             ForceQuit();
         }
     }
 
-    private void ForceQuit()
-    {
+    private void ForceQuit() {
         mainGame.ForceClose();
         gameConfig.ForceClose();
         inputSetting.ForceClose();
 
         StopAllCoroutines();
 
-        Debug.Log("Game Quit Abnormally");
+        Debug.Log( "Game Quit Abnormally" );
     }
 
-    private void Start()
-    {
-        if (!IsInit)
+    private void Start() {
+        if( !IsInit )
             return;
 
-        StartCoroutine(ProcessRoutine());
+        StartCoroutine( ProcessRoutine() );
     }
 
-    public void Quit()
-    {
-        Debug.Log("Game Quit Normally");
+    public void Quit() {
+        Debug.Log( "Game Quit Normally" );
         StopAllCoroutines();
         Application.Quit();
     }
 
-    public void ShowPopupError(string error)
-    {
-        dxErrorPopup.SetActive(true);
+    public void ShowPopupError( string error ) {
+        dxErrorPopup.SetActive( true );
         dxErrorPopup.warningTxt.text = error;
         Time.timeScale = 0;
     }
 
-    public void ClosePopupError()
-    {
-        dxErrorPopup.SetActive(false);
+    public void ClosePopupError() {
+        dxErrorPopup.SetActive( false );
         Time.timeScale = 1;
     }
 
-    public void SetHeatmapEnable(bool _enable)
-    {
+    public void SetHeatmapEnable( bool _enable ) {
         heatmapInput.enabled = settingData.outputHeatmap && _enable;
 
-        if (_enable)
-        {
-            heatmapInput.Init(Screen.width, Screen.height);
-            dxHeatmapPanel.SetTexture(heatmapInput.outputTex);
-        }
-        else
-        {
-            dxHeatmapPanel.ShowWarning(inputSetting.DeviceName);
+        if( _enable ) {
+            heatmapInput.Init( Screen.width, Screen.height );
+            dxHeatmapPanel.SetTexture( heatmapInput.outputTex );
+        } else {
+            dxHeatmapPanel.ShowWarning( inputSetting.DeviceName );
         }
     }
 
-    public void WriteLine(string _line)
-    {
-        if (dxTextCentre.isActive)
-            dxTextCentre.WriteLine(_line);
+    public void WriteLine( string _line ) {
+        if( dxTextCentre.isActive )
+            dxTextCentre.WriteLine( _line );
     }
 
-    public void RenameChinese(string cnName)
-    {
+    public void RenameChinese( string cnName ) {
         GameNameCn = cnName;
     }
 
-    public void ErrorQuit(string _error)
-    {
+    public void ErrorQuit( string _error ) {
         // Write down error
-        Debug.LogWarning(_error);
+        Debug.LogWarning( _error );
         StopAllCoroutines();
-        systemCam.gameObject.SetActive(true);
+        systemCam.gameObject.SetActive( true );
 
         EnableDiagnosis();
     }
 
-    public void EnableDiagnosis()
-    {
-        dxCentre.gameObject.SetActive(true);
-        dxCentre.SetActive(true);
+    public void EnableDiagnosis() {
+        dxCentre.gameObject.SetActive( true );
+        dxCentre.SetActive( true );
     }
 
-    private void Update()
-    {
-        if (!IsInit)
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
+    private void Update() {
+        if( !IsInit ) {
+            if( Input.GetKeyDown( KeyCode.Escape ) )
                 Application.Quit();
 
             return;
@@ -192,58 +168,51 @@ public class TGController : MonoBehaviour
         DebugInputUpdate();
     }
 
-    private void DebugInputUpdate()
-    {
-        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Q))
-        {
-            dxCentre.SetActive(!dxCentre.isActive);
+    private void DebugInputUpdate() {
+        if( Input.GetKey( KeyCode.LeftAlt ) && Input.GetKeyDown( KeyCode.Q ) ) {
+            dxCentre.SetActive( !dxCentre.isActive );
         }
 
-        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.W))
-        {
-            dxTextCentre.SetActive(!dxTextCentre.isActive);
+        if( Input.GetKey( KeyCode.LeftAlt ) && Input.GetKeyDown( KeyCode.W ) ) {
+            dxTextCentre.SetActive( !dxTextCentre.isActive );
         }
 
-        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.E))
-        {
-            dxHeatmapPanel.SetActive(!dxHeatmapPanel.isActive);
+        if( Input.GetKey( KeyCode.LeftAlt ) && Input.GetKeyDown( KeyCode.E ) ) {
+            dxHeatmapPanel.SetActive( !dxHeatmapPanel.isActive );
         }
 
-        if (dxCentre.isActive)
+        if( dxCentre.isActive )
             dxCentre.OnUpdate();
     }
 
-    IEnumerator ProcessRoutine()
-    {
-        dxLoadingPanel.SetActive(true);
-        yield return StartCoroutine(gameConfig.StartRoutine());
-        yield return StartCoroutine(inputSetting.StartRoutine());
-        yield return StartCoroutine(mainGame.StartRoutine());
+    IEnumerator ProcessRoutine() {
+        dxLoadingPanel.SetActive( true );
+        yield return StartCoroutine( gameConfig.StartRoutine() );
+        yield return StartCoroutine( inputSetting.StartRoutine() );
+        yield return StartCoroutine( mainGame.StartRoutine() );
 
-        if (mainGame.CurrentScene != null)
-        {
+        if( mainGame.CurrentScene != null ) {
             ProgressValue = 1f;
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds( 2f );
 
-            dxLoadingPanel.SetActive(false);
+            dxLoadingPanel.SetActive( false );
 
-            yield return StartCoroutine(mainGame.GameRoutine());
-            yield return StartCoroutine(mainGame.EndRoutine());
+            yield return StartCoroutine( mainGame.GameRoutine() );
+            yield return StartCoroutine( mainGame.EndRoutine() );
         }
 
-        yield return StartCoroutine(resultMng.StartRoutine());
-        yield return StartCoroutine(resultMng.EndRoutine());
-        yield return StartCoroutine(inputSetting.EndRoutine());
-        yield return StartCoroutine(gameConfig.EndRoutine());
+        yield return StartCoroutine( resultMng.StartRoutine() );
+        yield return StartCoroutine( resultMng.EndRoutine() );
+        yield return StartCoroutine( inputSetting.EndRoutine() );
+        yield return StartCoroutine( gameConfig.EndRoutine() );
 
         Quit();
 
         m_onClearEnd = true;
     }
 
-    private void OnMainGameProgressChanged(float progress)
-    {
+    private void OnMainGameProgressChanged( float progress ) {
         dxLoadingPanel.image.fillAmount = progress;
     }
 }
