@@ -6,8 +6,8 @@ public static class TGData {
     public static DateTime endTime;
     public static Dictionary<string, string> extraData = new Dictionary<string, string>();
 
-    private const string SCORE_KEY = "??";
-    private const string MAIN_SCREENSHOT_KEY = "??";
+    private const string SCORE_KEY = "µÃ·Ö";
+    private const string MAIN_SCREENSHOT_KEY = "Í¼Æ¬";
 
     public static void SaveScreenshot( string _fileName ) {
         var key = MAIN_SCREENSHOT_KEY;
