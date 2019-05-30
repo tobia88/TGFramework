@@ -112,7 +112,8 @@ public class TGGameScene: TGBaseScene {
     public override void ExitScene() {
         AudioMng.Instance.StopAll();
 
-        extraData.Add( "分数", Score.ToString() );
+        TGData.SaveScore( Score );
+
         base.ExitScene();
     }
 
