@@ -96,7 +96,7 @@ public class TGController: MonoBehaviour {
 
         StopAllCoroutines();
 
-        Debug.Log( "Game Quit Abnormally" );
+        Debug.Log( "游戏不正常退出" );
     }
 
     private void Start() {
@@ -107,20 +107,9 @@ public class TGController: MonoBehaviour {
     }
 
     public void Quit() {
-        Debug.Log( "Game Quit Normally" );
+        Debug.Log( "游戏正常退出" );
         StopAllCoroutines();
         Application.Quit();
-    }
-
-    public void ShowPopupError( string error ) {
-        dxErrorPopup.SetActive( true );
-        dxErrorPopup.warningTxt.text = error;
-        Time.timeScale = 0;
-    }
-
-    public void ClosePopupError() {
-        dxErrorPopup.SetActive( false );
-        Time.timeScale = 1;
     }
 
     public void SetHeatmapEnable( bool _enable ) {
@@ -132,11 +121,6 @@ public class TGController: MonoBehaviour {
         } else {
             dxHeatmapPanel.ShowWarning( inputSetting.DeviceName );
         }
-    }
-
-    public void WriteLine( string _line ) {
-        if( dxTextCentre.isActive )
-            dxTextCentre.WriteLine( _line );
     }
 
     public void RenameChinese( string cnName ) {
