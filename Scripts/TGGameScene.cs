@@ -120,15 +120,24 @@ public class TGGameScene: TGBaseScene {
     public virtual void OnEnterStateGameOver() {
         TimeLeft = 0f;
 
-        if( bgm.clip != null )
-            AudioMng.Instance.Fade( bgm, 0f, 1f );
+        // 游戏时长小于15秒直接退出游戏
+        // 反之则弹出UI正常退出
+        if( m_timePassed > 15f ) {
 
-        uiRoot.gameOverPanel.SetScore( Score.ToString() );
-        uiRoot.gameOverPanel.Show();
+            if( bgm.clip != null )
+                AudioMng.Instance.Fade( bgm, 0f, 1f );
 
-        Debug.Log( "Game Over" );
+            uiRoot.gameOverPanel.SetScore( Score.ToString() );
+            uiRoot.gameOverPanel.Show();
 
-        StartCoroutine( CountdownToQuitRoutine() );
+            Debug.Log( "Game Over" );
+
+            StartCoroutine( CountdownToQuitRoutine() );
+
+        }
+        else {
+            GameState = GameStates.End;
+        }
     }
 
     public void Restart() {
@@ -140,6 +149,15 @@ public class TGGameScene: TGBaseScene {
 
         var scnPos = ( _isScreenPos ) ? _position : Camera.main.WorldToScreenPoint( _position );
         return uiRoot.CreateScorePrefab( _score, scnPos );
+    }
+
+    public override IEnumerator PreUnloadScene() {
+        if( m_timePassed <= 15f ) {
+            Debug.Log( "游戏时长太短，因此不进行截图" );
+            yield break;
+        }
+
+        yield return StartCoroutine( CaptureScreenshot() );
     }
 
     private void InitUI() {
@@ -167,7 +185,7 @@ public class TGGameScene: TGBaseScene {
 
 
         // 右上角退出按钮的点击事件绑定
-        uiRoot.exitBtn.onClick.AddListener( OnPressExitGame );
+        uiRoot.exitBtn.onClick.AddListener( OnPressExit );
 
         // 退出游戏的弹出窗口事件绑定
         uiRoot.exitGamePanel.confirmBtn.onClick.AddListener( ExitScene );
@@ -289,19 +307,11 @@ public class TGGameScene: TGBaseScene {
 
     // Events
     protected override void OnPressExit() {
-        OnPressExitGame();
-    }
-
-    private void OnPressExitGame() {
         if( !isActive )
             return;
 
-        if( m_timePassed <= 15f )
-            ExitScene();
-        else
-            GameState = GameStates.GameOver;
+        GameState = GameStates.GameOver;
     }
-
 
     private IEnumerator CountdownToQuitRoutine() {
         for( int i = 5; i > 0; i-- ) {

@@ -62,8 +62,11 @@ public class TGBaseScene: MonoBehaviour {
     public IEnumerator CaptureScreenshot() {
         var dateStr = TGData.endTime.ToFileFormatString();
         yield return new WaitForEndOfFrame();
+        // 截图
         yield return StartCoroutine( SaveMainScreenshot( dateStr ) );
+        // 截热图
         yield return StartCoroutine( SaveHeatmapTex( dateStr ) );
+
         if( onCaptureScreen != null )
             onCaptureScreen( dateStr );
     }
@@ -84,7 +87,6 @@ public class TGBaseScene: MonoBehaviour {
             //FIXME: 要把它调整到UI底下
             controller.heatmapInput.ApplyHeatmap();
             yield return StartCoroutine( TGTextureHelper.SaveTexture( controller.heatmapInput.outputTex, fileName ) );
-            TGData.SaveScreenshot( fileName );
         }
 
         yield return null;
@@ -121,7 +123,7 @@ public class TGBaseScene: MonoBehaviour {
         ExitScene();
     }
 
-    IEnumerator DelayCallRoutine( System.Action _func, float _delay ) {
+    protected IEnumerator DelayCallRoutine( System.Action _func, float _delay ) {
         yield return new WaitForSeconds( _delay );
         _func();
     }

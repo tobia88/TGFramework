@@ -31,7 +31,7 @@ public class TGMainGame: TGBaseBehaviour {
 
         yield return StartCoroutine( ClearLoadingScene() );
 
-        Debug.Log( "Loading Scene: " + SceneName );
+        Debug.Log( "读取场景：" + SceneName );
         asyncOperation = SceneManager.LoadSceneAsync( SceneName, LoadSceneMode.Additive );
 
         float remainProg = 1f - m_controller.ProgressValue;
@@ -87,9 +87,6 @@ public class TGMainGame: TGBaseBehaviour {
 
         // 记录结束时间
         TGData.endTime = DateTime.Now;
-
-        // 截屏
-        yield return StartCoroutine( CurrentScene.CaptureScreenshot() );
     }
 
     public override IEnumerator EndRoutine() {
