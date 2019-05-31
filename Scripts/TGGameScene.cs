@@ -145,6 +145,9 @@ public class TGGameScene: TGBaseScene {
     }
 
     public GetPointTextUI GetOrLossScore( int _score, Vector3 _position, bool _isScreenPos = false ) {
+        if( GameState != GameStates.Playing )
+            return null;
+
         Score += _score;
 
         var scnPos = ( _isScreenPos ) ? _position : Camera.main.WorldToScreenPoint( _position );
