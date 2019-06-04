@@ -25,8 +25,9 @@ public class HeatmapInput : MonoBehaviour
 
 		m_width = _width;
 		m_height = _height;
-
 		outputTex = new Texture2D(m_width, m_height, TextureFormat.RGB24, false);
+		outputTex.wrapMode = TextureWrapMode.Clamp;
+
 
 		for (int y = 0; y < outputTex.height; y++)
 		{
@@ -90,6 +91,7 @@ public class HeatmapInput : MonoBehaviour
 			Debug.LogWarning( "热图还没有初始化" );
 			return;
 		}
+
 		int sizeInRatio = Mathf.RoundToInt(plotTex.width * plotSize);
 
 		int inputX = Mathf.FloorToInt(_inputX);
@@ -106,7 +108,7 @@ public class HeatmapInput : MonoBehaviour
 
 				int pixelIndex = bpx + bpy * m_width;
 
-				if (pixelIndex < 0 || pixelIndex > m_maskValues.Length)
+				if (pixelIndex < 0 || pixelIndex >= m_maskValues.Length)
 					continue;
 
 				float v = m_maskValues[pixelIndex] + plotTex.GetPixelBilinear((float)x / sizeInRatio, (float)y / sizeInRatio).r * plotStrength;
