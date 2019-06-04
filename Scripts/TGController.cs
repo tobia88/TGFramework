@@ -115,6 +115,8 @@ public class TGController: MonoBehaviour {
     public void SetHeatmapEnable( bool _enable ) {
         heatmapInput.enabled = settingData.outputHeatmap && _enable;
 
+        Debug.Log( "是否打开热图：" + heatmapInput.enabled );
+
         if( _enable ) {
             heatmapInput.Init( Screen.width, Screen.height );
             dxHeatmapPanel.SetTexture( heatmapInput.outputTex );
