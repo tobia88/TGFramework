@@ -33,16 +33,16 @@ public class LMInputCtrl: MonoBehaviour {
     }
 
     public void OnUpdate() {
-        var input = TGController.Instance.inputSetting;
-
-        if( !input.IsPortActive ) {
-            TouchInputUpdate( input.touchCtrl );
+        if( !TGInputSetting.IsPortActive ) {
+            TouchInputUpdate();
         } else {
-            PortInputUpdate( input );
+            PortInputUpdate();
         }
     }
 
-    private void TouchInputUpdate( LMTouchCtrl touch ) {
+    private void TouchInputUpdate() {
+        var touch = TGInputSetting.Touch;
+
         if( touch == null )
             return;
 
@@ -54,15 +54,15 @@ public class LMInputCtrl: MonoBehaviour {
             TGUtility.DrawHeatmap2D( touch.ScreenPosition );
     }
 
-    private void PortInputUpdate( TGInputSetting input ) {
+    private void PortInputUpdate() {
         var target = new Vector3();
 
         string strOrder = axisOrder.ToString().ToLower();
 
-        if( input.DeviceType == "m7b" || input.DeviceType == "m7b2D" ) {
-            target = input.GetValueFromEvalAxis();
+        if( TGData.DeviceType == "m7b" || TGData.DeviceType == "m7b2D" ) {
+            target = TGInputSetting.GetValueFromEvalAxis();
         } else {
-            target = input.GetValues();
+            target = TGInputSetting.GetValues();
         }
 
         target = target.Reorder( strOrder );

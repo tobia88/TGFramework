@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TGResultMng: TGBaseBehaviour {
+public class TGResultMng: TGBaseManager {
     public const string SAVE_FILENAME = "ret.txt";
     public bool isWrited = false;
     public override IEnumerator StartRoutine() {
@@ -12,13 +12,13 @@ public class TGResultMng: TGBaseBehaviour {
     }
 
     public void ForceWrite() {
-        string path = m_controller.RootPath + SAVE_FILENAME;
+        string path = TGPaths.Root + SAVE_FILENAME;
 
         INIParser ini = new INIParser();
 
         ini.Open( path );
 
-        ini.WriteValue( "ret", "名称", m_controller.GameNameCn );
+        ini.WriteValue( "ret", "名称", TGData.GameNameCn );
         ini.WriteValue( "ret", "种类", "2" );
         ini.WriteValue( "ret", "开始时间", TGData.startTime.ToDateString() );
         ini.WriteValue( "ret", "结束时间", TGData.endTime.ToDateString() );
@@ -26,7 +26,6 @@ public class TGResultMng: TGBaseBehaviour {
         WriteExtraData( ini );
 
         ini.Close();
-
 
         Debug.Log( "Writing Finished" );
     }

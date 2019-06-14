@@ -5,123 +5,89 @@ using System.Text;
 using UnityEngine;
 using System;
 
-public class LMFileWriter : MonoBehaviour
-{
+public static class LMFileWriter {
+    public static string Write( string _filePath, string _content ) {
+        EnsureFolder( _filePath );
 
-    public string RootPath
-    {
-        get; private set;
-    }
-
-    public void Init(string _rootPath)
-    {
-        RootPath = _rootPath;
-    }
-
-    public string Write(string _filePath, string _content)
-    {
-        EnsureFolder(_filePath);
-
-        try
-        {
-            using (FileStream fs = new FileStream(RootPath + "/" + _filePath, FileMode.OpenOrCreate, FileAccess.Write))
-            {
-                fs.SetLength(0);
-                byte[] bytes = Encoding.UTF8.GetBytes(_content);
-                fs.Write(bytes, 0, bytes.Length);
+        try {
+            using( FileStream fs = new FileStream( _filePath, FileMode.OpenOrCreate, FileAccess.Write ) ) {
+                fs.SetLength( 0 );
+                byte[] bytes = Encoding.UTF8.GetBytes( _content );
+                fs.Write( bytes, 0, bytes.Length );
             }
-        }
-        catch (Exception _ex)
-        {
+        } catch( Exception _ex ) {
             return _ex.ToString();
         }
 
         return string.Empty;
     }
 
-    public string Write(string _filePath, byte[] _contents)
-    {
-        try
-        {
-            using (FileStream fs = new FileStream(RootPath + "/" + _filePath, FileMode.OpenOrCreate, FileAccess.Write))
-            {
-                fs.Write(_contents, 0, _contents.Length);
+    public static string Write( string _filePath, byte[] _contents ) {
+        try {
+            using( FileStream fs = new FileStream( _filePath, FileMode.OpenOrCreate, FileAccess.Write ) ) {
+                fs.Write( _contents, 0, _contents.Length );
             }
-        }
-        catch (Exception _ex)
-        {
+        } catch( Exception _ex ) {
             return _ex.ToString();
         }
 
         return string.Empty;
     }
 
-    public string Read(string _fileName, System.Action<List<string>> _callback)
-    {
+    public static string Read( string _path, System.Action<List<string>> _callback ) {
         List<string> retval = new List<string>();
 
-        string path = RootPath + "/" + _fileName;
-        try
-        {
-            using (StreamReader sr = new StreamReader(path, Encoding.Default))
-            {
+        try {
+            using( StreamReader sr = new StreamReader( _path, Encoding.Default ) ) {
                 string line = sr.ReadLine();
 
-                while (!string.IsNullOrEmpty(line))
-                {
-                    retval.Add(line);
+                while( !string.IsNullOrEmpty( line ) ) {
+                    retval.Add( line );
                     line = sr.ReadLine();
                 }
             }
 
-            _callback(retval);
-        }
-        catch (Exception _ex)
-        {
+            _callback( retval );
+        } catch( Exception _ex ) {
             return _ex.ToString();
         }
 
         return string.Empty;
     }
 
-    public string Read(string _fileName)
-    {
-        string path = Path.Combine(RootPath, _fileName);
-
-        if (File.Exists(path))
-        {
-            return File.ReadAllText(path);
+    public static string Read( string _path ) {
+        if( File.Exists( _path ) ) {
+            return File.ReadAllText( _path );
         }
 
         return string.Empty;
     }
 
-    public T ReadJSON<T>(string _fileName)
-    {
-        string data = Read(_fileName);
+    public static T ReadJSON<T>( string _fileName ) {
+        string data = Read( _fileName );
 
-        if (data != string.Empty)
-        {
-            return JsonUtility.FromJson<T>(data);
+        if( data != string.Empty ) {
+            return JsonUtility.FromJson<T>( data );
         }
 
-        Debug.LogWarning("Find no config file, perhaps you passed the wrong path");
-        return default(T);
+        Debug.LogWarning( "Find no config file, perhaps you passed the wrong path" );
+        return default( T );
     }
 
-    private void EnsureFolder(string _path)
-    {
-        int lastSlashIndex = _path.LastIndexOf('/');
+    private static void EnsureFolder( string _path ) {
+        // 检测路径是否在独立的文件夹内
+        int lastSlashIndex = _path.LastIndexOf( '/' );
 
-        if (lastSlashIndex < 0)
+        // 如果不在文件夹以内，则不进行任何操作
+        if( lastSlashIndex < 0 )
             return;
 
-        string tmpPath = RootPath + "/" + _path.Substring(0, lastSlashIndex);
+        // 获取文件夹地路径，并创立文件夹
+        string tmpPath = _path.Substring( 0, lastSlashIndex );
 
-        if (!Directory.Exists(tmpPath))
-        {
-            Debug.Log("Folder Created: " + tmpPath);
-            Directory.CreateDirectory(tmpPath);
+        if( !Directory.Exists( tmpPath ) ) {
+            Debug.Log( "Folder Created: " + tmpPath );
+            Directory.CreateDirectory( tmpPath );
         }
     }
 }

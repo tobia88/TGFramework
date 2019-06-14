@@ -3,81 +3,73 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TGDXInputDataColumn : MonoBehaviour {
+public class TGDXInputDataColumn: MonoBehaviour {
 
-	public TGDXKeyTestBar testBarPrefab;
-	public TGDXKeyTestBar[] testBars;
-	public Transform keyValueContainer;
-	public Text titleTxt;
-	public Text inputTxt;
+    public TGDXKeyTestBar testBarPrefab;
+    public TGDXKeyTestBar[] testBars;
+    public Transform keyValueContainer;
+    public Text titleTxt;
+    public Text inputTxt;
 
-	private LMBasePortResolver m_keyResolver;
+    private LMBasePortResolver m_keyResolver;
 
-	public void Init(LMBasePortResolver keyResolver)
-	{
-		m_keyResolver = keyResolver;
+    public void Init( LMBasePortResolver keyResolver ) {
+        m_keyResolver = keyResolver;
 
-		titleTxt.text = TGController.Instance.inputSetting.DeviceName;
+        titleTxt.text = TGData.DeviceName;
 
-		SetupTestBars();
-	}
+        SetupTestBars();
+    }
 
-	private void SetupTestBars()
-	{
-		if (m_keyResolver.values == null)
-			return;
+    private void SetupTestBars() {
+        if( m_keyResolver.values == null )
+            return;
 
-		int length = m_keyResolver.values.Length;
-		testBars = new TGDXKeyTestBar[length];
+        int length = m_keyResolver.values.Length;
+        testBars = new TGDXKeyTestBar[length];
 
-		for (int i = 0; i < length; i++)
-		{
-			var keyportValue = m_keyResolver.values[i];
+        for( int i = 0; i < length; i++ ) {
+            var keyportValue = m_keyResolver.values[i];
 
-			var bar = CreateBar(keyportValue);
+            var bar = CreateBar( keyportValue );
 
-			testBars[i] = bar;	
-		}
-	}
+            testBars[i] = bar;
+        }
+    }
 
-	private TGDXKeyTestBar CreateBar(KeyResolveValue value)
-	{
-		var bar = Instantiate<TGDXKeyTestBar>(testBarPrefab, keyValueContainer);
-		return bar;
-	}
+    private TGDXKeyTestBar CreateBar( KeyResolveValue value ) {
+        var bar = Instantiate<TGDXKeyTestBar>( testBarPrefab, keyValueContainer );
+        return bar;
+    }
 
-	public void OnUpdate()
-	{
-		if (testBars == null || m_keyResolver.values == null)
-			return;
+    public void OnUpdate() {
+        if( testBars == null || m_keyResolver.values == null )
+            return;
 
-		inputTxt.text = GetInputText();
+        inputTxt.text = GetInputText();
 
-		for (int i = 0; i < testBars.Length; i++)
-		{
-			if (m_keyResolver.values[i] == null)
-				continue;
+        for( int i = 0; i < testBars.Length; i++ ) {
+            if( m_keyResolver.values[i] == null )
+                continue;
 
-			testBars[i].UpdateData(m_keyResolver.values[i]);
-		}
-	}
+            testBars[i].UpdateData( m_keyResolver.values[i] );
+        }
+    }
 
-	private string GetInputText()
-	{
-		KeyResolveInput[] input = m_keyResolver.inputs;
+    private string GetInputText() {
+        KeyResolveInput[] input = m_keyResolver.inputs;
 
-		var retval = string.Empty;
+        var retval = string.Empty;
 
-		if (input == null || input.Length <= 0)
-			return retval;
+        if( input == null || input.Length <= 0 )
+            return retval;
 
-		retval += input[0].ToString();
+        retval += input[0].ToString();
 
-		for (int i = 1; i < input.Length; i++)
-		{
-			retval += ", " + input[i].ToString();
-		}
+        for( int i = 1; i < input.Length; i++ ) {
+            retval += ", " + input[i].ToString();
+        }
 
-		return retval;
-	}
+        return retval;
+    }
 }

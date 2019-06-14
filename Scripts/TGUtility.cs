@@ -22,7 +22,7 @@ public static class TGUtility {
                     string cutkey = sliced[i];
                     Debug.Log( "Cut Key: " + cutkey );
 
-                    key = key.Replace( cutkey, TGController.Instance.gameConfig.GetValue( cutkey, 0f ).ToString() );
+                    key = key.Replace( cutkey, TGGameConfig.GetValue( cutkey, 0f ).ToString() );
                 }
                 Debug.Log( "String Converted: " + key );
 
@@ -32,15 +32,11 @@ public static class TGUtility {
                 if( float.TryParse( key, out retval ) ) {
                     return retval;
                 } else {
-                    return TGController.Instance.gameConfig.GetValue( key, 0 );
+                    return TGGameConfig.GetValue( key, 0 );
                 }
 
             }
         }
-    }
-
-    public static KeyInputConfig ParseConfigFile( string _configFileName ) {
-        return TGController.Instance.fileWriter.ReadJSON<KeyInputConfig>( _configFileName );
     }
 
     public static double PreventValueSkipping( double cx, double lv, double nv, bool r ) {

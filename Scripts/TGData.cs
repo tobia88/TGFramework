@@ -1,13 +1,27 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class TGData {
+    public const string SCORE_KEY = "得分";
+    public const string MAIN_SCREENSHOT_KEY = "图片";
+    public const string COMPANY_NAME = "Tuo Guan Technology";
+
     public static DateTime startTime;
     public static DateTime endTime;
     public static Dictionary<string, string> extraData = new Dictionary<string, string>();
-
-    private const string SCORE_KEY = "得分";
-    private const string MAIN_SCREENSHOT_KEY = "图片";
+    // public static SceneData curExportData;
+    public static SceneData SceneData { get; private set; }
+    public static SceneDetail SceneDetail { get; private set; }
+    public static PatientTarget PatientTarget { get { return SceneData.patienceTarget; } }
+    public static KeyPortData KeyPortData { get; private set; }
+    public static EvalData evalData;
+    public static string GameNameCn { get; private set; }
+    public static string SceneName { get; private set; }
+    public static bool disableHeatmap;
+    public static bool IsTesting { get; private set; }
+    public static string DeviceName { get; private set; }
+    public static string DeviceType { get { return KeyPortData.type; } }
 
     public static void SaveScreenshot( string _fileName ) {
         var key = MAIN_SCREENSHOT_KEY;
@@ -25,5 +39,28 @@ public static class TGData {
         
         else
             extraData.Add( SCORE_KEY, score.ToString() );
+    }
+
+    public static KeyPortData SetDevice( string _deviceName, bool _testing ) {
+        IsTesting = _testing;
+        Debug.Log( "打开测试: " + IsTesting );
+
+        DeviceName = _deviceName;
+
+        var config = KeyInputConfig.GetInstance();
+        KeyPortData = config.GetKeyportData( DeviceName );
+
+        Debug.Log( "器材名称：" + DeviceName );
+        Debug.Log( "设备类型：" + DeviceType );
+
+        return KeyPortData;
+    }
+
+    public static void SetSceneData( SceneData _sceneData ) {
+        SceneData = _sceneData;
+        GameNameCn = _sceneData.gameNameCn;
+
+        SceneDetail = SceneData.GetSceneDetail( TGData.DeviceType );
+        SceneName = SceneDetail.sceneName;
     }
 }

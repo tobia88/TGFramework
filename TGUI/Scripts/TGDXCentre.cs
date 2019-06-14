@@ -41,7 +41,7 @@ public class TGDXCentre : TGDXBaseCentre
 
 	private void SetupColumns()
 	{
-		var currentPort = m_controller.inputSetting.portInput;
+		var currentPort = TGInputSetting.PortInput;
 
 		if (currentPort != null && currentPort.IsPortActive)
 		{

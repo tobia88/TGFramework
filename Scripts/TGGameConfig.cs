@@ -5,34 +5,59 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+public enum PatientTarget {
+    Adult = 0,
+    Child = 1
+}
+
 public class EvalDataGroup {
     public EvalData[] infos;
 }
 
-public class TGGameConfig: TGBaseBehaviour {
-    public string fileName;
-    public string sectionName;
-    public string evaluationFileName;
-    public EvalData evalData;
+public class TGGameConfig: TGBaseManager {
+    public static TGGameConfig Instance { get; private set; }
+    public const string SECTION_NAME = "PZConf";
 
-    private INIParser m_iniParser;
+    private static INIParser m_iniParser;
+
+    public override void Init(TGController _controller) {
+        Instance = this;
+
+        Screen.SetResolution( 1920, 1080, true, 60 );
+
+        base.Init( _controller );
+    }
 
     public override IEnumerator StartRoutine() {
-        InitParser();
+        try {
+            InitParser();
+            LoadInputConfig();
+            LoadEvaluationSetting();
+            LoadSceneData();
 
-        if( !string.IsNullOrEmpty( evaluationFileName ) ) {
-            var group = m_controller.fileWriter.ReadJSON<EvalDataGroup>( evaluationFileName );
+            m_controller.ProgressValue += 0.1f;
+        }
+        catch( Exception e ) {
+            m_controller.ErrorQuit( e.ToString() );
+        }
+
+        yield return 1;
+    }
+
+    private void LoadEvaluationSetting() {
+        string eval = TGPaths.EvalSetting;
+
+        // 读取3D传感器的配置
+        if( !string.IsNullOrEmpty( eval ) ) {
+            var group = LMFileWriter.ReadJSON<EvalDataGroup>( eval );
 
             if( group != null ) {
                 string cnTitle = GetValue( "体侧", string.Empty );
-                evalData = GetConfigDataFromTitle( group, cnTitle );
-
+                TGData.evalData = GetConfigDataFromTitle( group, cnTitle );
             }
         } else {
-            Debug.LogWarning( evaluationFileName + "Has not found" );
+            Debug.LogWarning( eval + "Has not found" );
         }
-        m_controller.ProgressValue += 0.1f;
-        yield return new WaitForSeconds( 1f );
     }
 
     public override void ForceClose() {
@@ -48,16 +73,16 @@ public class TGGameConfig: TGBaseBehaviour {
         return group.infos.FirstOrDefault( d => d.cnTitle == cnTitle );
     }
 
-    public string GetValue( string key, string defaultValue ) {
-        return m_iniParser.ReadValue( sectionName, key, defaultValue );
+    public static string GetValue( string key, string defaultValue ) {
+        return m_iniParser.ReadValue( SECTION_NAME, key, defaultValue );
     }
 
-    public int GetValue( string key, int defaultValue ) {
-        return m_iniParser.ReadValue( sectionName, key, defaultValue );
+    public static int GetValue( string key, int defaultValue ) {
+        return m_iniParser.ReadValue( SECTION_NAME, key, defaultValue );
     }
 
-    public float GetValue( string key, float defaultValue ) {
-        return ( float )m_iniParser.ReadValue( sectionName, key, defaultValue );
+    public static float GetValue( string key, float defaultValue ) {
+        return ( float )m_iniParser.ReadValue( SECTION_NAME, key, defaultValue );
     }
 
     public void Close() {
@@ -65,8 +90,49 @@ public class TGGameConfig: TGBaseBehaviour {
             m_iniParser.Close();
     }
 
+    public void LoadSceneData() {
+        #if UNITY_EDITOR
+            var settingData = TGSettingData.GetInstance();
+            var scn = GameObject.FindObjectOfType<TGBaseScene> ();
+            
+            SceneData sceneData = null;
+
+            if( scn != null ) {
+                sceneData = settingData.GetSceneData( TGData.SceneName );
+            }
+            else {
+                sceneData = settingData.sceneDatas[0];
+            }
+
+        #else
+            var sceneData = LMFileWriter.ReadJSON<SceneData>( TGPaths.SceneData );
+        #endif   
+
+        TGData.SetSceneData( sceneData );
+    }
+
+    private void LoadInputConfig() {
+        bool testing = false;
+        string deviceName = string.Empty;
+
+        var scn = GameObject.FindObjectOfType<TGBaseScene>();
+        deviceName = string.Empty;
+
+        if( scn != null ) {
+            // 获取设置中的输入类型
+            deviceName = "触屏控制";
+            testing = scn.isTesting;
+        } else {
+            // 获取game.txt中的数据
+            testing = TGGameConfig.GetValue( "测试", 0 ) == 1;
+            deviceName = TGGameConfig.GetValue( "训练器材", string.Empty );
+        }
+
+        TGData.SetDevice( deviceName, testing );
+    }
+
     private void InitParser() {
-        string path = m_controller.RootPath + "/" + fileName;
+        string path = TGPaths.MainGameConfig;
 
         m_iniParser = new INIParser();
         m_iniParser.Open( path );

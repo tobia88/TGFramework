@@ -143,7 +143,7 @@ public class LMKeyResolver: LMBasePortResolver {
 
         inputTotalGap = _portInput.KeyportData.inputTotalGap;
 
-        string txt = TGController.Instance.gameConfig.GetValue( "校准", string.Empty );
+        string txt = TGGameConfig.GetValue( "校准", string.Empty );
 
         if( !string.IsNullOrEmpty( txt ) ) {
             SetBiases( txt );

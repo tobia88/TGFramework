@@ -35,7 +35,7 @@ public static class TGTextureHelper {
         Debug.Log( "Write Texture: " + _name );
 
         // 写入文件
-        TGController.Instance.fileWriter.Write( _name, bytes );
+        LMFileWriter.Write( _name, bytes );
 
         // 写到Dicionary里，好之后写入ret.txt
         TGData.SaveScreenshot( _name );

@@ -27,7 +27,7 @@ public class Leadiy_M7B : LMBasePortResolver
 
     public override void Start()
     {
-        SetupEvaluateData(TGController.Instance.gameConfig.evalData);
+        SetupEvaluateData( TGData.evalData );
     }
 
     public override void Recalibration()

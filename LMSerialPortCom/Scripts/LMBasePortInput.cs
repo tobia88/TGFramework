@@ -13,6 +13,14 @@ public interface IPortReceiver {
 public class KeyInputConfig {
     public KeyPortData[] keys;
 
+    public static KeyInputConfig GetInstance() {
+        var retval = LMFileWriter.ReadJSON<KeyInputConfig>( TGPaths.KeyInputSetting );
+        if( retval == null ) {
+            throw new Exception( TGPaths.KeyInputSetting  + " 并不存在" );
+        }
+        return retval;
+    }
+
     public KeyPortData GetKeyportData( string keyName ) {
         foreach( KeyPortData k in keys ) {
             if( k.name.FirstOrDefault( n => n == keyName ) != null )

@@ -82,16 +82,14 @@ public class TGGameScene: TGBaseScene {
 
         InitUI();
 
-        var config = controller.gameConfig;
-
-        Duration = config.GetValue( "训练时长", -1 ) * 60;
-        DifficultyLv = config.GetValue( "难度等级", -1 );
+        Duration = TGGameConfig.GetValue( "训练时长", -1 ) * 60;
+        DifficultyLv = TGGameConfig.GetValue( "难度等级", -1 );
     }
 
 
     // Core
     public override void OnStart() {
-        isActive = true;
+        IsActive = true;
 
         m_startTime = Time.time;
 
@@ -134,8 +132,7 @@ public class TGGameScene: TGBaseScene {
 
             StartCoroutine( CountdownToQuitRoutine() );
 
-        }
-        else {
+        } else {
             GameState = GameStates.End;
         }
     }
@@ -166,7 +163,7 @@ public class TGGameScene: TGBaseScene {
     private void InitUI() {
         // 根据设备名称获取教程图片，请确保Resources文件夹下的与keyInputConfig.json
         // 下的设备名称保持一致
-        var tutorialSpr = Resources.Load<Sprite>( controller.inputSetting.DeviceName );
+        var tutorialSpr = Resources.Load<Sprite>( TGData.DeviceName );
 
         uiRoot.Init( this, tutorialSpr );
 
@@ -178,7 +175,7 @@ public class TGGameScene: TGBaseScene {
         }
 
         // 根据keyInputConfig.json里的设置来确定是否要开启校准按钮
-        var disableRecalibrate = controller.inputSetting.KeyportData.disableRecalibrate;
+        var disableRecalibrate = TGInputSetting.KeyportData.disableRecalibrate;
 
         uiRoot.recalibrationBtn.gameObject.SetActive( !disableRecalibrate );
 
@@ -223,7 +220,7 @@ public class TGGameScene: TGBaseScene {
 
     protected virtual void OnDifficultyChanged( int _difficulty ) {
         m_difficultyLv = _difficulty;
-        controller.inputSetting.SetPressureLevel( m_difficultyLv );
+        TGInputSetting.SetPressureLevel( m_difficultyLv );
     }
 
     protected virtual void OnEnterGameState( GameStates _gameState ) {
@@ -277,7 +274,7 @@ public class TGGameScene: TGBaseScene {
     }
 
     protected virtual void OnUpdateStateGamePlaying() {
-        if( controller.inputSetting.IsTesting ) {
+        if( TGData.IsTesting ) {
             // 一些方便测试的快捷键
             // LShift + Q直接结束游戏
             if( Input.GetKey( KeyCode.LeftShift ) && Input.GetKeyDown( KeyCode.Q ) ) {
@@ -310,7 +307,7 @@ public class TGGameScene: TGBaseScene {
 
     // Events
     protected override void OnPressExit() {
-        if( !isActive )
+        if( !IsActive )
             return;
 
         GameState = GameStates.GameOver;

@@ -5,15 +5,13 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TGMainGame: TGBaseBehaviour {
-    public string SceneName { get; private set; }
+public class TGMainGame: TGBaseManager {
+    public string SceneName { get { return TGData.SceneName; } }
     public TGBaseScene CurrentScene { get; private set; }
 
     public AsyncOperation asyncOperation;
 
     public override IEnumerator StartRoutine() {
-        SceneName = m_controller.SceneName;
-
         Scene tmpScene = SceneManager.GetSceneByName( SceneName );
 
         if( !tmpScene.isLoaded ) {
@@ -21,10 +19,6 @@ public class TGMainGame: TGBaseBehaviour {
         }
 
         CurrentScene = SetSceneActive( SceneName );
-
-        if( CurrentScene == null ) {
-            m_controller.ErrorQuit( "TGBaseScene doesn't found on scene " + this.SceneName );
-        }
     }
 
     private IEnumerator LoadSceneRoutine() {
@@ -54,7 +48,7 @@ public class TGMainGame: TGBaseBehaviour {
             if( scn == gameObject.scene )
                 continue;
 
-            Debug.Log( "Clearing Scene: " + scn.name );
+            Debug.Log( "清理读取场景: " + scn.name );
 
             yield return SceneManager.UnloadSceneAsync( scn );
         }
@@ -73,13 +67,13 @@ public class TGMainGame: TGBaseBehaviour {
         CurrentScene.Init();
 
         // 配置输入设置
-        m_inputSetting.OnGameStart();
+        m_controller.inputSetting.OnGameStart();
 
         // 游戏场景开始
         CurrentScene.OnStart();
 
         // 游戏场景循环
-        while( CurrentScene.isActive ) {
+        while( CurrentScene.IsActive ) {
             CurrentScene.OnUpdate();
             m_controller.inputSetting.OnUpdate();
             yield return 1;

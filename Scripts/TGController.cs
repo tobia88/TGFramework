@@ -5,12 +5,11 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TGController: MonoBehaviour {
+public class TGController: TGBaseBehaviour {
+    private static TGController _Instance;
     public static TGController Instance;
     public Camera systemCam;
 
-    public string GameNameCn { get; private set; }
-    public TGSettingData settingData { get; private set; }
     public TGGameConfig gameConfig;
     public TGInputSetting inputSetting;
     public HeatmapInput heatmapInput;
@@ -24,6 +23,7 @@ public class TGController: MonoBehaviour {
     public TGDXLoadingPanel dxLoadingPanel;
 
     private float m_progressValue;
+    private Coroutine m_routine;
 
     public float ProgressValue {
         get { return m_progressValue; }
@@ -34,21 +34,21 @@ public class TGController: MonoBehaviour {
         }
     }
 
-    public LMFileWriter fileWriter;
-    public string RootPath {
-        get;
-        private set;
-    }
     public bool IsInit { get; private set; }
 
     private bool m_onClearEnd;
 
-    public string SceneName {
-        get { return settingData.GetSceneNameByDeviceType( inputSetting.DeviceType ); }
+    public static void Init() {
+        var prefab = Resources.Load<TGController>("TGController");
+        Instance = Instantiate(prefab);
+        DontDestroyOnLoad(Instance.gameObject);
+        Debug.Log("创建了TGController");
     }
 
     private void Awake() {
-        Instance = this;
+        if( Instance == null )
+            Instance = this;
+
         gameConfig.Init( this );
         inputSetting.Init( this );
         mainGame.Init( this );
@@ -59,22 +59,6 @@ public class TGController: MonoBehaviour {
         dxHeatmapPanel.OnInit( this );
         dxErrorPopup.OnInit( this );
         dxLoadingPanel.OnInit( this );
-
-        settingData = Resources.Load<TGSettingData>( "SettingData" );
-
-        if( settingData == null ) {
-            ErrorQuit( "缺少Setting Data文件！务必确保Resources文件夹底下有SettingData" );
-            return;
-        }
-
-#if UNITY_EDITOR
-        RootPath = Application.dataPath + "/TGFramework/";
-#else
-        RootPath = Application.dataPath.Replace(Application.productName + "_Data", string.Empty);
-#endif
-        fileWriter.Init( RootPath );
-
-        GameNameCn = settingData.gameNameCn;
 
         systemCam.gameObject.SetActive( false );
 
@@ -87,6 +71,9 @@ public class TGController: MonoBehaviour {
         if( !m_onClearEnd ) {
             ForceQuit();
         }
+
+        Resources.UnloadUnusedAssets();
+        System.GC.Collect();
     }
 
     private void ForceQuit() {
@@ -102,8 +89,8 @@ public class TGController: MonoBehaviour {
     private void Start() {
         if( !IsInit )
             return;
-
-        StartCoroutine( ProcessRoutine() );
+        
+        m_routine = StartCoroutine( ProcessRoutine() );
     }
 
     public void Quit() {
@@ -113,24 +100,21 @@ public class TGController: MonoBehaviour {
     }
 
     public void SetHeatmapEnable( bool _enable ) {
-        heatmapInput.enabled = settingData.outputHeatmap && _enable;
+        heatmapInput.enabled = _enable;
 
         if( _enable ) {
             heatmapInput.Init( Screen.width, Screen.height );
             dxHeatmapPanel.SetTexture( heatmapInput.outputTex );
         } else {
-            dxHeatmapPanel.ShowWarning( inputSetting.DeviceName );
+            dxHeatmapPanel.ShowWarning( TGData.DeviceName );
         }
-    }
-
-    public void RenameChinese( string cnName ) {
-        GameNameCn = cnName;
     }
 
     public void ErrorQuit( string _error ) {
         // Write down error
         Debug.LogWarning( _error );
-        StopAllCoroutines();
+        StopCoroutine( m_routine );
+
         systemCam.gameObject.SetActive( true );
 
         EnableDiagnosis();
@@ -170,6 +154,8 @@ public class TGController: MonoBehaviour {
     }
 
     IEnumerator ProcessRoutine() {
+        yield return 1;
+
         dxLoadingPanel.SetActive( true );
         yield return StartCoroutine( gameConfig.StartRoutine() );
         yield return StartCoroutine( inputSetting.StartRoutine() );

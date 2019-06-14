@@ -5,42 +5,28 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TGInputSetting: TGBaseBehaviour {
-    public string configFileName;
-    public LMBasePortInput portInput { get; private set; }
-    public LMTouchCtrl touchCtrl { get; private set; }
-    public KeyInputConfig keyInputConfig;
-    public bool IsPortActive {
-        get { return ( portInput == null ) ? false : portInput.IsConnected; }
+public class TGInputSetting: TGBaseManager {
+    public static LMTouchCtrl Touch { get; private set; }
+    public static LMBasePortInput PortInput { get; private set; }
+    public static bool IsPortActive {
+        get { return ( PortInput == null ) ? false : PortInput.IsConnected; }
     }
 
-    public bool IsTesting { get; private set; }
-
-    public string DeviceName { get; private set; }
-    public string DeviceType { get { return ( KeyportData == null ) ? string.Empty : KeyportData.type; } }
-    public KeyPortData KeyportData { get; private set; }
+    public static KeyPortData KeyportData { get; private set; }
 
     public override IEnumerator StartRoutine() {
 
-        touchCtrl = GetComponent<LMTouchCtrl>();
+        Touch = new LMTouchCtrl(); 
 
-        keyInputConfig = TGUtility.ParseConfigFile( configFileName );
-
-        DeviceName = m_controller.gameConfig.GetValue( "训练器材", string.Empty );
-
-        Debug.Log( "器材名称：" + DeviceName );
-
-        KeyportData = keyInputConfig.GetKeyportData( DeviceName );
+        KeyportData = TGData.KeyPortData;
 
         if( KeyportData == null ) {
-            m_controller.dxErrorPopup.PopupMessage( "训练器材 " + DeviceName + "不存在！" );
-            yield break;
+            m_controller.ErrorQuit( "训练器材 " + TGData.DeviceName + "不存在！" );
         }
 
-        // 开启触屏模式
-        touchCtrl.enabled = KeyportData.type == "touch";
-
-        if( !touchCtrl.enabled ) {
+        // 检测是否开启触屏模式
+        // 如果不是则开始安排线程接受端口数据
+        if( KeyportData.type != "touch" ) {
             yield return StartCoroutine( ConnectDeviceRoutine() );
         }
 
@@ -55,29 +41,27 @@ public class TGInputSetting: TGBaseBehaviour {
     }
 
     private IEnumerator ConnectDeviceRoutine() {
-        // 如果game.txt中存在测试=1，则开启测试模式
-        IsTesting = m_controller.gameConfig.GetValue( "测试", 0 ) == 1;
 
-        if( IsTesting )
+        if( TGData.IsTesting )
             Debug.Log( "开启测试模式" );
 
         // FIXME: Temperory
-        if( KeyportData.type == "m7b" && m_gameConfig.evalData.isFullAxis ) {
+        if( KeyportData.type == "m7b" && TGData.evalData.isFullAxis ) {
             KeyportData.type += "2D";
         }
 
-        portInput = GetProperInput();
+        PortInput = GetProperInput();
 
-        if( IsTesting )
+        if( TGData.IsTesting )
             yield break;
 
-        while( !portInput.IsPortActive ) {
-            yield return StartCoroutine( portInput.OnStart() );
+        while( !PortInput.IsPortActive ) {
+            yield return StartCoroutine( PortInput.OnStart() );
 
-            if( !portInput.IsPortActive ) {
+            if( !PortInput.IsPortActive ) {
                 int result = -1;
 
-                m_controller.dxErrorPopup.PopupWithBtns( portInput.ErrorTxt, i => result = i );
+                m_controller.dxErrorPopup.PopupWithBtns( PortInput.ErrorTxt, i => result = i );
 
                 yield return new WaitUntil( () => result >= 0 );
 
@@ -99,18 +83,17 @@ public class TGInputSetting: TGBaseBehaviour {
     }
 
     public void UnplugInput() {
-        if( portInput != null )
-            portInput.Close();
-    }
-
-
-    public override void ForceClose() {
-        UnplugInput();
+        if( PortInput != null )
+            PortInput.Close();
     }
 
     public void OnGameStart() {
-        if( portInput != null )
-            portInput.SetTest( IsTesting );
+        if( PortInput != null )
+            PortInput.SetTest( TGData.IsTesting );
+    }
+
+    public override void ForceClose() {
+        UnplugInput();
     }
 
     private LMBasePortInput GetProperInput() {
@@ -119,11 +102,11 @@ public class TGInputSetting: TGBaseBehaviour {
             var retval = new LMGrindTable();
             retval.Init( m_controller,
                 KeyportData,
-                m_controller.gameConfig.GetValue( "端口", -1 ) );
+                TGGameConfig.GetValue( "端口", -1 ) );
             return retval;
         }
 
-        int udp = m_controller.gameConfig.GetValue( "UDP", -1 );
+        int udp = TGGameConfig.GetValue( "UDP", -1 );
 
         if( udp >= 0 ) {
             var retval = new LMInput_UDP();
@@ -134,13 +117,13 @@ public class TGInputSetting: TGBaseBehaviour {
             var retval = new LMInput_Port();
             retval.Init( m_controller,
                 KeyportData,
-                m_controller.gameConfig.GetValue( "端口", -1 ) );
+                TGGameConfig.GetValue( "端口", -1 ) );
             Debug.Log( "准备衔接端口设备" );
             return retval;
         }
     }
 
-    public void SetPressureLevel( int level ) {
+    public static void SetPressureLevel( int level ) {
         float[] arr = KeyportData.levels;
 
         if( arr == null || arr.Length == 0 ) {
@@ -151,16 +134,16 @@ public class TGInputSetting: TGBaseBehaviour {
         float pressure = arr[level - 1];
         Debug.Log( "压力比例设置为: " + pressure );
 
-        if( portInput.CurrentResolver != null ) {
-            portInput.CurrentResolver.SetPressureRatio( pressure );
+        if( PortInput.CurrentResolver != null ) {
+            PortInput.CurrentResolver.SetPressureRatio( pressure );
         }
     }
 
-    public Vector3 GetValueFromEvalAxis() {
+    public static Vector3 GetValueFromEvalAxis() {
         if( !IsPortActive )
             return Vector3.zero;
 
-        var data = m_gameConfig.evalData;
+        var data = TGData.evalData;
         var valueAxis = data.valueAxis;
 
         Vector3 values = GetValues();
@@ -174,37 +157,37 @@ public class TGInputSetting: TGBaseBehaviour {
     }
 
     public void OnUpdate() {
-        if( touchCtrl != null )
-            touchCtrl.OnUpdate();
+        if( Touch != null )
+            Touch.OnUpdate();
 
-        if( portInput != null )
-            portInput.OnUpdate();
+        if( PortInput != null )
+            PortInput.OnUpdate();
     }
 
-    public Vector3 GetValues() {
+    public static Vector3 GetValues() {
         Vector3 retval = Vector3.zero;
         if( IsPortActive ) {
-            retval.x = portInput.GetValue( 0 );
-            retval.y = portInput.GetValue( 1 );
-            retval.z = portInput.GetValue( 2 );
+            retval.x = PortInput.GetValue( 0 );
+            retval.y = PortInput.GetValue( 1 );
+            retval.z = PortInput.GetValue( 2 );
         }
 
         return retval;
     }
 
-    public Vector3 GetRawValues() {
+    public static Vector3 GetRawValues() {
         Vector3 retval = Vector3.zero;
         if( IsPortActive ) {
-            retval.x = portInput.GetRawValue( 0 );
-            retval.y = portInput.GetRawValue( 1 );
-            retval.z = portInput.GetRawValue( 2 );
+            retval.x = PortInput.GetRawValue( 0 );
+            retval.y = PortInput.GetRawValue( 1 );
+            retval.z = PortInput.GetRawValue( 2 );
         }
 
         return retval;
     }
 
-    public void Recalibration() {
+    public static void Recalibration() {
         if( IsPortActive )
-            portInput.Recalibration();
+            PortInput.Recalibration();
     }
 }
