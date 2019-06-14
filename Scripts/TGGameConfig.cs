@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public enum PatientTarget {
+public enum PatientTypes {
     Adult = 0,
     Child = 1
 }

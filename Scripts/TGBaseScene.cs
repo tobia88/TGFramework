@@ -15,7 +15,7 @@ public class TGBaseScene: MonoBehaviour {
 
     public TGController controller { get; private set; }
     [HideInInspector]
-    public PatientTarget patienceTarget;
+    public PatientTypes patienceTarget;
     [HideInInspector]
     public SceneDetail sceneDetail;
 

@@ -53,7 +53,7 @@ public struct SceneDetail {
 public class SceneData {
     public string productName = string.Empty;
     public string gameNameCn = string.Empty;
-    public PatientTarget patienceTarget = PatientTarget.Adult;
+    public PatientTypes patientType = PatientTypes.Adult;
     public List<SceneDetail> sceneDetails = new List<SceneDetail>();
 
 
@@ -65,7 +65,7 @@ public class SceneData {
         return string.Format( format, 
                               productName,
                               gameNameCn, 
-                              patienceTarget );
+                              patientType );
     }
 
     public SceneDetail GetSceneDetail( string _deviceType ) {
@@ -99,7 +99,7 @@ public class TGSettingData: ScriptableObject {
 
     public bool CheckSceneExist( TGBaseScene _scene ) {
         foreach( var s in sceneDatas ) {
-            if( s.patienceTarget != _scene.patienceTarget )
+            if( s.patientType != _scene.patienceTarget )
                 continue;
 
             if( s.sceneDetails.Contains( _scene.sceneDetail ))
@@ -120,7 +120,7 @@ public class TGSettingData: ScriptableObject {
         return null;
     }
 
-    public void SaveOrUpdateSceneDetail( SceneDetail _detail, PatientTarget _patience ) {
+    public void SaveOrUpdateSceneDetail( SceneDetail _detail, PatientTypes _patience ) {
         // 为了避免病患目标改动而造成的重复添加
         // 先寻找一遍所有的sceneData，并把改场景中的SceneDetail删除掉
         // 之后会再重新添加
@@ -138,8 +138,8 @@ public class TGSettingData: ScriptableObject {
         scnData.sceneDetails.Add( _detail );
     }
 
-    private SceneData GetSceneData( PatientTarget _patience ) {
-        return sceneDatas.FirstOrDefault( s => s.patienceTarget == _patience );
+    private SceneData GetSceneData( PatientTypes _patience ) {
+        return sceneDatas.FirstOrDefault( s => s.patientType == _patience );
     }
 
 }

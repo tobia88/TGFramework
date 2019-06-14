@@ -94,10 +94,6 @@ public class CreateAsset : EditorWindow
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
-            else
-            {
-                return;
-            }
         }
         else
         {

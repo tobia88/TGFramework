@@ -13,7 +13,7 @@ public static class TGData {
     // public static SceneData curExportData;
     public static SceneData SceneData { get; private set; }
     public static SceneDetail SceneDetail { get; private set; }
-    public static PatientTarget PatientTarget { get { return SceneData.patienceTarget; } }
+    public static PatientTypes PatientTarget { get { return SceneData.patientType; } }
     public static KeyPortData KeyPortData { get; private set; }
     public static EvalData evalData;
     public static string GameNameCn { get; private set; }

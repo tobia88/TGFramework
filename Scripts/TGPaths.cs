@@ -32,4 +32,12 @@ public static class TGPaths {
         get { return Configs + TGConfigs.KEY_INPUT_CONFIG_FILENAME; }
     }
 
+    public static string SettingData {
+        get { return ProjectResources + "SettingData.asset"; }
+    }
+
+    public static string ProjectResources {
+        get { return "Assets/_Project/Resources/"; }
+    }
+
 }

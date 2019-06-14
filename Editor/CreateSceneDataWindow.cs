@@ -23,7 +23,7 @@ public class CreateSceneDataWindow : EditorWindow {
 
     public void Init( TGBaseScene _scene ) {
         sceneData = new SceneData();
-        sceneData.patienceTarget = _scene.patienceTarget;
+        sceneData.patientType = _scene.patienceTarget;
 
         Input.imeCompositionMode = IMECompositionMode.On;
     }
@@ -31,7 +31,7 @@ public class CreateSceneDataWindow : EditorWindow {
     private void OnGUI() {
         EditorGUILayout.BeginVertical();
 
-        EditorGUILayout.LabelField( "病患类型", sceneData.patienceTarget.ToString() );
+        EditorGUILayout.LabelField( "病患类型", sceneData.patientType.ToString() );
         sceneData.productName = EditorGUILayout.TextField( "Product Name", sceneData.productName );
         sceneData.gameNameCn = EditorGUILayout.TextField( "中文名字", sceneData.gameNameCn );
 
