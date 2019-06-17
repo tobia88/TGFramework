@@ -23,7 +23,9 @@ public class TGSettingDataWindow : EditorWindow {
         m_controllerScene = AssetDatabase.LoadAssetAtPath<SceneAsset>( TGPaths.ControllerScene );
         m_settingData = AssetDatabase.LoadAssetAtPath<TGSettingData>( TGPaths.SettingData );
 
-        if( m_settingData == null ) {
+        if( m_settingData == null || m_controllerScene == null ) {
+            EditorGUILayout.HelpBox( "Setting Data or Controller Scene doesn't Exist", MessageType.Error );
+
             // SettingData不存在，提示创建Setting Data
             if( GUILayout.Button( "初始化") ) {
                 EnsureDirectories();
@@ -36,6 +38,11 @@ public class TGSettingDataWindow : EditorWindow {
             }
         }
         else {
+            EditorGUILayout.ObjectField( "Setting Data", m_settingData, typeof( TGSettingData ), false );
+            EditorGUILayout.ObjectField( "Controller", m_controllerScene, typeof( SceneAsset ), false );
+
+            TGEditorUtility.DrawUILine( Color.gray, 1, 20 );
+
             for( int i = 0; i < m_settingData.sceneDatas.Count; i++ ) {
                 DrawSceneData( i );
                 TGEditorUtility.DrawUILine( Color.grey, 1, 20 );
@@ -125,7 +132,7 @@ public class TGSettingDataWindow : EditorWindow {
         tmpScene.name = TGController.SCENE_NAME;
 
         // 实例化Prefab到空场景
-        GameObject controllerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>( "Assets/TGFramework/Prefabs/TGController.prefab" );
+        TGController controllerPrefab = Resources.Load<TGController>( "TGController" );
         PrefabUtility.InstantiatePrefab( controllerPrefab );
 
         // 存储场景
