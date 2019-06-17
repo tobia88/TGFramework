@@ -4,9 +4,12 @@ using System;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 
 public class TGSettingDataWindow : EditorWindow {
     private TGSettingData m_settingData;
+    private SceneAsset m_controllerScene;
 
     [MenuItem( "TGFramework/Preferences" )]
     public static void ShowWindow() {
@@ -17,17 +20,19 @@ public class TGSettingDataWindow : EditorWindow {
     }
     
     private void OnGUI() {
+        m_controllerScene = AssetDatabase.LoadAssetAtPath<SceneAsset>( TGPaths.ControllerScene );
         m_settingData = AssetDatabase.LoadAssetAtPath<TGSettingData>( TGPaths.SettingData );
 
         if( m_settingData == null ) {
             // SettingData不存在，提示创建Setting Data
             if( GUILayout.Button( "初始化") ) {
-                EnsureDirectory();
-                var data = ScriptableObject.CreateInstance<TGSettingData>();
+                EnsureDirectories();
 
-                AssetDatabase.CreateAsset( data, TGPaths.SettingData );
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
+                if( m_settingData == null ) 
+                    m_settingData = CreateSettingData();
+
+                if( m_controllerScene == null )
+                    m_controllerScene = CreateControllerScene();
             }
         }
         else {
@@ -60,7 +65,6 @@ public class TGSettingDataWindow : EditorWindow {
         data.productName = EditorGUILayout.TextField( _index + ".发布名称", data.productName );
         EditorGUI.indentLevel++;
         data.gameNameCn = EditorGUILayout.TextField( "中文名称", data.gameNameCn );
-        data.patientType = (PatientTypes) EditorGUILayout.EnumPopup( "病患类型", data.patientType );
 
         // 列出所有场景
         EditorGUILayout.LabelField( "附加场景：");
@@ -74,7 +78,6 @@ public class TGSettingDataWindow : EditorWindow {
     }   
 
     private void DrawSceneDetail( SceneDetail _sc ) {
-        Debug.Log( _sc.sceneName );
         var asset = AssetDatabase.LoadAssetAtPath<SceneAsset>( TGPaths.FullScenePath( _sc.sceneName ) );
         if( asset == null ) {
             EditorGUILayout.HelpBox( "Please make sure scene has saved to Assets/_Projects/Scenes Directory", MessageType.Warning );
@@ -82,11 +85,12 @@ public class TGSettingDataWindow : EditorWindow {
         EditorGUILayout.ObjectField( asset, typeof( SceneAsset ), false );
     }
 
-    private void EnsureDirectory() {
-        if( Directory.Exists( TGPaths.ProjectResources ) )
-            return;
+    private void EnsureDirectories() {
+        if( !Directory.Exists( TGPaths.ProjectResources ) )
+            Directory.CreateDirectory( TGPaths.ProjectResources );
 
-        Directory.CreateDirectory( TGPaths.ProjectResources );
+        if( !Directory.Exists( TGPaths.ProjectScenes ) )
+            Directory.CreateDirectory( TGPaths.ProjectScenes );
     }
 
     // 清理没用的场景
@@ -102,5 +106,36 @@ public class TGSettingDataWindow : EditorWindow {
                     sceneDatas[i].sceneDetails.RemoveAt( j );
             }
         }
+    }
+
+    private TGSettingData CreateSettingData() {
+        var data = ScriptableObject.CreateInstance<TGSettingData>();
+
+        AssetDatabase.CreateAsset( data, TGPaths.SettingData );
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        return AssetDatabase.LoadAssetAtPath<TGSettingData>( TGPaths.SettingData );
+    }
+
+    // 初始化Controller场景
+    private SceneAsset CreateControllerScene() {
+        // 创建空场景
+        Scene tmpScene = EditorSceneManager.NewScene( NewSceneSetup.EmptyScene, NewSceneMode.Single );
+        tmpScene.name = TGController.SCENE_NAME;
+
+        // 实例化Prefab到空场景
+        GameObject controllerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>( "Assets/TGFramework/Prefabs/TGController.prefab" );
+        PrefabUtility.InstantiatePrefab( controllerPrefab );
+
+        // 存储场景
+        string path = TGPaths.ControllerScene;
+        EditorSceneManager.SaveScene( tmpScene, path );
+
+        // 设该选择对象为新建场景
+        var retval = AssetDatabase.LoadAssetAtPath<SceneAsset>( path );
+        Selection.activeObject = retval; 
+
+        return retval;
     }
 }

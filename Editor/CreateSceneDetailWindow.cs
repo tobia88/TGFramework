@@ -7,6 +7,8 @@ using UnityEditor;
 using System.Linq;
 
 public class CreateScenePopupWindow : EditorWindow {
+    private SceneData m_prevSceneData;
+    private SceneDetail m_prevSceneDetail;
     private SceneData m_newSceneData;
     private SceneDetail m_newSceneDetail;
     private TGBaseScene m_scene;
@@ -18,7 +20,7 @@ public class CreateScenePopupWindow : EditorWindow {
         var window = EditorWindow.GetWindow<CreateScenePopupWindow>();
         window.ShowPopup();
 
-        window.titleContent = new GUIContent( "添加病患类型" );
+        window.titleContent = new GUIContent( "场景信息" );
         window.position = new Rect( 600, Screen.height/2 - HEIGHT/2, WIDTH, HEIGHT );
 
         window.Init( _scene );
@@ -28,8 +30,8 @@ public class CreateScenePopupWindow : EditorWindow {
     public void Init( TGBaseScene _scene ) {
         m_scene = _scene;
 
-        m_newSceneData = m_scene.sceneData;
-        m_newSceneDetail = m_scene.sceneDetail;
+        m_prevSceneData = m_newSceneData = SceneData.GetBySceneName( m_scene.SceneName );
+        m_prevSceneDetail = m_newSceneDetail = SceneDetail.GetBySceneName( m_scene.SceneName );
     }
 
 
@@ -52,20 +54,18 @@ public class CreateScenePopupWindow : EditorWindow {
         if( GUILayout.Button( "Confirm" ) ) {
             var setting = TGSettingData.GetInstance();
             // 检测信息是否发生改变，如果发生改变则先把旧的信息移除
-            if( m_scene.sceneData != m_newSceneData && m_scene.sceneData != null ) {
-                m_scene.sceneData.sceneDetails.Remove( m_scene.sceneDetail );
+            if( m_prevSceneData != m_newSceneData && m_prevSceneData != null ) {
+                m_prevSceneData.sceneDetails.Remove( m_prevSceneDetail );
             }
 
-            m_scene.sceneData = m_newSceneData;
-            m_scene.sceneDetail = m_newSceneDetail;
-
-            // 最后把信息添到相应的SceneData
+            // 如果该场景已经存在，则更新其数值
+            // 反之则添加新数据到列表里
             if( m_newSceneData != null ) {
-                var scnIndex = m_newSceneData.sceneDetails.IndexOf( m_scene.sceneDetail );
+                var scnIndex = m_newSceneData.sceneDetails.IndexOf( m_newSceneDetail );
                 if( scnIndex >= 0 ) {
-                    m_newSceneData.sceneDetails[scnIndex] = m_scene.sceneDetail;
+                    m_newSceneData.sceneDetails[scnIndex] = m_newSceneDetail;
                 } else {
-                    m_newSceneData.sceneDetails.Add( m_scene.sceneDetail );
+                    m_newSceneData.sceneDetails.Add( m_newSceneDetail );
                 }
             }
 
@@ -89,7 +89,7 @@ public class CreateScenePopupWindow : EditorWindow {
         for( int i = 0; i < optionValues.Length; i++ )
             optionValues[i] = i;
 
-        int selectedIndex = settingData.sceneDatas.IndexOf( m_scene.sceneData );
+        int selectedIndex = settingData.sceneDatas.IndexOf( m_newSceneData );
 
         if( selectedIndex == -1 )
             selectedIndex = 0;

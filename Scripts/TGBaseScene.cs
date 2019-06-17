@@ -14,10 +14,6 @@ public class TGBaseScene: MonoBehaviour {
     }
 
     public TGController controller { get; private set; }
-    [HideInInspector]
-    public SceneDetail sceneDetail;
-    [HideInInspector]
-    public SceneData sceneData;
 
     public bool isTesting;
 

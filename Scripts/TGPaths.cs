@@ -44,6 +44,10 @@ public static class TGPaths {
         get { return "Assets/_Project/Scenes/"; }
     }
 
+    public static string ControllerScene {
+        get { return FullScenePath( TGController.SCENE_NAME ); }
+    }
+
     public static string FullScenePath( string _sceneName ) {
         return ProjectScenes + _sceneName + ".unity";
     }

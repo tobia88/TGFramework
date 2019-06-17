@@ -11,6 +11,23 @@ public struct SceneDetail {
     public bool disableHeatmap;
     public bool isDefault;
 
+    public static SceneDetail GetBySceneName( string _sceneName ) {
+        var setting = TGSettingData.GetInstance();
+
+        if( setting == null ) {
+            return new SceneDetail();
+        }
+
+        foreach( var d in setting.sceneDatas ) {
+            foreach( var sd in d.sceneDetails ) {
+                if( sd.sceneName == _sceneName )
+                    return sd;
+            }
+        }
+
+        return new SceneDetail ();
+    }
+
     public override string ToString() {
         string format  = "场景名称：{0}\n";
                format += "设备类型: {1}\n";
@@ -49,18 +66,32 @@ public struct SceneDetail {
 public class SceneData {
     public string productName = string.Empty;
     public string gameNameCn = string.Empty;
-    public PatientTypes patientType = PatientTypes.Adult;
     public List<SceneDetail> sceneDetails = new List<SceneDetail>();
+
+    public static SceneData GetBySceneName( string _sceneName ) {
+        var setting = TGSettingData.GetInstance();
+
+        if( setting == null ) {
+            return null;
+        }
+
+        foreach( var d in setting.sceneDatas ) {
+            foreach( var sd in d.sceneDetails ) {
+                if( sd.sceneName == _sceneName )
+                    return d;
+            }
+        }
+
+        return null;
+    }
 
     public override string ToString() {
         string format  = "Product Name: {0}\n";
                format += "中文名称: {1}\n";
-               format += "病人类型：{2}\n";
 
         return string.Format( format, 
                               productName,
-                              gameNameCn, 
-                              patientType );
+                              gameNameCn );
     }
 
     public bool IsActive {
@@ -81,7 +112,7 @@ public class SceneData {
     }
 
     public override int GetHashCode() {
-        return productName.GetHashCode() + gameNameCn.GetHashCode() + patientType.GetHashCode();
+        return productName.GetHashCode();
     }
 
     public override bool Equals(object obj) {

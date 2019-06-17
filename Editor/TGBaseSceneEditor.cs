@@ -4,13 +4,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor( typeof( GameMng ) )]
+[CustomEditor( typeof( TGBaseScene ), true )]
 public class TGBaseSceneEditor: Editor {
     private TGBaseScene m_scene;
 
     private void OnEnable() {
         m_scene = target as TGBaseScene;
-        m_scene.sceneData = LinkSceneData();
     }
 
     public override void OnInspectorGUI() {
@@ -19,8 +18,9 @@ public class TGBaseSceneEditor: Editor {
                 EditorGUILayout.HelpBox( "Please firstly save the scenes", MessageType.Error );
             }
             else {
-                var sceneExist = m_scene.sceneData != null &&
-                                 m_scene.sceneData.sceneDetails.Contains( m_scene.sceneDetail );
+                var scnData = SceneData.GetBySceneName( m_scene.SceneName );
+
+                var sceneExist = scnData != null;
 
                 GUI.color = ( sceneExist ) ? Color.white : new Color( 1f, 0.5f, 0.3f );
 
@@ -33,14 +33,5 @@ public class TGBaseSceneEditor: Editor {
         }
 
         base.OnInspectorGUI();
-    }
-
-    private SceneData LinkSceneData() {
-        if( m_scene.sceneData == null )
-            return null;
-
-        var settingData = TGSettingData.GetInstance();
-
-        return settingData.sceneDatas.FirstOrDefault( d => d.Equals( m_scene.sceneData ) );
     }
 }

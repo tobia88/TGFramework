@@ -6,7 +6,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TGController: TGBaseBehaviour {
-    private static TGController _Instance;
+    public const string SCENE_NAME = "0_Controller";
+
     public static TGController Instance;
     public Camera systemCam;
 
