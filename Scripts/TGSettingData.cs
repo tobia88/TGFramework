@@ -12,10 +12,10 @@ public struct SceneDetail {
     public bool isDefault;
 
     public override string ToString() {
-        string format  = "场景名称：{1}\n";
-               format += "设备类型: {2}\n";
-               format += "启用热图: {3}\n";
-               format += "默认？: {4}\n";
+        string format  = "场景名称：{0}\n";
+               format += "设备类型: {1}\n";
+               format += "启用热图: {2}\n";
+               format += "默认？: {3}\n";
 
         return string.Format( format, 
                               sceneName, 

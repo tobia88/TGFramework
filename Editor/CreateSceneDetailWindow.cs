@@ -39,17 +39,17 @@ public class CreateScenePopupWindow : EditorWindow {
         var settingData = TGSettingData.GetInstance();
 
         // 如果没有则提示到TGframework/Preferences里创建
-        if( settingData.sceneDatas == null || settingData.sceneDatas.Count == 0 )
+        if( settingData.sceneDatas == null || settingData.sceneDatas.Count == 0 ) {
             EditorGUILayout.HelpBox( "没有任何的SceneData，请通过TGFramework/Preferences创建", MessageType.Error );
-        else{
-            // 如果有则允许通过弹窗选择，并且列出该信息
-            m_newSceneData = DrawSceneDataSelection();
-            m_newSceneDetail = DrawSceneDetailSelection();
+            return;
         }
+        // 如果有则允许通过弹窗选择，并且列出该信息
+        m_newSceneData = DrawSceneDataSelection();
+        m_newSceneDetail = DrawSceneDetailSelection();
 
         EditorGUILayout.BeginHorizontal();
 
-        if( GUILayout.Button("Confirm") ) {
+        if( GUILayout.Button( "Confirm" ) ) {
             var setting = TGSettingData.GetInstance();
             // 检测信息是否发生改变，如果发生改变则先把旧的信息移除
             if( m_scene.sceneData != m_newSceneData && m_scene.sceneData != null ) {
@@ -64,8 +64,7 @@ public class CreateScenePopupWindow : EditorWindow {
                 var scnIndex = m_newSceneData.sceneDetails.IndexOf( m_scene.sceneDetail );
                 if( scnIndex >= 0 ) {
                     m_newSceneData.sceneDetails[scnIndex] = m_scene.sceneDetail;
-                }
-                else {
+                } else {
                     m_newSceneData.sceneDetails.Add( m_scene.sceneDetail );
                 }
             }
@@ -91,7 +90,7 @@ public class CreateScenePopupWindow : EditorWindow {
             optionValues[i] = i;
 
         int selectedIndex = settingData.sceneDatas.IndexOf( m_scene.sceneData );
-        
+
         if( selectedIndex == -1 )
             selectedIndex = 0;
 
