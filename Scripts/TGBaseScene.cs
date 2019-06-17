@@ -15,9 +15,9 @@ public class TGBaseScene: MonoBehaviour {
 
     public TGController controller { get; private set; }
     [HideInInspector]
-    public PatientTypes patienceTarget;
-    [HideInInspector]
     public SceneDetail sceneDetail;
+    [HideInInspector]
+    public SceneData sceneData;
 
     public bool isTesting;
 
@@ -111,8 +111,6 @@ public class TGBaseScene: MonoBehaviour {
         if( controller.heatmapInput.enabled ) {
 
             string fileName = "heat_" + _dateStr + ".png";
-
-
 
             //FIXME: 要把它调整到UI底下
 

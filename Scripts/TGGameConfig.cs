@@ -95,10 +95,10 @@ public class TGGameConfig: TGBaseManager {
             var settingData = TGSettingData.GetInstance();
             var scn = GameObject.FindObjectOfType<TGBaseScene> ();
             
-            SceneData sceneData = null;
+            SceneData sceneData = new SceneData();
 
             if( scn != null ) {
-                sceneData = settingData.GetSceneData( TGData.SceneName );
+                sceneData = settingData.GetSceneData( scn );
             }
             else {
                 sceneData = settingData.sceneDatas[0];

@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEditor;
+using System.Linq;
 
 public class CreateScenePopupWindow : EditorWindow {
-    private PatientTypes _prevPatientTarget;
-    private SceneDetail _prevSceneDetail;
+    private SceneData m_newSceneData;
+    private SceneDetail m_newSceneDetail;
+    private TGBaseScene m_scene;
 
-    public SceneData sceneData;
-    public static event Action<bool> onConfirm; 
-    public const int HEIGHT = 100;
+    public const int HEIGHT = 150;
     public const int WIDTH = 300;
 
     public static void ShowWindow( TGBaseScene _scene ) {
@@ -22,38 +22,92 @@ public class CreateScenePopupWindow : EditorWindow {
         window.position = new Rect( 600, Screen.height/2 - HEIGHT/2, WIDTH, HEIGHT );
 
         window.Init( _scene );
+        Input.imeCompositionMode = IMECompositionMode.On;
     }
 
     public void Init( TGBaseScene _scene ) {
-        sceneData = new SceneData();
-        sceneData.patientType = _scene.patienceTarget;
+        m_scene = _scene;
 
-        Input.imeCompositionMode = IMECompositionMode.On;
+        m_newSceneData = m_scene.sceneData;
+        m_newSceneDetail = m_scene.sceneDetail;
     }
+
 
     private void OnGUI() {
         EditorGUILayout.BeginVertical();
 
-        EditorGUILayout.LabelField( "病患类型", sceneData.patientType.ToString() );
-        sceneData.productName = EditorGUILayout.TextField( "Product Name", sceneData.productName );
-        sceneData.gameNameCn = EditorGUILayout.TextField( "中文名字", sceneData.gameNameCn );
+        var settingData = TGSettingData.GetInstance();
+
+        // 如果没有则提示到TGframework/Preferences里创建
+        if( settingData.sceneDatas == null || settingData.sceneDatas.Count == 0 )
+            EditorGUILayout.HelpBox( "没有任何的SceneData，请通过TGFramework/Preferences创建", MessageType.Error );
+        else{
+            // 如果有则允许通过弹窗选择，并且列出该信息
+            m_newSceneData = DrawSceneDataSelection();
+            m_newSceneDetail = DrawSceneDetailSelection();
+        }
 
         EditorGUILayout.BeginHorizontal();
 
         if( GUILayout.Button("Confirm") ) {
             var setting = TGSettingData.GetInstance();
-            setting.sceneDatas.Add( sceneData );
-            onConfirm( true );
+            // 检测信息是否发生改变，如果发生改变则先把旧的信息移除
+            if( m_scene.sceneData != m_newSceneData && m_scene.sceneData != null ) {
+                m_scene.sceneData.sceneDetails.Remove( m_scene.sceneDetail );
+            }
+
+            m_scene.sceneData = m_newSceneData;
+            m_scene.sceneDetail = m_newSceneDetail;
+
+            // 最后把信息添到相应的SceneData
+            if( m_newSceneData != null ) {
+                var scnIndex = m_newSceneData.sceneDetails.IndexOf( m_scene.sceneDetail );
+                if( scnIndex >= 0 ) {
+                    m_newSceneData.sceneDetails[scnIndex] = m_scene.sceneDetail;
+                }
+                else {
+                    m_newSceneData.sceneDetails.Add( m_scene.sceneDetail );
+                }
+            }
+
             Close();
         }
 
         if( GUILayout.Button( "Cancel" ) ) {
-            onConfirm( false );
             Close();
         }
 
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.EndVertical();
+    }
+
+    private SceneData DrawSceneDataSelection() {
+        var settingData = TGSettingData.GetInstance();
+        string[] sceneDatas = settingData.sceneDatas.Select( d => d.productName ).ToArray();
+
+        int[] optionValues = new int[sceneDatas.Length];
+        for( int i = 0; i < optionValues.Length; i++ )
+            optionValues[i] = i;
+
+        int selectedIndex = settingData.sceneDatas.IndexOf( m_scene.sceneData );
+        
+        if( selectedIndex == -1 )
+            selectedIndex = 0;
+
+        selectedIndex = EditorGUILayout.IntPopup( "Setting Data", selectedIndex, sceneDatas, optionValues );
+
+        return settingData.sceneDatas[selectedIndex];
+    }
+
+    private SceneDetail DrawSceneDetailSelection() {
+        var retval = m_newSceneDetail;
+
+        retval.sceneName = EditorGUILayout.TextField( "场景名称", m_scene.SceneName );
+        retval.deviceType = EditorGUILayout.TextField( "设备类型", m_newSceneDetail.deviceType );
+        retval.disableHeatmap = EditorGUILayout.Toggle( "取消热图？", retval.disableHeatmap );
+        retval.isDefault = EditorGUILayout.Toggle( "默认？", retval.isDefault );
+
+        return retval;
     }
 }

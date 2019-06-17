@@ -32,7 +32,7 @@ public struct SceneDetail {
     }
 
     public override int GetHashCode() {
-        return sceneName.GetHashCode() + deviceType.GetHashCode();
+        return sceneName.GetHashCode();
     }
 
     public override bool Equals(object obj) {
@@ -41,11 +41,7 @@ public struct SceneDetail {
 
         var compare = ( SceneDetail ) obj;
 
-        return sceneName == compare.sceneName &&
-               deviceType == compare.deviceType &&
-               disableHeatmap == compare.disableHeatmap &&
-               isDefault == compare.isDefault; 
- 
+        return sceneName == compare.sceneName;
     }
 }
 
@@ -56,7 +52,6 @@ public class SceneData {
     public PatientTypes patientType = PatientTypes.Adult;
     public List<SceneDetail> sceneDetails = new List<SceneDetail>();
 
-
     public override string ToString() {
         string format  = "Product Name: {0}\n";
                format += "中文名称: {1}\n";
@@ -66,6 +61,10 @@ public class SceneData {
                               productName,
                               gameNameCn, 
                               patientType );
+    }
+
+    public bool IsActive {
+        get { return !string.IsNullOrEmpty( productName ); }
     }
 
     public SceneDetail GetSceneDetail( string _deviceType ) {
@@ -79,6 +78,19 @@ public class SceneData {
         }
 
         return retval;
+    }
+
+    public override int GetHashCode() {
+        return productName.GetHashCode() + gameNameCn.GetHashCode() + patientType.GetHashCode();
+    }
+
+    public override bool Equals(object obj) {
+        if( obj.GetType() != typeof( SceneData ) )
+            return false;
+
+        var compare = ( SceneData ) obj;
+
+        return productName == compare.productName ;
     }
 }
 
@@ -97,49 +109,14 @@ public class TGSettingData: ScriptableObject {
         return retval;
     }
 
-    public bool CheckSceneExist( TGBaseScene _scene ) {
-        foreach( var s in sceneDatas ) {
-            if( s.patientType != _scene.patienceTarget )
-                continue;
-
-            if( s.sceneDetails.Contains( _scene.sceneDetail ))
-                return true;
-        }
-
-        return false;
-    }
-
-    public SceneData GetSceneData( string _sceneName ) {
+    public SceneData GetSceneData( TGBaseScene _scene ) {
         foreach( var sd in sceneDatas ) {
             foreach( var d in sd.sceneDetails ) {
-                if( d.sceneName == _sceneName )
+                if( d.sceneName == _scene.SceneName )
                     return sd;
             }
         }
 
-        return null;
+        return new SceneData();
     }
-
-    public void SaveOrUpdateSceneDetail( SceneDetail _detail, PatientTypes _patience ) {
-        // 为了避免病患目标改动而造成的重复添加
-        // 先寻找一遍所有的sceneData，并把改场景中的SceneDetail删除掉
-        // 之后会再重新添加
-        foreach( var s in sceneDatas ) {
-            if( s.sceneDetails.Contains( _detail ) )
-                s.sceneDetails.Remove( _detail );
-        }
-
-        // 获取对应病患的容器
-        var scnData = GetSceneData( _patience );
-
-        if( scnData == null )
-            throw new Exception( "找不到合适的病患目标，请在SettingData里建立一个" );
-        
-        scnData.sceneDetails.Add( _detail );
-    }
-
-    private SceneData GetSceneData( PatientTypes _patience ) {
-        return sceneDatas.FirstOrDefault( s => s.patientType == _patience );
-    }
-
 }
