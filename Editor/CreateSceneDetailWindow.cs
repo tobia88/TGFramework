@@ -107,9 +107,8 @@ public class CreateScenePopupWindow : EditorWindow {
         var retval = m_newSceneDetail;
 
         retval.sceneName = EditorGUILayout.TextField( "场景名称", m_scene.SceneName );
-        retval.deviceType = EditorGUILayout.TextField( "设备类型", m_scene.deviceType );
+        retval.deviceType = EditorGUILayout.TextField( "设备类型", retval.deviceType );
         retval.disableHeatmap = EditorGUILayout.Toggle( "取消热图？", retval.disableHeatmap );
-        retval.isDefault = EditorGUILayout.Toggle( "默认？", retval.isDefault );
 
         return retval;
     }

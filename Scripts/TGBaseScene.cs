@@ -15,8 +15,6 @@ public class TGBaseScene: MonoBehaviour {
 
     public TGController controller { get; private set; }
 
-    public string deviceType;
-
     public System.Action<string> onCaptureScreen;
 
     public float TimePassed {

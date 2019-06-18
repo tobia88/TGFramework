@@ -9,7 +9,6 @@ public struct SceneDetail {
     public string sceneName;
     public string deviceType;
     public bool disableHeatmap;
-    public bool isDefault;
 
     public static SceneDetail GetBySceneName( string _sceneName ) {
         var setting = TGSettingData.GetInstance();
@@ -32,13 +31,11 @@ public struct SceneDetail {
         string format  = "场景名称：{0}\n";
                format += "设备类型: {1}\n";
                format += "启用热图: {2}\n";
-               format += "默认？: {3}\n";
 
         return string.Format( format, 
                               sceneName, 
                               deviceType,
-                              disableHeatmap,
-                              isDefault );
+                              disableHeatmap );
     }
 
     public bool IsAcive {
@@ -101,11 +98,7 @@ public class SceneData {
     public SceneDetail GetSceneDetail( string _deviceType ) {
         var retval = sceneDetails.FirstOrDefault( e => e.deviceType == _deviceType );
         if( !retval.IsAcive ) {
-            Debug.LogWarning( "SceneDetails中找不到对应设备的场景：" + _deviceType );
-            retval = sceneDetails.FirstOrDefault( e => e.isDefault );
-
-            if( !retval.IsAcive )
-                throw new Exception( "SceneDetails中没有设置默认场景" );
+            throw new Exception ( string.Format( "{0}中找不到对应设备的场景：{1}", productName, _deviceType ) );
         }
 
         return retval;

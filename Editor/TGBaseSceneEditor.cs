@@ -29,6 +29,9 @@ public class TGBaseSceneEditor: Editor {
                 }
 
                 GUI.color = Color.white;
+
+                var deviceType = SceneDetail.GetBySceneName( m_scene.SceneName ).deviceType;
+                EditorGUILayout.LabelField( "Device Type", deviceType );
             }
         }
 

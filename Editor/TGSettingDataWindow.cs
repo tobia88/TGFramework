@@ -91,7 +91,10 @@ public class TGSettingDataWindow : EditorWindow {
         if( asset == null ) {
             EditorGUILayout.HelpBox( "Please make sure scene has saved to Assets/_Projects/Scenes Directory", MessageType.Warning );
         }
+        EditorGUILayout.BeginHorizontal();
         EditorGUILayout.ObjectField( asset, typeof( SceneAsset ), false );
+        EditorGUILayout.LabelField( _sc.deviceType );
+        EditorGUILayout.EndHorizontal();
     }
 
     private void EnsureDirectories() {
