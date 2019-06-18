@@ -54,6 +54,8 @@ public class TGGameConfig: TGBaseManager {
             if( group != null ) {
                 string cnTitle = GetValue( "体侧", string.Empty );
                 TGData.evalData = GetConfigDataFromTitle( group, cnTitle );
+
+                
             }
         } else {
             Debug.LogWarning( eval + "Has not found" );
@@ -104,11 +106,14 @@ public class TGGameConfig: TGBaseManager {
                 sceneData = settingData.sceneDatas[0];
             }
 
+            TGData.SetSceneData( sceneData );
+
+            if( TGData.SceneName != scn.SceneName )
+                m_controller.ErrorQuit( "当前的场景与game.txt中的设备名称不匹配" );
         #else
             var sceneData = LMFileWriter.ReadJSON<SceneData>( TGPaths.SceneData );
+            TGData.SetSceneData( sceneData );
         #endif   
-
-        TGData.SetSceneData( sceneData );
     }
 
     private void LoadInputConfig() {
@@ -118,15 +123,8 @@ public class TGGameConfig: TGBaseManager {
         var scn = GameObject.FindObjectOfType<TGBaseScene>();
         deviceName = string.Empty;
 
-        if( scn != null ) {
-            // 获取设置中的输入类型
-            deviceName = "触屏控制";
-            testing = scn.isTesting;
-        } else {
-            // 获取game.txt中的数据
-            testing = TGGameConfig.GetValue( "测试", 0 ) == 1;
-            deviceName = TGGameConfig.GetValue( "训练器材", string.Empty );
-        }
+        testing = TGGameConfig.GetValue( "测试", 0 ) == 1;
+        deviceName = TGGameConfig.GetValue( "训练器材", string.Empty );
 
         TGData.SetDevice( deviceName, testing );
     }

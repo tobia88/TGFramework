@@ -39,7 +39,7 @@ public class TGSettingDataWindow : EditorWindow {
         }
         else {
             EditorGUILayout.ObjectField( "Setting Data", m_settingData, typeof( TGSettingData ), false );
-            EditorGUILayout.ObjectField( "Controller", m_controllerScene, typeof( SceneAsset ), false );
+            EditorGUILayout.ObjectField( "Controller Scene", m_controllerScene, typeof( SceneAsset ), false );
 
             TGEditorUtility.DrawUILine( Color.gray, 1, 20 );
 
@@ -52,12 +52,14 @@ public class TGSettingDataWindow : EditorWindow {
             if( GUILayout.Button( "创建" ) ) {
                 Undo.RecordObject( m_settingData, "Create new Scene Data" );
                 m_settingData.sceneDatas.Add( new SceneData() );
+                EditorUtility.SetDirty( m_settingData );
             }
 
             if( GUILayout.Button( "删除")) {
                 Undo.RecordObject( m_settingData, "Remove Last Scene Data" );
                 if( m_settingData.sceneDatas != null && m_settingData.sceneDatas.Count > 0 )
                     m_settingData.sceneDatas.RemoveAt( m_settingData.sceneDatas.Count - 1 );
+                EditorUtility.SetDirty( m_settingData );
             }
             EditorGUILayout.EndHorizontal();
 
@@ -113,6 +115,7 @@ public class TGSettingDataWindow : EditorWindow {
                     sceneDatas[i].sceneDetails.RemoveAt( j );
             }
         }
+        EditorUtility.SetDirty( m_settingData );
     }
 
     private TGSettingData CreateSettingData() {

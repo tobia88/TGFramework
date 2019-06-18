@@ -49,8 +49,12 @@ public static class TGData {
         var config = KeyInputConfig.GetInstance();
         KeyPortData = config.GetKeyportData( DeviceName );
 
-        Debug.Log( "器材名称：" + DeviceName );
-        Debug.Log( "设备类型：" + DeviceType );
+        if( KeyPortData == null ) {
+            Debug.LogWarning( string.Format( "{0}不存在于keyInputConfig.json", _deviceName ));
+            return null;
+        }
+
+        Debug.Log( "设备类型：" + KeyPortData.type );
 
         return KeyPortData;
     }

@@ -4,6 +4,7 @@
             "name": [
                 "捏力"
             ],
+            "type": "key",
             "value": [
                 {
                     "key": "x",
@@ -24,6 +25,7 @@
             "name": [
                 "握力"
             ],
+            "type": "key",
             "value": [
                 {
                     "key": "x",
@@ -49,6 +51,7 @@
                 "阻尼器-杠杆工具",
                 "阻尼器-方向盘"
             ],
+            "type": "key",
             "isDegree": true,
             "value": [
                 {
@@ -71,6 +74,7 @@
             "name": [
                 "腕部尺偏桡偏"
             ],
+            "type": "key",
             "value": [
                 {
                     "key": "x",
@@ -92,6 +96,7 @@
             "name": [
                 "前臂旋前旋后"
             ],
+            "type": "key",
             "value": [
                 {
                     "key": "x",
@@ -113,6 +118,7 @@
             "name": [
                 "腕关节屈伸"
             ],
+            "type": "key",
             "value": [
                 {
                     "key": "x",
@@ -154,6 +160,7 @@
                     "max": "活动范围最大值"
                 }
             ],
+            "type": "key",
             "input": [
                 {
                     "key": "BB",

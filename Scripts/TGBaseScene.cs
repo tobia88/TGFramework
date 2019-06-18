@@ -15,7 +15,7 @@ public class TGBaseScene: MonoBehaviour {
 
     public TGController controller { get; private set; }
 
-    public bool isTesting;
+    public string deviceType;
 
     public System.Action<string> onCaptureScreen;
 
@@ -100,7 +100,6 @@ public class TGBaseScene: MonoBehaviour {
     // 截屏区域
     protected virtual Rect GetScreenshotCropRect() {
         return new Rect( 0, 0, Screen.width, Screen.height );
-
     }
 
     private IEnumerator SaveHeatmapTex( string _dateStr ) {

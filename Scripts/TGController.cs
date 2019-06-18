@@ -94,6 +94,17 @@ public class TGController: TGBaseBehaviour {
         m_routine = StartCoroutine( ProcessRoutine() );
     }
 
+    private void Update() {
+        if( !IsInit ) {
+            if( Input.GetKeyDown( KeyCode.Escape ) )
+                Application.Quit();
+
+            return;
+        }
+
+        DebugInputUpdate();
+    }
+
     public void Quit() {
         Debug.Log( "游戏正常退出" );
         StopAllCoroutines();
@@ -128,16 +139,6 @@ public class TGController: TGBaseBehaviour {
         dxCentre.SetActive( true );
     }
 
-    private void Update() {
-        if( !IsInit ) {
-            if( Input.GetKeyDown( KeyCode.Escape ) )
-                Application.Quit();
-
-            return;
-        }
-
-        DebugInputUpdate();
-    }
 
     private void DebugInputUpdate() {
         if( Input.GetKey( KeyCode.LeftAlt ) && Input.GetKeyDown( KeyCode.Q ) ) {
@@ -156,10 +157,11 @@ public class TGController: TGBaseBehaviour {
             dxCentre.OnUpdate();
     }
 
-    IEnumerator ProcessRoutine() {
+    private IEnumerator ProcessRoutine() {
         yield return 1;
 
         dxLoadingPanel.SetActive( true );
+
         yield return StartCoroutine( gameConfig.StartRoutine() );
         yield return StartCoroutine( inputSetting.StartRoutine() );
         yield return StartCoroutine( mainGame.StartRoutine() );
