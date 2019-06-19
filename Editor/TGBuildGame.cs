@@ -12,22 +12,17 @@ using Debug = UnityEngine.Debug;
 public class TGBuildGame: MonoBehaviour {
     public const string SCENE_PATH_FORMAT = "Assets/_Project/Scenes/{0}.unity";
     public const string FRAMEWORK_ROOT = "Assets/TGFramework/";
-    
+
     [MenuItem( "TGFramework/Windows Build With Postprocess" )]
     public static void BuildGame() {
-		try {
-            // Get filename.
-            string path = EditorUtility.SaveFolderPanel( "Choose Location of Built Game", "G:\\GameProjects\\Unity\\2018\\Builds", "" );
+        string path = EditorUtility.SaveFolderPanel( "Choose Location of Built Game", "G:\\GameProjects\\Unity\\2018\\Builds", "" );
 
-            if( string.IsNullOrEmpty( path ) )
-                return;
+        if( string.IsNullOrEmpty( path ) )
+            return;
 
-            Build( path, true );
-        }
-		catch( Exception e ) {
-			Debug.LogError( e );
-		}
+        Build( path, true );
     }
+
 
     private static void Build( string _path, bool _openFolder ) {
         var settingData = TGSettingData.GetInstance();
@@ -38,8 +33,8 @@ public class TGBuildGame: MonoBehaviour {
             throw new Exception( "SettingData没有任何存储的场景" );
         }
 
-        foreach( var d in sceneDatas ) {
-            Build( d, _path, _openFolder );
+        for( int i = 0; i < sceneDatas.Count; i++ ) {
+            Build( sceneDatas[i], _path, _openFolder );
         }
     }
 
@@ -52,7 +47,7 @@ public class TGBuildGame: MonoBehaviour {
 
         for( int i = 0; i < details.Count; i++ ) {
             string scenePath = string.Format( SCENE_PATH_FORMAT, details[i].sceneName );
-            levels[i+1] = scenePath;
+            levels[i + 1] = scenePath;
             Debug.Log( "添加场景：" + scenePath );
         }
 

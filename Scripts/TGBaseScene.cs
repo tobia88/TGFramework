@@ -75,19 +75,18 @@ public class TGBaseScene: MonoBehaviour {
         TGInputSetting.Recalibration();
     }
 
-    public IEnumerator CaptureScreenshot() {
+    public IEnumerator CaptureScreenshot( string _name ) {
 
-        var dateStr = TGData.endTime.ToFileFormatString();
         yield return new WaitForEndOfFrame();
         // 截图
-        yield return StartCoroutine( SaveMainScreenshot( dateStr ) );
+        yield return StartCoroutine( SaveMainScreenshot( _name ) );
 
         // 截热图
-        yield return StartCoroutine( SaveHeatmapTex( dateStr ) );
+        yield return StartCoroutine( SaveHeatmapTex( _name ) );
 
         if( onCaptureScreen != null )
 
-            onCaptureScreen( dateStr );
+            onCaptureScreen( _name );
     }
 
     public virtual IEnumerator PreUnloadScene() {

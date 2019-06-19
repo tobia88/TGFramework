@@ -157,7 +157,7 @@ public class TGGameScene: TGBaseScene {
             yield break;
         }
 
-        yield return StartCoroutine( CaptureScreenshot() );
+        yield return StartCoroutine( CaptureScreenshot( TGData.endTime.ToFileFormatString() ) );
     }
 
     private void InitUI() {
