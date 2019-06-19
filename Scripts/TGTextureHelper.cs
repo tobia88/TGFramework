@@ -32,10 +32,11 @@ public static class TGTextureHelper {
 
         byte[] bytes = _tex.EncodeToPNG();
 
-        Debug.Log( "Write Texture: " + _name );
+        string path = TGPaths.FullScreenshotPath( _name );
+        Debug.Log( "截图路径: " +  path );
 
         // 写入文件
-        LMFileWriter.Write( _name, bytes );
+        LMFileWriter.Write( path, bytes );
 
         // 写到Dicionary里，好之后写入ret.txt
         TGData.SaveScreenshot( _name );

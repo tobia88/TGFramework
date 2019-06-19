@@ -52,4 +52,7 @@ public static class TGPaths {
         return ProjectScenes + _sceneName + ".unity";
     }
 
+    public static string FullScreenshotPath( string _fileName ) {
+        return Root + _fileName;
+    }
 }

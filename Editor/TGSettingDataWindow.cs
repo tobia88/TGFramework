@@ -71,19 +71,47 @@ public class TGSettingDataWindow : EditorWindow {
 
     private void DrawSceneData( int _index ) {
         var data = m_settingData.sceneDatas[_index];
-        data.productName = EditorGUILayout.TextField( _index + ".发布名称", data.productName );
-        EditorGUI.indentLevel++;
-        data.gameNameCn = EditorGUILayout.TextField( "中文名称", data.gameNameCn );
 
+        string newProductName = EditorGUILayout.TextField( _index + ". Product Name", data.productName );
+
+        // 发布名称
+        if( data.productName != newProductName ) {
+            Undo.RecordObject( m_settingData, "Update Product Name" );
+            data.productName = newProductName;
+            EditorUtility.SetDirty( m_settingData );
+        }
+
+
+        EditorGUI.indentLevel++;
+
+        // 中文名称
+        string newCnName = EditorGUILayout.TextField( "Chinese Name", data.gameNameCn );
+
+        if( data.gameNameCn != newCnName ) {
+            Undo.RecordObject( m_settingData, "Update Chinese Name" );
+            data.gameNameCn = newCnName;
+            EditorUtility.SetDirty( m_settingData );
+        }
+
+        // 编译路径
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField( "Build Path", data.buildPath );
+        if( GUILayout.Button( "Choose..", GUILayout.MaxWidth( 150 ))) {
+            string path = EditorUtility.SaveFolderPanel( "Choose Location of Built Game", "G:\\GameProjects\\Unity\\2018\\Builds", "" );
+            if( !string.IsNullOrEmpty( path ) ){
+                Undo.RecordObject( m_settingData, "Update Product Name" );
+                data.buildPath = path;
+                EditorUtility.SetDirty( m_settingData );
+            }
+        }
+
+        EditorGUILayout.EndHorizontal();
         // 列出所有场景
-        EditorGUILayout.LabelField( "附加场景：");
+        EditorGUILayout.LabelField( "Packed Scenes:");
         EditorGUI.indentLevel++;
         data.sceneDetails.ForEach( sd => DrawSceneDetail( sd ) );
         EditorGUI.indentLevel--;
         EditorGUI.indentLevel--;
-
-        Undo.RecordObject( m_settingData, "Update data" );
-        m_settingData.sceneDatas[_index] = data;
     }   
 
     private void DrawSceneDetail( SceneDetail _sc ) {

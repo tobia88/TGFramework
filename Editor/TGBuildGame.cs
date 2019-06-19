@@ -15,16 +15,16 @@ public class TGBuildGame: MonoBehaviour {
 
     [MenuItem( "TGFramework/Windows Build With Postprocess" )]
     public static void BuildGame() {
-        string path = EditorUtility.SaveFolderPanel( "Choose Location of Built Game", "G:\\GameProjects\\Unity\\2018\\Builds", "" );
+        // string path = EditorUtility.SaveFolderPanel( "Choose Location of Built Game", "G:\\GameProjects\\Unity\\2018\\Builds", "" );
 
-        if( string.IsNullOrEmpty( path ) )
-            return;
+        // if( string.IsNullOrEmpty( path ) )
+        //     return;
 
-        Build( path, true );
+        Build( true );
     }
 
 
-    private static void Build( string _path, bool _openFolder ) {
+    private static void Build( bool _openFolder ) {
         var settingData = TGSettingData.GetInstance();
 
         var sceneDatas = settingData.sceneDatas;
@@ -34,11 +34,11 @@ public class TGBuildGame: MonoBehaviour {
         }
 
         for( int i = 0; i < sceneDatas.Count; i++ ) {
-            Build( sceneDatas[i], _path, _openFolder );
+            Build( sceneDatas[i], _openFolder );
         }
     }
 
-    private static void Build( SceneData _sceneData, string _path, bool _openFolder ) {
+    private static void Build( SceneData _sceneData, bool _openFolder ) {
         var details = _sceneData.sceneDetails;
 
         string[] levels = new string[details.Count + 1];
@@ -55,7 +55,8 @@ public class TGBuildGame: MonoBehaviour {
         PlayerSettings.productName = productName;
         PlayerSettings.companyName = TGData.COMPANY_NAME;
 
-        string targetFolder = _path + "/" + productName + "/";
+        string path = _sceneData.buildPath;
+        string targetFolder = path + "/" + productName + "/";
         string targetExePath = targetFolder + "/" + productName + ".exe";
 
         Debug.Log( "编译地址：" + targetExePath );
@@ -104,12 +105,12 @@ public class TGBuildGame: MonoBehaviour {
         FileUtil.CopyFileOrDirectory( src, dst );
     }
 
-    public static void Build() {
-        string format = "{0}\\{1}\\{1}.exe";
-        // 从命令行中获取发布路径
-        string buildPath = string.Format( format, Environment.GetCommandLineArgs().Last(), Application.productName );
-        Debug.Log( "Build Path: " + buildPath );
+    // public static void Build() {
+    //     string format = "{0}\\{1}\\{1}.exe";
+    //     // 从命令行中获取发布路径
+    //     string buildPath = string.Format( format, Environment.GetCommandLineArgs().Last(), Application.productName );
+    //     Debug.Log( "Build Path: " + buildPath );
 
-        Build( buildPath, false );
-    }
+    //     Build( buildPath, false );
+    // }
 }

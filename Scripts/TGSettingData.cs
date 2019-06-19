@@ -63,6 +63,7 @@ public struct SceneDetail {
 public class SceneData {
     public string productName = string.Empty;
     public string gameNameCn = string.Empty;
+    public string buildPath = string.Empty;
     public List<SceneDetail> sceneDetails = new List<SceneDetail>();
 
     public static SceneData GetBySceneName( string _sceneName ) {
