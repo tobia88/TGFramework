@@ -23,6 +23,7 @@ public class TGGameConfig: TGBaseManager {
     public override void Init(TGController _controller) {
         Instance = this;
 
+        QualitySettings.SetQualityLevel( QualitySettings.names.Length - 1 );
         Screen.SetResolution( 1920, 1080, true, 60 );
 
         base.Init( _controller );
