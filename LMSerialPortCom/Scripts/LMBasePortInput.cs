@@ -147,7 +147,7 @@ public abstract class LMBasePortInput {
     }
 
     public virtual IEnumerator TestConnect() {
-        for( int i = 0; i < 5; i++ ) {
+        for( int i = 0; i < 10; i++ ) {
             yield return new WaitForSeconds( 1f );
 
             IsPortActive = m_isConnected && !IsPortWriting;
