@@ -49,13 +49,13 @@ public class TGSettingDataWindow : EditorWindow {
             }
 
             EditorGUILayout.BeginHorizontal();
-            if( GUILayout.Button( "创建" ) ) {
+            if( GUILayout.Button( "Create" ) ) {
                 Undo.RecordObject( m_settingData, "Create new Scene Data" );
                 m_settingData.sceneDatas.Add( new SceneData() );
                 EditorUtility.SetDirty( m_settingData );
             }
 
-            if( GUILayout.Button( "删除")) {
+            if( GUILayout.Button( "Remove Last")) {
                 Undo.RecordObject( m_settingData, "Remove Last Scene Data" );
                 if( m_settingData.sceneDatas != null && m_settingData.sceneDatas.Count > 0 )
                     m_settingData.sceneDatas.RemoveAt( m_settingData.sceneDatas.Count - 1 );
@@ -63,16 +63,32 @@ public class TGSettingDataWindow : EditorWindow {
             }
             EditorGUILayout.EndHorizontal();
 
-            if( GUILayout.Button( "清理" ) ) {
+            if( GUILayout.Button( "Clear Null Scenes" ) ) {
                 ClearNullScene();
             }
+
+            var c = GUI.color;
+            GUI.color = Color.green;
+            if( GUILayout.Button( "Build") ) {
+                TGBuildGame.BuildGame();
+            }
+            GUI.color = c;
         }
     }
 
     private void DrawSceneData( int _index ) {
         var data = m_settingData.sceneDatas[_index];
 
-        string newProductName = EditorGUILayout.TextField( _index + ". Product Name", data.productName );
+        string newName = EditorGUILayout.TextField( _index + ". Name", data.dataName );
+        if( data.dataName != newName ) {
+            Undo.RecordObject( m_settingData, "Update Data Name" );
+            data.dataName = newName;
+            EditorUtility.SetDirty( m_settingData );
+        }
+
+        EditorGUI.indentLevel++;
+
+        string newProductName = EditorGUILayout.TextField( "Product Name", data.productName );
 
         // 发布名称
         if( data.productName != newProductName ) {
@@ -80,9 +96,6 @@ public class TGSettingDataWindow : EditorWindow {
             data.productName = newProductName;
             EditorUtility.SetDirty( m_settingData );
         }
-
-
-        EditorGUI.indentLevel++;
 
         // 中文名称
         string newCnName = EditorGUILayout.TextField( "Chinese Name", data.gameNameCn );
@@ -96,7 +109,7 @@ public class TGSettingDataWindow : EditorWindow {
         // 编译路径
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField( "Build Path", data.buildPath );
-        if( GUILayout.Button( "Choose..", GUILayout.MaxWidth( 150 ))) {
+        if( GUILayout.Button( "Choose..", GUILayout.MaxWidth( 100 ))) {
             string path = EditorUtility.SaveFolderPanel( "Choose Location of Built Game", "G:\\GameProjects\\Unity\\2018\\Builds", "" );
             if( !string.IsNullOrEmpty( path ) ){
                 Undo.RecordObject( m_settingData, "Update Product Name" );
@@ -120,8 +133,8 @@ public class TGSettingDataWindow : EditorWindow {
             EditorGUILayout.HelpBox( "Please make sure scene has saved to Assets/_Projects/Scenes Directory", MessageType.Warning );
         }
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.ObjectField( asset, typeof( SceneAsset ), false );
-        EditorGUILayout.LabelField( _sc.deviceType );
+        EditorGUILayout.ObjectField( asset, typeof( SceneAsset ), false, GUILayout.Width( 350 ), GUILayout.MinWidth( 150 ) );
+        EditorGUILayout.LabelField( _sc.deviceType, GUILayout.Width( 100) );
         EditorGUILayout.EndHorizontal();
     }
 

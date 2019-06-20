@@ -13,7 +13,6 @@ public class TGBuildGame: MonoBehaviour {
     public const string SCENE_PATH_FORMAT = "Assets/_Project/Scenes/{0}.unity";
     public const string FRAMEWORK_ROOT = "Assets/TGFramework/";
 
-    [MenuItem( "TGFramework/Windows Build With Postprocess" )]
     public static void BuildGame() {
         // string path = EditorUtility.SaveFolderPanel( "Choose Location of Built Game", "G:\\GameProjects\\Unity\\2018\\Builds", "" );
 

@@ -139,7 +139,6 @@ public class TGController: TGBaseBehaviour {
         dxCentre.SetActive( true );
     }
 
-
     private void DebugInputUpdate() {
         if( Input.GetKey( KeyCode.LeftAlt ) && Input.GetKeyDown( KeyCode.Q ) ) {
             dxCentre.SetActive( !dxCentre.isActive );

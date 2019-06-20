@@ -61,6 +61,7 @@ public struct SceneDetail {
 
 [System.Serializable]
 public class SceneData {
+    public string dataName = string.Empty;
     public string productName = string.Empty;
     public string gameNameCn = string.Empty;
     public string buildPath = string.Empty;
@@ -106,7 +107,7 @@ public class SceneData {
     }
 
     public override int GetHashCode() {
-        return productName.GetHashCode();
+        return dataName.GetHashCode();
     }
 
     public override bool Equals(object obj) {
@@ -115,7 +116,7 @@ public class SceneData {
 
         var compare = ( SceneData ) obj;
 
-        return productName == compare.productName ;
+        return dataName == compare.dataName ;
     }
 }
 

@@ -45,6 +45,7 @@ public class CreateScenePopupWindow : EditorWindow {
             EditorGUILayout.HelpBox( "没有任何的SceneData，请通过TGFramework/Preferences创建", MessageType.Error );
             return;
         }
+
         // 如果有则允许通过弹窗选择，并且列出该信息
         m_newSceneData = DrawSceneDataSelection();
         m_newSceneDetail = DrawSceneDetailSelection();
@@ -87,7 +88,7 @@ public class CreateScenePopupWindow : EditorWindow {
 
     private SceneData DrawSceneDataSelection() {
         var settingData = TGSettingData.GetInstance();
-        string[] sceneDatas = settingData.sceneDatas.Select( d => d.productName ).ToArray();
+        string[] sceneDatas = settingData.sceneDatas.Select( d => d.dataName ).ToArray();
 
         int[] optionValues = new int[sceneDatas.Length];
         for( int i = 0; i < optionValues.Length; i++ )
