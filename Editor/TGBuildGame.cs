@@ -51,6 +51,7 @@ public class TGBuildGame: MonoBehaviour {
         }
 
         string productName = _sceneData.productName;
+        PlayerSettings.displayResolutionDialog = ResolutionDialogSetting.Disabled;
         PlayerSettings.productName = productName;
         PlayerSettings.companyName = TGData.COMPANY_NAME;
 
