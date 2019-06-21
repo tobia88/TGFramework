@@ -2,49 +2,79 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public enum TGMessageTypes
-{
+public enum TGMessageTypes {
     Null,
     Warning,
     Error
 }
 
-public class TGDXErrorPopup : TGDXBaseCentre
-{
+public class TGDXErrorPopup: TGDXBaseCentre {
     public Text warningTxt;
-    public Button confirmBtn;
-    public Button exitBtn;
+    public TGDXButton normalBtnPrefab;
+    public TGDXButton confirmBtnPrefab;
+    public Transform buttonContainer;
+
+    private Button[] _buttons;
 
     private System.Action<int> onClickCallback;
 
-    public override void OnInit(TGController _controller)
-    {
-        base.OnInit(_controller);
-        exitBtn.onClick.AddListener(() => onClickCallback(0));
-        confirmBtn.onClick.AddListener(() => onClickCallback(1));
+    private void OnEnable() {
+        TGDXButton.onClick += OnClickButton;
     }
 
-    public void SetButtonActive(bool active)
-    {
-        confirmBtn.gameObject.SetActive(active);
-        exitBtn.gameObject.SetActive(active);
+    private void OnDisable() {
+        TGDXButton.onClick -= OnClickButton;
     }
 
-    public void PopupWithBtns(string msg, System.Action<int> callback)
-    {
-        SetActive(true);
-        SetButtonActive(true);
+    private void OnClickButton( TGDXButton _btn ) {
+        onClickCallback( _btn.index );
+    }
+
+    public void PopupWithBtns( string msg, System.Action<int> callback ) {
+        SetActive( true );
 
         warningTxt.text = msg;
 
         onClickCallback = callback;
     }
 
-    public void PopupMessage(string msg)
-    {
-        SetActive(true);
-        SetButtonActive(false);
-        warningTxt.text = msg;
+    public void PopupMessage( string _content ) {
+        ClearButtons();
+
+        warningTxt.text = _content;
+    }
+
+    public void PopupMessage( string _content, int _confirmIndex, Action<int> _callback, params string[] _options ) {
+        ClearButtons();
+
+        CreateButtons( _options, _confirmIndex );
+
+        SetActive( true );
+
+        warningTxt.text = _content;
+
+        onClickCallback = _callback;
+    }
+
+    private void CreateButtons( string[] _options, int _confirmIndex ) {
+        _buttons = new Button[_options.Length];
+
+        for( int i = 0; i < _buttons.Length; i++ ) {
+            var prefab = (i == _confirmIndex) ? confirmBtnPrefab : normalBtnPrefab;
+            prefab = Instantiate( prefab );
+            prefab.transform.SetParent( buttonContainer, false );
+            prefab.Init( i, _options[i] );
+        }
+    }
+
+    private void ClearButtons() {
+        if( _buttons == null )
+            return;
+
+        foreach( var btn in _buttons ) {
+            Destroy( btn.gameObject );
+        }
     }
 }

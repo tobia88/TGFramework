@@ -4,26 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Text;
 
-public class TGDXTextCentre : TGDXBaseCentre
-{
-	private StringBuilder m_stringBuilder;
-	public Text debugText;
+public class TGDXTextCentre: TGDXBaseCentre {
+    private StringBuilder m_stringBuilder;
+    public Text debugText;
 
-	public override void OnInit(TGController _controller)
-	{
-		base.OnInit(_controller);
-		m_stringBuilder = new StringBuilder();
-	}
+    public override void Init() {
+        base.Init();
+        m_stringBuilder = new StringBuilder();
+    }
 
-	public void WriteLine(string _line)
-	{
-		m_stringBuilder.AppendLine(_line);
-		debugText.text = m_stringBuilder.ToString();
-	}
+    public void WriteLine( string _line ) {
+        m_stringBuilder.AppendLine( _line );
+        debugText.text = m_stringBuilder.ToString();
+    }
 
-	public void Clear()
-	{
-		m_stringBuilder.Clear();
-		debugText.text = string.Empty;
-	}
+    public void Clear() {
+        m_stringBuilder.Clear();
+        debugText.text = string.Empty;
+    }
 }

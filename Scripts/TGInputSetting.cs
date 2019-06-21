@@ -30,8 +30,6 @@ public class TGInputSetting: TGBaseManager {
             yield return StartCoroutine( ConnectDeviceRoutine() );
         }
 
-        m_controller.dxErrorPopup.SetActive( false );
-
         // 打开热图
         m_controller.SetHeatmapEnable( KeyportData.heatmap );
 
@@ -61,8 +59,7 @@ public class TGInputSetting: TGBaseManager {
             if( !PortInput.IsPortActive ) {
                 int result = -1;
 
-                m_controller.dxErrorPopup.PopupWithBtns( PortInput.ErrorTxt, i => result = i );
-
+                TGDebug.ErrorBox( PortInput.ErrorTxt, 1, i => result = i, "取消", "确定" );
                 yield return new WaitUntil( () => result >= 0 );
 
                 if( result == 0 ) {
@@ -70,7 +67,7 @@ public class TGInputSetting: TGBaseManager {
                     yield break;
                 }
 
-                m_controller.dxErrorPopup.PopupMessage( "重连中" );
+                TGDebug.MessageBox( "重连中...");
 
                 yield return new WaitForSecondsRealtime( 0.1f );
             }

@@ -16,11 +16,11 @@ public class TGController: TGBaseBehaviour {
     public HeatmapInput heatmapInput;
     public TGMainGame mainGame;
     public TGResultMng resultMng;
+    public TGDebug debug;
     [Header( "Debug" )]
     public TGDXCentre dxCentre;
     public TGDXTextCentre dxTextCentre;
     public TGDXHeatmapPanel dxHeatmapPanel;
-    public TGDXErrorPopup dxErrorPopup;
     public TGDXLoadingPanel dxLoadingPanel;
 
     private float m_progressValue;
@@ -55,11 +55,13 @@ public class TGController: TGBaseBehaviour {
         mainGame.Init( this );
         resultMng.Init( this );
 
-        dxCentre.OnInit( this );
-        dxTextCentre.OnInit( this );
-        dxHeatmapPanel.OnInit( this );
-        dxErrorPopup.OnInit( this );
-        dxLoadingPanel.OnInit( this );
+        debug.Init();
+
+        dxCentre.Init();
+        dxTextCentre.Init();
+        dxHeatmapPanel.Init();
+        // dxErrorPopup.Init();
+        dxLoadingPanel.Init();
 
         systemCam.gameObject.SetActive( false );
 
@@ -126,17 +128,11 @@ public class TGController: TGBaseBehaviour {
 
     public void ErrorQuit( string _error ) {
         // Write down error
+        TGDebug.ErrorBox( _error, 0, i => Quit(), "确定" );
+
         Debug.LogWarning( _error );
+
         StopCoroutine( m_routine );
-
-        systemCam.gameObject.SetActive( true );
-
-        EnableDiagnosis();
-    }
-
-    public void EnableDiagnosis() {
-        dxCentre.gameObject.SetActive( true );
-        dxCentre.SetActive( true );
     }
 
     private void DebugInputUpdate() {

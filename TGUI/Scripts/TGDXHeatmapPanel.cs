@@ -3,48 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TGDXHeatmapPanel : TGDXBaseCentre
-{
-	public RawImage heatmapImg;
-	public GameObject warningTxt;
-	public Text deviceTxt;
+public class TGDXHeatmapPanel: TGDXBaseCentre {
+    public RawImage heatmapImg;
+    public GameObject warningTxt;
+    public Text deviceTxt;
 
-	private HeatmapInput m_heatmapInput;
+    private HeatmapInput m_heatmapInput;
 
-	public override void OnInit(TGController _controller)
-	{
-		base.OnInit(_controller);
-		m_heatmapInput = _controller.heatmapInput;
-	}
+    public override void Init() {
+        base.Init();
+        m_heatmapInput = TGController.Instance.heatmapInput;
+    }
 
-	public override void SetActive(bool _active)
-	{
-		base.SetActive(_active);
+    public override void SetActive( bool _active ) {
+        base.SetActive( _active );
 
-		if (m_heatmapInput.isActiveAndEnabled)
-		{
-			m_heatmapInput.updateRuntime = _active;
+		if( m_heatmapInput == null )
+			return;
 
-			if (_active)
-			{
-				m_heatmapInput.ApplyHeatmap();
-			}
-		}
-	}
+        if( m_heatmapInput.isActiveAndEnabled ) {
+            m_heatmapInput.updateRuntime = _active;
 
-	public void SetTexture(Texture2D _tex)
-	{
-		heatmapImg.gameObject.SetActive(true);
-		heatmapImg.texture = _tex;
+            if( _active ) {
+                m_heatmapInput.ApplyHeatmap();
+            }
+        }
+    }
 
-		warningTxt.SetActive(false);
-	}
+    public void SetTexture( Texture2D _tex ) {
+        heatmapImg.gameObject.SetActive( true );
+        heatmapImg.texture = _tex;
 
-	public void ShowWarning(string _crtDevice)
-	{
-		heatmapImg.gameObject.SetActive(false);
-		deviceTxt.text = string.Format(deviceTxt.text, _crtDevice);
+        warningTxt.SetActive( false );
+    }
 
-		warningTxt.SetActive(true);
-	}
+    public void ShowWarning( string _crtDevice ) {
+        heatmapImg.gameObject.SetActive( false );
+        deviceTxt.text = string.Format( deviceTxt.text, _crtDevice );
+
+        warningTxt.SetActive( true );
+    }
 }

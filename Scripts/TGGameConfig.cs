@@ -55,8 +55,6 @@ public class TGGameConfig: TGBaseManager {
             if( group != null ) {
                 string cnTitle = GetValue( "体侧", string.Empty );
                 TGData.evalData = GetConfigDataFromTitle( group, cnTitle );
-
-                
             }
         } else {
             Debug.LogWarning( eval + "Has not found" );
