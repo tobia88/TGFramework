@@ -38,6 +38,11 @@ public class TGBuildGame: MonoBehaviour {
     }
 
     private static void Build( SceneData _sceneData, bool _openFolder ) {
+        if( string.IsNullOrEmpty( _sceneData.buildPath ) ) {
+            Debug.LogWarning( _sceneData.dataName + "没有设置发布路径，跳过" );
+            return;
+        }
+
         var details = _sceneData.sceneDetails;
 
         string[] levels = new string[details.Count + 1];
