@@ -16,7 +16,7 @@ public class TGDXErrorPopup: TGDXBaseCentre {
     public TGDXButton confirmBtnPrefab;
     public Transform buttonContainer;
 
-    private Button[] _buttons;
+    private TGDXButton[] _buttons;
 
     private System.Action<int> onClickCallback;
 
@@ -59,13 +59,15 @@ public class TGDXErrorPopup: TGDXBaseCentre {
     }
 
     private void CreateButtons( string[] _options, int _confirmIndex ) {
-        _buttons = new Button[_options.Length];
+        _buttons = new TGDXButton[_options.Length];
 
         for( int i = 0; i < _buttons.Length; i++ ) {
             var prefab = (i == _confirmIndex) ? confirmBtnPrefab : normalBtnPrefab;
             prefab = Instantiate( prefab );
             prefab.transform.SetParent( buttonContainer, false );
             prefab.Init( i, _options[i] );
+
+            _buttons[i] = prefab;
         }
     }
 
@@ -76,5 +78,7 @@ public class TGDXErrorPopup: TGDXBaseCentre {
         foreach( var btn in _buttons ) {
             Destroy( btn.gameObject );
         }
+
+        _buttons = null;
     }
 }
