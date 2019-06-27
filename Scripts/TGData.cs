@@ -66,4 +66,9 @@ public static class TGData {
         SceneDetail = SceneData.GetSceneDetail( TGData.DeviceType );
         SceneName = SceneDetail.sceneName;
     }
+
+    public static void RenameChinese( string _chineseName ) {
+        GameNameCn = _chineseName;
+        Debug.Log( "ÖÐÎÄÃû×Ö: " + _chineseName );
+    }
 }
