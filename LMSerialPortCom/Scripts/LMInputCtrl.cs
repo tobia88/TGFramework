@@ -13,6 +13,10 @@ public class LMInputCtrl: MonoBehaviour {
     public float damp = 0.1f;
     public AxisOrder axisOrder;
 
+    [Header( "Touch" )]
+    public TouchDimension touchDimension;
+    public LayerMask rayMaskFor3D;
+
     private Vector3 m_input;
     private IInputReceiver m_playerCtrl;
 
@@ -30,6 +34,9 @@ public class LMInputCtrl: MonoBehaviour {
 
     public void OnInit( IInputReceiver _receiver ) {
         m_playerCtrl = _receiver;
+
+        TGInputSetting.Touch.touchDimension = touchDimension;
+        TGInputSetting.Touch.rayMaskForThreeD = rayMaskFor3D;
     }
 
     public void OnUpdate() {
