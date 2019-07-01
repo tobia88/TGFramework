@@ -316,7 +316,7 @@ public class TGGameScene: TGBaseScene {
     private IEnumerator CountdownToQuitRoutine() {
         for( int i = 5; i > 0; i-- ) {
             uiRoot.gameOverPanel.SetCountdownTxt( i );
-            yield return new WaitForSeconds( 1 );
+            yield return new WaitForSeconds( 2 );
         }
 
         uiRoot.gameOverPanel.SetCountdownTxt( 0 );
