@@ -41,6 +41,7 @@ public abstract class LMBasePortInput {
     public bool IsPortActive { get; protected set; }
     public virtual bool IsConnected { get { return IsPortActive && !IsPortWriting && m_isConnected; } }
     public bool IsPortWriting { get; protected set; }
+    public virtual bool IsReconnectable { get { return true; } }
     public LMBasePortResolver CurrentResolver { get; protected set; }
     public KeyPortData KeyportData { get; protected set; }
     public string ErrorTxt { get; protected set; }
@@ -52,6 +53,9 @@ public abstract class LMBasePortInput {
     public System.Action<byte[]> onReceiveDataCallback;
 
     private bool CountdownToReconnect() {
+        if( !IsReconnectable )
+            return false;
+
         m_cdTick += Time.deltaTime;
         return m_cdTick >= ConnectLimit;
     }

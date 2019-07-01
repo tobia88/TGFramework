@@ -56,6 +56,8 @@ public class LMGrindTable: LMInput_Port {
     public int RowCount { get; private set; }
     public bool Is3D { get; private set; }
 
+    public override bool IsReconnectable { get { return false; } }
+
     private string m_currentKey;
     private string m_currentValue;
     private Rect m_worldBound;
@@ -106,7 +108,6 @@ public class LMGrindTable: LMInput_Port {
 
         Write(CLEAR_PATH, false);
         eventQueue.Clear();
-        Write(CLEAR_PATH, false);
 
         if( IsTesting && GrindTableEmu != null )
             GrindTableEmu.Reset();
