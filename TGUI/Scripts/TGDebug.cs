@@ -16,6 +16,10 @@ public class TGDebug: TGBaseBehaviour {
         m_Instance.errorPopup.PopupMessage( _content );
     }
 
+    public static void ClearMessageBox() {
+        m_Instance.errorPopup.SetActive( false );
+    }
+
     public void Init() {
         errorPopup.Init();
         heatmapPanel.Init();

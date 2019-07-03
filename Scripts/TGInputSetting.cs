@@ -72,6 +72,8 @@ public class TGInputSetting: TGBaseManager {
                 yield return new WaitForSecondsRealtime( 0.1f );
             }
         }
+
+        TGDebug.ClearMessageBox();
     }
 
     public override IEnumerator EndRoutine() {
