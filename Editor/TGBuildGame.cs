@@ -110,12 +110,13 @@ public class TGBuildGame: MonoBehaviour {
         FileUtil.CopyFileOrDirectory( src, dst );
     }
 
-    // public static void Build() {
-    //     string format = "{0}\\{1}\\{1}.exe";
-    //     // 从命令行中获取发布路径
-    //     string buildPath = string.Format( format, Environment.GetCommandLineArgs().Last(), Application.productName );
-    //     Debug.Log( "Build Path: " + buildPath );
+    public static void BuildFromCommandLine() {
+        // string format = "{0}\\{1}\\{1}.exe";
+        // // 从命令行中获取发布路径
+        // string buildPath = string.Format( format, Environment.GetCommandLineArgs().Last(), Application.productName );
+        // Debug.Log( "Build Path: " + buildPath );
 
-    //     Build( buildPath, false );
-    // }
+        // Build( buildPath, false );
+        Build( true );
+    }
 }
