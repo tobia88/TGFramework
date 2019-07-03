@@ -22,13 +22,15 @@ public class TGBaseSceneEditor: Editor {
 
                 var sceneExist = scnData != null;
 
-                GUI.color = ( sceneExist ) ? Color.white : new Color( 1f, 0.5f, 0.3f );
+                var defaultColor = GUI.color;
+
+                GUI.color = ( sceneExist ) ? default : new Color( 1f, 0.5f, 0.3f );
 
                 if( GUILayout.Button( "Manage Setting Data" ) ) {
                     CreateScenePopupWindow.ShowWindow( m_scene );
                 }
 
-                GUI.color = Color.white;
+                GUI.color = defaultColor;
 
                 var deviceType = SceneDetail.GetBySceneName( m_scene.SceneName ).deviceType;
                 EditorGUILayout.LabelField( "Device Type", deviceType );
