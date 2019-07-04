@@ -88,32 +88,6 @@ public class LMInputCtrl: MonoBehaviour {
         m_input.y = Mathf.Lerp( m_input.y, target.y, damp );
         m_input.z = Mathf.Lerp( m_input.z, target.z, damp );
 
-        // TGController.Instance.WriteLine("Input After: " + m_input.ToString());
-
         m_playerCtrl.MoveByPort( m_input );
     }
-
-    // private Vector3 M7BUpdate(TGInputSetting input, string strOrder)
-    // {
-    //     Vector3 retval = Vector3.zero;
-
-    //     Vector3 val = input.GetValueFromEvalAxis();
-    //     val.x = Mathf.Clamp01(val.x);
-    //     val.y = Mathf.Clamp01(val.y);
-    //     val.z = Mathf.Clamp01(val.z);
-
-    //     if (TGController.Instance.evaluationSetupData.reverse)
-    //         val.x = 1f - val.x;
-
-    //     if (strOrder[0] == 'x')
-    //         retval.x = val;
-
-    //     else if (strOrder[0] == 'y')
-    //         retval.y = val;
-
-    //     else if (strOrder[0] == 'z')
-    //         retval.z = val;
-
-    //     return retval;
-    // }
 }
