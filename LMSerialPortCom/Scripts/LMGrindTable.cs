@@ -1,7 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System;
 using UnityEngine;
+
+public struct GrindNode {
+    public int x;
+    public int y;
+
+    public override bool Equals( object obj ) {
+        if( obj is GrindNode ) {
+            var n = ( GrindNode )obj;
+            return this.x == n.x && this.y == n.y;
+        }
+
+        return false;
+    }
+
+    public static bool operator ==( GrindNode left, GrindNode right ) {
+        return left.Equals( right );
+    }
+
+    public static bool operator !=( GrindNode left, GrindNode right ) {
+        return !left.Equals( right );
+    }
+
+    public override int GetHashCode() {
+        return x.GetHashCode() ^ y.GetHashCode();
+    }
+
+    public override string ToString() {
+        return string.Format( "X:{0}, Y:{1}", this.x, this.y );
+    }
+}
 
 public class LMGrindTable: LMInput_Port {
     public struct GrindEvent {
@@ -18,33 +49,6 @@ public class LMGrindTable: LMInput_Port {
         }
     }
 
-    public struct Node {
-        public int x;
-        public int y;
-
-        public Node( int x, int y ) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public override bool Equals( object obj ) {
-            if( obj is Node ) {
-                var n = ( Node )obj;
-                return this.x == n.x && this.y == n.y;
-            }
-
-            return false;
-        }
-
-        public override int GetHashCode() {
-            return x.GetHashCode() ^ y.GetHashCode();
-        }
-
-        public override string ToString() {
-            return string.Format( "X:{0}, Y:{1}", this.x, this.y );
-        }
-    }
-
     public const string CLEAR_PATH = "CB01FD";
     public const string PATH_FORMAT = "Y{0}Z";
     public const int SKIP_LENGTH = 8; //Skip along from code 88 to 96
@@ -52,20 +56,19 @@ public class LMGrindTable: LMInput_Port {
     // public Leadiy_M7B m7bResolver;
     // public LMBasePortInput m7bPort;
 
-    public int ColumnCount { get; private set; }
-    public int RowCount { get; private set; }
-    public bool Is3D { get; private set; }
+    public static int ColumnCount { get; private set; }
+    public static int RowCount { get; private set; }
 
     public override bool IsReconnectable { get { return false; } }
 
     private string m_currentKey;
     private string m_currentValue;
-    private Rect m_worldBound;
-    private bool m_worldAvailable;
+    // private Rect m_worldBound;
+    // private bool m_worldAvailable;
 
-    public System.Action<bool> onTestFinished;
-    public System.Action onTestStarted;
-    public System.Action<Vector3> onTurnOffLight;
+    public static Action<bool> onTestFinished;
+    public static Action onTestStarted;
+    public static Action<GrindNode> onTurnOffLight;
     public Queue<GrindEvent> eventQueue = new Queue<GrindEvent>();
     public LMGrindTableEmulator GrindTableEmu { get { return Emulator as LMGrindTableEmulator; } }
 
@@ -94,9 +97,63 @@ public class LMGrindTable: LMInput_Port {
     //     return false;
     // }
 
-    public override void Init( TGController _controller, KeyPortData keyportData, int _com ) {
-        base.Init( _controller, keyportData, _com );
+    public static GrindNode[] PathToNodes( Vector3[] _path, Rect _bound, bool _is3D ) {
+        // 用来保存最后一次的编号，以避免重复发送同样的编号
+        string lastCode = string.Empty;
 
+        // 记录最新的编号
+        string newCode = string.Empty;
+
+        GrindNode lastNode = new GrindNode();
+        List<GrindNode> nodes = new List<GrindNode>();
+
+        for( int i = 0; i < _path.Length; i++ ) {
+            var tmpNode = GetNode( _path[i], _bound, _is3D );
+            Debug.Log( "Get Node: " + tmpNode.x + ", " + tmpNode.y );
+
+            if( tmpNode == lastNode ) {
+                continue;
+            }
+
+            nodes.Add( tmpNode );
+            lastNode = tmpNode;
+            // // 测试时候发送到模拟器
+            // if( TGData.IsTesting ) {
+            //     GrindTableEmu.SetBtnEnable( tmpNode.x, tmpNode.y );
+            // }
+
+        }
+
+        return nodes.ToArray();
+    }
+
+    private static GrindNode GetNode( Vector3 p, Rect _bound, bool _is3D ) {
+        float ratioX = 0f;
+        float ratioY = 0f;
+
+        if( _is3D ) {
+            ratioX = ( p.x - _bound.x ) / ( _bound.width );
+            ratioY = ( p.z - _bound.y ) / ( _bound.height );
+
+        } else {
+            ratioX = ( p.x - _bound.x ) / ( _bound.width );
+            ratioY = ( p.y - _bound.y ) / ( _bound.height );
+        }
+        // 逆转Y值
+        ratioY = 1f - ratioY;
+
+        ratioX = Mathf.Clamp01( ratioX );
+        ratioY = Mathf.Clamp01( ratioY );
+
+        GrindNode n = new GrindNode();
+
+        n.x = Mathf.RoundToInt( ratioX * ( ColumnCount - 1 ) );
+        n.y = Mathf.RoundToInt( ratioY * ( RowCount - 1 ) );
+
+        return n;
+    }
+
+    public override void Init( TGController _controller, KeyPortData keyportData, int _com ) { base.Init( _controller, keyportData, _com ); 
         //获取keyInputConfig.json里的行列数
         ColumnCount = keyportData.width;
         RowCount = keyportData.height;
@@ -106,19 +163,19 @@ public class LMGrindTable: LMInput_Port {
     public void ClearLights() {
         Debug.Log( "Clear Lights" );
 
-        Write(CLEAR_PATH, false);
+        Write( CLEAR_PATH, false );
         eventQueue.Clear();
 
         if( IsTesting && GrindTableEmu != null )
             GrindTableEmu.Reset();
     }
 
-    //设置映射的区域
-    public void InitTable( Rect bound, bool is3D ) {
-        this.Is3D = is3D;
-        this.m_worldBound = bound;
-
-        m_worldAvailable = true;
+    // 由于发送清除指令的时候，上位机不会返回数据
+    // 因此与其像之前开协程等待上位机重新发送数据，不如直接发送数据给上位机妥当
+    public override void Write( byte[] bytes ) {
+        if( Port != null && Port.IsOpen ) {
+            Port.Write(bytes, 0, bytes.Length);
+        }
     }
 
     public override bool OnUpdate() {
@@ -166,50 +223,12 @@ public class LMGrindTable: LMInput_Port {
                 Debug.Log( "On Turn Off Light: " + evt.value );
 
                 if( onTurnOffLight != null )
-                    onTurnOffLight( CodeToVector( evt.value ) );
+                    onTurnOffLight( CodeToNode( evt.value ) );
                 break;
         }
     }
 
-    public void Write( Vector3[] path ) {
-        if( !m_worldAvailable ) {
-            Debug.LogError( "请先使用InitTable把rect设置好" );
-            return;
-        }
-
-        // 用来保存需要发送到端口处的转译后的位置编号
-        string content = string.Empty;
-
-        // 用来保存最后一次的编号，以避免重复发送同样的编号
-        string lastCode = string.Empty;
-
-        // 记录最新的编号
-        string newCode = string.Empty;
-
-        for( int i = 0; i < path.Length; i++ ) {
-            var node = GetNode( path[i] );
-            Debug.Log( "Get Node: " + node.x + ", " + node.y );
-
-            // 将位置转译成磨砂版接收的编号
-            newCode = NodeToCode( node );
-
-            if( lastCode == newCode )
-                continue;
-
-            content += newCode;
-            lastCode = newCode;
-
-            // 测试时候发送到模拟器
-            if( IsTesting ) {
-                GrindTableEmu.SetBtnEnable( node.x, node.y );
-            }
-
-        }
-
-        Write( string.Format( PATH_FORMAT, content ), false );
-    }
-
-    public void Write( Node[] nodes ) {
+    public void Write( GrindNode[] nodes ) {
         string newCode = string.Empty;
         string content = string.Empty;
         string lastCode = string.Empty;
@@ -232,31 +251,23 @@ public class LMGrindTable: LMInput_Port {
             if( IsTesting ) {
                 GrindTableEmu.SetBtnEnable( node.x, node.y );
             }
-
         }
 
         Write( string.Format( PATH_FORMAT, content ), false );
     }
 
-    public void DrawLine( Vector3 from, Vector3 to ) {
-        var nodes = new List<Node>();
-
-        var startNode = GetNode( from );
-        var endNode = GetNode( to );
-
-
-        Write( GetLines( startNode, endNode ) );
+    public void DrawLine( GrindNode from, GrindNode to ) {
+        Write( GetLines( from, to ) );
     }
-
 
     public void DrawLine( int x0, int y0, int x1, int y1 ) {
-        var startNode = new Node( x0, y0 );
-        var endNode = new Node( x1, y1 );
+        var startNode = new GrindNode() { x = x0, y = y0 };
+        var endNode = new GrindNode() { x = x1, y = y1 };
         Write( GetLines( startNode, endNode ) );
     }
 
-    private Node[] GetLines( Node a, Node b ) {
-        List<Node> nodes = new List<Node>();
+    private GrindNode[] GetLines( GrindNode a, GrindNode b ) {
+        List<GrindNode> nodes = new List<GrindNode>();
 
         int x0 = a.x;
         int y0 = a.y;
@@ -294,33 +305,32 @@ public class LMGrindTable: LMInput_Port {
 
             for( int y = 0; y < yLength; y++ ) {
                 int fy = y0 + y * yStep;
-                nodes.Add( new Node( x0, fy ) );
+                nodes.Add( new GrindNode() { x = x0, y = fy } );
             }
         } else {
             int de = 2 * Mathf.Abs( dy );
             int e = 0;
 
-            int y = y0;
+            int ty = y0;
 
-            for( int x = x0; x <= x1; x++ ) {
+            for( int tx = x0; tx <= x1; tx++ ) {
                 if( steep ) {
                     // 如果是大斜率的，记得把xy调转回来
-                    nodes.Add( new Node( y, x ) );
+                    nodes.Add( new GrindNode() { x = ty, y = tx } );
                 } else {
-                    Debug.LogWarning(x0);
-                    nodes.Add( new Node( x, y ) );
+                    Debug.LogWarning( x0 );
+                    nodes.Add( new GrindNode() { x = tx, y = ty } );
                 }
 
                 e += de;
 
                 if( e > dx ) {
-                    y += yStep;
+                    ty += yStep;
                     e -= 2 * dx;
                 }
             }
         }
-        if (mirror||steep)
-        {
+        if( mirror || steep ) {
             nodes.Reverse();
         }
         return nodes.ToArray();
@@ -330,43 +340,6 @@ public class LMGrindTable: LMInput_Port {
         int tmp = x;
         x = y;
         y = tmp;
-    }
-
-    public void DrawArc( Vector3 center, float radius, int fromDeg, int toDeg, bool counterClockwise ) {
-        var list = new List<Vector3>();
-
-        // 顺时针还是逆时针
-        var sign = ( counterClockwise ) ? 1 : -1;
-
-        // 把值域限定在[0,359]之间
-        if( fromDeg < 0 ) fromDeg = ( fromDeg % 360 ) + 360;
-        if( toDeg < 0 ) toDeg = ( toDeg % 360 ) + 360;
-
-        fromDeg %= 360;
-        toDeg %= 360;
-
-        for( int i = fromDeg;
-            ( sign > 0 ) ? i <= toDeg : i >= toDeg; i += sign ) {
-            // 把i值锁定在[0,360]之间
-            if( i < 0 ) i += 360;
-
-            i %= 360;
-
-            var np = new Vector3();
-            var rad = i * Mathf.Deg2Rad;
-
-            if( Is3D ) {
-                np.x = Mathf.Cos( rad ) * radius + center.x;
-                np.z = Mathf.Sin( rad ) * radius + center.z;
-            } else {
-                np.x = Mathf.Cos( rad ) * radius + center.x;
-                np.y = Mathf.Sin( rad ) * radius + center.y;
-            }
-
-            list.Add( np );
-        }
-
-        Write( list.ToArray() );
     }
 
     public void DrawArc( int cx, int cy, int r, int fromDeg, int toDeg, bool counterClockwise = false ) {
@@ -379,7 +352,7 @@ public class LMGrindTable: LMInput_Port {
         int x = 0;
         int y = r;
 
-        var nodes = new List<Node>();
+        var nodes = new List<GrindNode>();
 
         // Bresenham Mid Point Circle Drawing Algorithm
         while( x <= y ) {
@@ -405,7 +378,7 @@ public class LMGrindTable: LMInput_Port {
         }
 
         // 把点从新排序
-        nodes.Sort( ( Node a, Node b ) => {
+        nodes.Sort( ( GrindNode a, GrindNode b ) => {
             // 计算比对点的角度
             float degA = Mathf.Atan2( a.y - cy, a.x - cx ) * Mathf.Rad2Deg;
             float degB = Mathf.Atan2( b.y - cy, b.x - cx ) * Mathf.Rad2Deg;
@@ -458,10 +431,10 @@ public class LMGrindTable: LMInput_Port {
         return retval;
     }
 
-    private void DrawCirc( int cx, int cy, int x, int y, int fromDeg, int toDeg, ref List<Node> nodes, bool counterClockwise ) {
+    private void DrawCirc( int cx, int cy, int tx, int ty, int fromDeg, int toDeg, ref List<GrindNode> nodes, bool counterClockwise ) {
         // 判断要画的点是否在有效区域，并且角度是否在起始角度与终点角度之间
-        if( Within( cx + x, cy + y ) && WithinAngle( cx, cy, cx + x, cy + y, fromDeg, toDeg, counterClockwise ) ) {
-            var n =  new Node( cx + x, cy + y ) ;
+        if( Within( cx + tx, cy + ty ) && WithinAngle( cx, cy, cx + tx, cy + ty, fromDeg, toDeg, counterClockwise ) ) {
+            var n = new GrindNode() { x = cx + tx, y = cy + ty };
 
             if( !nodes.Contains( n ) ) {
                 // Debug.Log( "Add Node: " + n );
@@ -520,7 +493,7 @@ public class LMGrindTable: LMInput_Port {
         base.Close();
     }
 
-    private string NodeToCode( Node node ) {
+    private string NodeToCode( GrindNode node ) {
         int colIndex = 65 + node.x;
         int rowIndex = 65 + node.y;
 
@@ -538,34 +511,9 @@ public class LMGrindTable: LMInput_Port {
         return retval;
     }
 
-    private Node GetNode( Vector3 p ) {
-        float ratioX = 0f;
-        float ratioY = 0f;
-
-        if( Is3D ) {
-            ratioX = ( p.x - m_worldBound.x ) / ( m_worldBound.width );
-            ratioY = ( p.z - m_worldBound.y ) / ( m_worldBound.height );
-
-        } else {
-            ratioX = ( p.x - m_worldBound.x ) / ( m_worldBound.width );
-            ratioY = ( p.y - m_worldBound.y ) / ( m_worldBound.height );
-        }
-        // 逆转Y值
-        ratioY = 1f - ratioY;
-
-        ratioX = Mathf.Clamp01( ratioX );
-        ratioY = Mathf.Clamp01( ratioY );
-
-        Node n = new Node();
-
-        n.x = Mathf.RoundToInt( ratioX * ( ColumnCount - 1 ) );
-        n.y = Mathf.RoundToInt( ratioY * ( RowCount - 1 ) );
-
-        return n;
-    }
 
     // 将砂磨板接收到的编号转译映射成世界空间坐标系
-    private Vector3 CodeToVector( string code ) {
+    public static GrindNode CodeToNode( string code ) {
         Debug.Log( "Code To Vector: " + code );
 
         int colIndex = ( int )code[0];
@@ -577,19 +525,19 @@ public class LMGrindTable: LMInput_Port {
         colIndex -= 65;
         rowIndex -= 65;
 
-        return NodeToVector( colIndex, rowIndex );
+        return new GrindNode() { x = colIndex, y = rowIndex };
     }
 
-    public Vector3 NodeToVector( int x, int y ) {
-        float ratioX = ( float )x / ( ColumnCount - 1 );
-        float ratioY = 1f - ( float )y / ( RowCount - 1 );
+    public static Vector3 NodeToVector( GrindNode node, Rect bound, bool is3D ) {
+        float ratioX = ( float )node.x / ( ColumnCount - 1 );
+        float ratioY = 1f - ( float )node.y / ( RowCount - 1 );
 
-        float rx = ratioX * m_worldBound.width + m_worldBound.x;
-        float ry = ratioY * m_worldBound.height + m_worldBound.y;
+        float rx = ratioX * bound.width + bound.x;
+        float ry = ratioY * bound.height + bound.y;
 
         Debug.Log( string.Format( "Rx: {0}. Ry: {1}", ratioX, ratioY ) );
 
-        if( Is3D )
+        if( is3D )
             return new Vector3( rx, 0f, ry );
 
         return new Vector3( rx, ry );
@@ -685,7 +633,7 @@ public class LMGrindTable: LMInput_Port {
             return;
 
         // 如果没有数值，则直接返回
-        if( string.IsNullOrEmpty( value ))
+        if( string.IsNullOrEmpty( value ) )
             return;
 
         Debug.Log( "捕捉到事件: Key: " + key + "，Value: " + value );

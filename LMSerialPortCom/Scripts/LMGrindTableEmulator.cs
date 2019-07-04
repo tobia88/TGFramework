@@ -18,8 +18,8 @@ public class LMGrindTableEmulator: LMBaseEmulator {
 
         m_rectTrans = GetComponent<RectTransform>();
 
-        column = m_grindTable.ColumnCount;
-        row = m_grindTable.RowCount;
+        column = LMGrindTable.ColumnCount;
+        row = LMGrindTable.RowCount;
 
         CreateButtons();
     }
@@ -41,8 +41,8 @@ public class LMGrindTableEmulator: LMBaseEmulator {
     public void OnUpdate() {
         if( Input.GetKeyDown( KeyCode.Space ) ) {
             Reset();
-            if( m_grindTable.onTestFinished != null )
-                m_grindTable.onTestFinished( true );
+            if( LMGrindTable.onTestFinished != null )
+                LMGrindTable.onTestFinished( true );
         }
     }
 
@@ -73,8 +73,8 @@ public class LMGrindTableEmulator: LMBaseEmulator {
         if( activatedButtons.Contains( btn ) ) {
             m_btnPressed++;
 
-            if( m_grindTable.onTurnOffLight != null ) {
-                m_grindTable.onTurnOffLight( m_grindTable.NodeToVector( btn.x, btn.y ) );
+            if( LMGrindTable.onTurnOffLight != null ) {
+                LMGrindTable.onTurnOffLight( new GrindNode() { x = btn.x, y = btn.y } );
             }
 
             Debug.Log( "Btn Pressed: " + m_btnPressed );
@@ -88,8 +88,8 @@ public class LMGrindTableEmulator: LMBaseEmulator {
                     Reset();
 
                 // 如果按钮点击量大于等于5，则表示训练通过，反之从来一次
-                if( m_grindTable.onTestFinished != null )
-                    m_grindTable.onTestFinished( result );
+                if( LMGrindTable.onTestFinished != null )
+                    LMGrindTable.onTestFinished( result );
             } else {
                 btn.BtnState = EmuTableBtnStates.Pressed;
             }

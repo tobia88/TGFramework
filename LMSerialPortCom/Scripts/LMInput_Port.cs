@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System;
 using UnityEngine;
 
 public class LMInput_Port: LMBasePortInput, IPortReceiver {
@@ -41,7 +42,6 @@ public class LMInput_Port: LMBasePortInput, IPortReceiver {
 
     public override void Write( byte[] bytes ) {
         if( Port != null && Port.IsOpen ) {
-            // Port.Write(bytes, 0, bytes.Length);
             controller.StartCoroutine( PortWriteRoutine( bytes ) );
         }
     }
