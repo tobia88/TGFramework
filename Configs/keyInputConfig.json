@@ -180,6 +180,7 @@
                     "equation": "(((AB-AA)/(AA+AB))+1)/2"
                 }
             ],
+            "raw": true,
             "thresholdEquation": "(AA+AB)-1",
             "input": [
                 {
