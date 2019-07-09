@@ -181,7 +181,7 @@
                 }
             ],
             "raw": true,
-            "thresholdEquation": "(AA+AB)-1",
+            "inputTotalGap": "30",
             "input": [
                 {
                     "key": "AA",

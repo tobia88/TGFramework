@@ -45,8 +45,6 @@ public class KeyResolveValue {
         TargetValue = m_default = ( _data.origin == -1 ) ?
             0 : Min + ( Max - Min ) * _data.origin;
 
-        value = TargetValue;
-
         Ratio = 1;
     }
 
@@ -55,7 +53,7 @@ public class KeyResolveValue {
     }
 
     public void Recalibration() {
-        value = m_default;
+        TargetValue = m_default;
     }
 
     private int _delayFrame = 30;
@@ -66,7 +64,7 @@ public class KeyResolveValue {
             return;
         }
 
-        if( double.IsNaN( newVal ) )
+        if( double.IsNaN( newVal ) || double.IsInfinity( newVal ))
             newVal = 0f;
 
         if( !m_isInit ) {
@@ -86,9 +84,7 @@ public class KeyResolveValue {
             } else {
                 int sign = ( reverse ) ? -1 : 1;
                 float dist = ( float )( RawValue - LastRawValue );
-                // tmpNewVal = value + dist * sign;
                 TargetValue += dist * sign;
-                // value += dist * sign;
             }
         }
 
@@ -162,6 +158,7 @@ public class LMKeyResolver: LMBasePortResolver {
     }
 
     public override float GetValue( int index ) {
+        Debug.Log( "Total: " + InputTotal + ", Total Gap: " + inputTotalGap );
         if( !Threshold ) {
             return 0f;
         }
