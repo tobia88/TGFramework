@@ -24,7 +24,7 @@ public class TGBaseSceneEditor: Editor {
 
                 var defaultColor = GUI.color;
 
-                GUI.color = ( sceneExist ) ? default : new Color( 1f, 0.5f, 0.3f );
+                GUI.color = ( sceneExist ) ? defaultColor : new Color( 1f, 0.5f, 0.3f );
 
                 if( GUILayout.Button( "Manage Setting Data" ) ) {
                     CreateScenePopupWindow.ShowWindow( m_scene );
