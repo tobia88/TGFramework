@@ -28,6 +28,7 @@ public class KeyResolveValue {
 
     public double LastRawValue { get; private set; }
     public double RawValue { get; private set; }
+    public double TargetValue { get; private set; }
 
     public KeyResolveValue( KeyPortValueData _data, bool _degree, bool _raw, bool _reverse, float _damp ) {
         key = _data.key;
@@ -41,8 +42,10 @@ public class KeyResolveValue {
 
         equation = _data.equation;
 
-        value = m_default = ( _data.origin == -1 ) ?
+        TargetValue = m_default = ( _data.origin == -1 ) ?
             0 : Min + ( Max - Min ) * _data.origin;
+
+        value = TargetValue;
 
         Ratio = 1;
     }
@@ -67,7 +70,7 @@ public class KeyResolveValue {
             newVal = 0f;
 
         if( !m_isInit ) {
-            LastRawValue = RawValue = newVal;
+            LastRawValue = RawValue = TargetValue = newVal;
             m_isInit = true;
         } else {
             LastRawValue = RawValue;
@@ -75,24 +78,24 @@ public class KeyResolveValue {
         }
 
         if( raw ) {
-            var targetRaw = ( float ) RawValue;
-
-            if( damp > 0 )
-                value = Mathf.Lerp( ( float )value, targetRaw, damp );
-            else
-                value = ( float )RawValue;
-
-            return;
+            TargetValue = RawValue;
+        }
+        else {
+            if( isDegree ) {
+                TargetValue = TGUtility.PreventValueSkipping( TargetValue, LastRawValue, RawValue, reverse );
+            } else {
+                int sign = ( reverse ) ? -1 : 1;
+                float dist = ( float )( RawValue - LastRawValue );
+                // tmpNewVal = value + dist * sign;
+                TargetValue += dist * sign;
+                // value += dist * sign;
+            }
         }
 
-        if( isDegree ) {
-            value = TGUtility.PreventValueSkipping( value, LastRawValue, RawValue, reverse );
-        } else {
-            int sign = ( reverse ) ? -1 : 1;
-            float dist = ( float )( RawValue - LastRawValue );
-            value += dist * sign;
-        }
-
+        if( damp > 0 )
+            value = Mathf.Lerp( ( float )value, ( float )TargetValue, damp );
+        else
+            value = TargetValue;
     }
 
     public float GetValue() {
