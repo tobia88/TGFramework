@@ -12,6 +12,7 @@ namespace LiangMad.AI
 
         public bool showGizmos = false;
         public LayerMask blockLayerMask;
+        public float detectSize = 0.1f;
 
         private Vector2 m_spacing;
         public Node[] Nodes { get; private set; }
@@ -38,7 +39,7 @@ namespace LiangMad.AI
                     var pos = new Vector3(x * m_spacing.x, y * m_spacing.y);
                     var finalPos = m_worldOrigin + transform.TransformVector(pos);
 
-                    var colliders = Physics.OverlapSphere(finalPos, 0.1f, blockLayerMask);
+                    var colliders = Physics.OverlapSphere(finalPos, detectSize, blockLayerMask);
                     bool isWalkable = colliders.Length == 0;
 
                     int index = y * gridWidth + x;
@@ -219,7 +220,7 @@ namespace LiangMad.AI
                 foreach (var n in Nodes)
                 {
                     Gizmos.color = (n.isWalkable) ? Color.cyan : Color.red;
-                    Gizmos.DrawSphere(n.worldPosition, 0.2f);
+                    Gizmos.DrawSphere(n.worldPosition, detectSize);
                 }
             }
         }
