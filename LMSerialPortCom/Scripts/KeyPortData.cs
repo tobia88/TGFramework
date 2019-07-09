@@ -34,4 +34,5 @@ public class KeyPortData
     public KeyPortValueData[] value;
     public KeyPortInputData[] input;
     public float[] levels;
+    public float damp;
 }

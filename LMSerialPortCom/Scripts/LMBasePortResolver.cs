@@ -114,7 +114,7 @@ public abstract class LMBasePortResolver
         for (int i = 0; i < datas.Length; i++)
         {
             values[i] = new KeyResolveValue(datas[i], PortData.isDegree, 
-                                            PortData.raw, datas[i].reverse);
+                                            PortData.raw, datas[i].reverse, PortData.damp );
         }
     }
 }

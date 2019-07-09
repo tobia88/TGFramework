@@ -18,6 +18,7 @@ public class KeyResolveValue {
     public bool isDegree;
     public bool raw;
     public bool reverse;
+    public float damp;
 
     public float Ratio { get; private set; }
     public float StartMin { get; private set; }
@@ -28,11 +29,12 @@ public class KeyResolveValue {
     public double LastRawValue { get; private set; }
     public double RawValue { get; private set; }
 
-    public KeyResolveValue( KeyPortValueData _data, bool _degree, bool _raw, bool _reverse ) {
+    public KeyResolveValue( KeyPortValueData _data, bool _degree, bool _raw, bool _reverse, float _damp ) {
         key = _data.key;
         isDegree = _degree;
 
         raw = _raw;
+        damp = _damp;
 
         StartMin = TGUtility.GetValueFromINI( _data.min );
         StartMax = TGUtility.GetValueFromINI( _data.max );
@@ -73,7 +75,13 @@ public class KeyResolveValue {
         }
 
         if( raw ) {
-            value = ( float )RawValue;
+            var targetRaw = ( float ) RawValue;
+
+            if( damp > 0 )
+                value = Mathf.Lerp( ( float )value, targetRaw, damp );
+            else
+                value = ( float )RawValue;
+
             return;
         }
 
