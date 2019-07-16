@@ -60,10 +60,15 @@ public class TGBaseScene: MonoBehaviour {
 
     public virtual void ExitScene() {
         IsActive = false;
+        Close();
     }
 
     // 强制退出
-    public virtual void ForceClose() { }
+    public virtual void ForceClose() { 
+        Close();
+    }
+
+    public virtual void Close() { }
 
 
     public void DelayCall( System.Action _func, float _delay ) {
