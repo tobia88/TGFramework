@@ -39,6 +39,10 @@ public class TGGameScene: TGBaseScene {
 
     public float Duration { get; private set; }
 
+    public virtual string TutorialPath {
+        get { return ""; }
+    }
+
     public float TimeLeft {
         get { return m_timeLeft; }
         set {
@@ -163,7 +167,12 @@ public class TGGameScene: TGBaseScene {
     private void InitUI() {
         // 根据设备名称获取教程图片，请确保Resources文件夹下的与keyInputConfig.json
         // 下的设备名称保持一致
-        var tutorialSpr = Resources.Load<Sprite>( TGData.DeviceName );
+        string tutorialPath = TutorialPath;
+
+        if( !string.IsNullOrEmpty( tutorialPath ))
+            tutorialPath += "/";
+
+        var tutorialSpr = Resources.Load<Sprite>( tutorialPath + TGData.DeviceName );
 
         uiRoot.Init( this, tutorialSpr );
 
