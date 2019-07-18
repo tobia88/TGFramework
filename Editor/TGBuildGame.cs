@@ -117,6 +117,6 @@ public class TGBuildGame: MonoBehaviour {
         // Debug.Log( "Build Path: " + buildPath );
 
         // Build( buildPath, false );
-        Build( true );
+        Build( false );
     }
 }
