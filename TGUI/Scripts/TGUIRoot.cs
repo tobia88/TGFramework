@@ -19,10 +19,17 @@ public class TGUIRoot: MonoBehaviour {
     public void Init( TGGameScene gameScene, Sprite tutorialSpr ) {
         gameObject.SetActive( true );
 
+        // 如果成功获取教程图片，则绑定点击事件和教程弹出窗口
         questionBtn.gameObject.SetActive( tutorialSpr != null );
 
-        if( tutorialSpr != null )
+        if( tutorialSpr != null) {
+
+            questionBtn.onClick.AddListener( () => gameScene.GameState = GameStates.Tutorial );
+
             tutorialPanel.SetImage( tutorialSpr );
+            tutorialPanel.confirmBtn.onClick.AddListener( tutorialPanel.Exit );
+            tutorialPanel.onFinishClosePanel += () => gameScene.GameState = GameStates.Playing;
+        }
 
         var gameType = gameScene.gameType;
         timeBar.gameObject.SetActive( gameType == GameTypes.TimeLimit );

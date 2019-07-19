@@ -39,10 +39,6 @@ public class TGGameScene: TGBaseScene {
 
     public float Duration { get; private set; }
 
-    public virtual string TutorialPath {
-        get { return ""; }
-    }
-
     public float TimeLeft {
         get { return m_timeLeft; }
         set {
@@ -167,21 +163,9 @@ public class TGGameScene: TGBaseScene {
     private void InitUI() {
         // 根据设备名称获取教程图片，请确保Resources文件夹下的与keyInputConfig.json
         // 下的设备名称保持一致
-        string tutorialPath = TutorialPath;
-
-        if( !string.IsNullOrEmpty( tutorialPath ))
-            tutorialPath += "/";
-
-        var tutorialSpr = Resources.Load<Sprite>( tutorialPath + TGData.DeviceName );
+        var tutorialSpr = Resources.Load<Sprite>( TGData.DeviceName );
 
         uiRoot.Init( this, tutorialSpr );
-
-        // 如果成功获取教程图片，则绑定点击事件和教程弹出窗口
-        if( tutorialSpr != null ) {
-            uiRoot.questionBtn.onClick.AddListener( () => GameState = GameStates.Tutorial );
-            uiRoot.tutorialPanel.confirmBtn.onClick.AddListener( uiRoot.tutorialPanel.Exit );
-            uiRoot.tutorialPanel.onFinishClosePanel += () => GameState = GameStates.Playing;
-        }
 
         // 根据keyInputConfig.json里的设置来确定是否要开启校准按钮
         var disableRecalibrate = TGInputSetting.KeyportData.disableRecalibrate;
@@ -191,7 +175,6 @@ public class TGGameScene: TGBaseScene {
         // 如果确定开启校准按钮，则绑定点击事件
         if( !disableRecalibrate )
             uiRoot.recalibrationBtn.onClick.AddListener( Recalibration );
-
 
         // 右上角退出按钮的点击事件绑定
         uiRoot.exitBtn.onClick.AddListener( OnPressExit );
