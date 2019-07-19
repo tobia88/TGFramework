@@ -31,7 +31,7 @@ public class TGInputSetting: TGBaseManager {
         }
 
         // 打开热图
-        m_controller.SetHeatmapEnable( KeyportData.heatmap );
+        m_controller.SetHeatmapEnable( KeyportData.heatmap && !TGData.SceneDetail.disableHeatmap );
 
         m_controller.ProgressValue += 0.1f;
 

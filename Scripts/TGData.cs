@@ -35,7 +35,6 @@ public static class TGData {
     public static void SaveScore( int score ) {
         if( extraData.ContainsKey( SCORE_KEY ) )
             extraData[SCORE_KEY] = score.ToString();
-        
         else
             extraData.Add( SCORE_KEY, score.ToString() );
     }

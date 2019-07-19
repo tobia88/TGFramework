@@ -95,7 +95,7 @@ public class TGGameConfig: TGBaseManager {
         #if UNITY_EDITOR
             var settingData = TGSettingData.GetInstance();
             var scn = GameObject.FindObjectOfType<TGBaseScene> ();
-            
+
             SceneData sceneData = new SceneData();
 
             if( scn != null ) {
@@ -112,7 +112,7 @@ public class TGGameConfig: TGBaseManager {
         #else
             var sceneData = LMFileWriter.ReadJSON<SceneData>( TGPaths.SceneData );
             TGData.SetSceneData( sceneData );
-        #endif   
+        #endif
     }
 
     private void LoadInputConfig() {
