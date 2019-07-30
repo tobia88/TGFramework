@@ -46,6 +46,7 @@ public class LMInput_Port: LMBasePortInput, IPortReceiver {
         }
     }
 
+    // 端口写入流程
     private IEnumerator PortWriteRoutine( byte[] bytes ) {
         while( !IsPortWriting ) {
             try {
@@ -53,7 +54,7 @@ public class LMInput_Port: LMBasePortInput, IPortReceiver {
                 IsPortWriting = true;
             } catch( System.TimeoutException ex ) {
                 Debug.LogWarning( ex );
-                Debug.Log( "Restart port write routine" );
+                Debug.Log( "重启写入程序" );
             }
         }
 
@@ -62,8 +63,10 @@ public class LMInput_Port: LMBasePortInput, IPortReceiver {
         m_isConnected = false;
         yield return new WaitUntil( () => m_isConnected );
 
-        Debug.Log( "Write Finished" );
+        Debug.Log( "校准完毕" );
         IsPortWriting = false;
+
+        yield return controller.StartCoroutine( CurrentResolver.OnFinishPortWrite() );
     }
 
     public override void Close() {

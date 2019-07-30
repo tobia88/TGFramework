@@ -45,6 +45,8 @@ public class KeyResolveValue {
         TargetValue = m_default = ( _data.origin == -1 ) ?
             0 : Min + ( Max - Min ) * _data.origin;
 
+        Debug.Log( "Key: " + key + "初始值为" + TargetValue );
+
         Ratio = 1;
     }
 
@@ -53,23 +55,21 @@ public class KeyResolveValue {
     }
 
     public void Recalibration() {
+        m_isInit = false;
         TargetValue = m_default;
     }
 
-    private int _delayFrame = 30;
 
     public void SetValue( double newVal ) {
-        if( _delayFrame > 0 ) {
-            _delayFrame--;
+        if( double.IsNaN( newVal ) || double.IsInfinity( newVal )) {
             return;
         }
 
-        if( double.IsNaN( newVal ) || double.IsInfinity( newVal ))
-            newVal = 0f;
-
         if( !m_isInit ) {
-            LastRawValue = RawValue = TargetValue = newVal;
+            LastRawValue = RawValue = newVal;
             m_isInit = true;
+            Debug.Log( "Key: " + key + "获得的最初值为" + newVal );
+            return;
         } else {
             LastRawValue = RawValue;
             RawValue = newVal;
@@ -80,6 +80,7 @@ public class KeyResolveValue {
         }
         else {
             if( isDegree ) {
+                var delta = ( RawValue - LastRawValue ) ;
                 TargetValue = TGUtility.PreventValueSkipping( TargetValue, LastRawValue, RawValue, reverse );
             } else {
                 int sign = ( reverse ) ? -1 : 1;
@@ -250,5 +251,4 @@ public class LMKeyResolver: LMBasePortResolver {
         foreach( var v in values )
             v.Recalibration();
     }
-
 }

@@ -71,10 +71,17 @@ public class Leadiy_M7B : LMBasePortResolver
         m_getString = string.Empty;
     }
 
+    // 由于3D传感器在写入新的使用轴向时，数值会有短暂的不稳定，因此等待一段时间稳定后再进行校准
+    public override IEnumerator OnFinishPortWrite() {
+        yield return new WaitForSeconds( 2f );
+        Debug.Log( "延迟两秒，启动校准" );
+        Recalibration();
+    }
+
     private int[] GetByteValues(string value, string detection)
     {
         int keyIndex = value.IndexOf(detection);
-        
+
         if (keyIndex == -1)
             return null;
 

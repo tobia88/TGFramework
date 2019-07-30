@@ -86,6 +86,10 @@ public abstract class LMBasePortResolver
         return (float)values[index].RawValue;
     }
 
+    public virtual IEnumerator OnFinishPortWrite() {
+        yield return 1;
+    }
+
     protected virtual void InitInputs(KeyPortInputData[] datas)
     {
         if (datas == null)

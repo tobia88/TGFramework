@@ -39,18 +39,16 @@ public static class TGUtility {
         }
     }
 
-    public static double PreventValueSkipping( double cx, double lv, double nv, bool r ) {
+    public static double PreventValueSkipping( double cv, double lv, double nv, bool r ) {
         double sign = ( r ) ? -1 : 1;
 
-        double di = nv - lv;
-        double rv = cx;
+        double delta = nv - lv;
+        double rv = cv;
 
-        double delta = di;
-
-        if( di <= -180 ) //Warp around toward right
+        if( delta <= -180 ) //Warp around toward right
         {
             delta = ( 360 - lv ) + nv;
-        } else if( di >= 180 ) //Warp around toward left
+        } else if( delta >= 180 ) //Warp around toward left
           {
             delta = ( nv - 360 ) - lv;
         }
